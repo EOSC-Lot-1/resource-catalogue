@@ -377,7 +377,7 @@ public abstract class AbstractServiceBundleManager<T extends ServiceBundle> exte
 
         resources = genericResourceService.getResults(ff);
         if (!resources.getResults().isEmpty() && !resources.getFacets().isEmpty()) {
-            resources.setFacets(facetLabelService.createLabels(resources.getFacets()));
+            resources.setFacets(facetLabelService.generateLabels(resources.getFacets()));
         }
 
         return resources;

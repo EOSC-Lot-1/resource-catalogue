@@ -259,7 +259,7 @@ public class VocabularyCurationManager extends ResourceManager<VocabularyCuratio
 
         vocabularyCurationBrowsing = getResults(ff);
         if (!vocabularyCurationBrowsing.getResults().isEmpty() && !vocabularyCurationBrowsing.getFacets().isEmpty()) {
-            vocabularyCurationBrowsing.setFacets(facetLabelService.createLabels(vocabularyCurationBrowsing.getFacets()));
+            vocabularyCurationBrowsing.setFacets(facetLabelService.generateLabels(vocabularyCurationBrowsing.getFacets()));
         }
         return vocabularyCurationBrowsing;
     }

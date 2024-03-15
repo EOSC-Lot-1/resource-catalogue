@@ -834,19 +834,17 @@ public class TrainingResourceManager extends ResourceManager<TrainingResourceBun
 
         resources = getResults(ff);
         if (!resources.getResults().isEmpty() && !resources.getFacets().isEmpty()) {
-            resources.setFacets(facetLabelService.createLabels(resources.getFacets()));
+            resources.setFacets(facetLabelService.generateLabels(resources.getFacets()));
         }
 
         return resources;
     }
 
-    @Override
+    @Override // TODO: check if overriding this method is needed
     protected Browsing<TrainingResourceBundle> getResults(FacetFilter filter) {
         Browsing<TrainingResourceBundle> browsing;
         filter.setResourceType(getResourceType());
         browsing = convertToBrowsingEIC(searchServiceEIC.search(filter));
-
-        browsing.setFacets(createCorrectFacets(browsing.getFacets(), filter));
         return browsing;
     }
 
@@ -856,45 +854,6 @@ public class TrainingResourceManager extends ResourceManager<TrainingResourceBun
                 .map(res -> parserPool.deserialize(res, typeParameterClass))
                 .collect(Collectors.toList());
         return new Browsing<>(paging, results, genericManager.getLabels(getResourceType()));
-    }
-
-    public List<Facet> createCorrectFacets(List<Facet> serviceFacets, FacetFilter ff) {
-        ff.setQuantity(0);
-
-        Map<String, List<Object>> allFilters = FacetFilterUtils.getFacetFilterFilters(ff);
-
-        List<String> reverseOrderedKeys = new LinkedList<>(allFilters.keySet());
-        Collections.reverse(reverseOrderedKeys);
-
-        for (String filterKey : reverseOrderedKeys) {
-            Map<String, List<Object>> someFilters = new LinkedHashMap<>(allFilters);
-
-            // if last filter is "latest" or "active" continue to next iteration
-            if ("active".equals(filterKey)) {
-                continue;
-            }
-            someFilters.remove(filterKey);
-
-            FacetFilter facetFilter = FacetFilterUtils.createMultiFacetFilter(someFilters);
-            facetFilter.setResourceType(getResourceType());
-            facetFilter.setBrowseBy(Collections.singletonList(filterKey));
-            List<Facet> facetsCategory = convertToBrowsingEIC(searchServiceEIC.search(facetFilter)).getFacets();
-
-            for (Facet facet : serviceFacets) {
-                if (facet.getField().equals(filterKey)) {
-                    for (Facet facetCategory : facetsCategory) {
-                        if (facetCategory.getField().equals(facet.getField())) {
-                            serviceFacets.set(serviceFacets.indexOf(facet), facetCategory);
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-            break;
-        }
-
-        return removeEmptyFacets(serviceFacets);
     }
 
     private List<Facet> removeEmptyFacets(List<Facet> facetList) {

@@ -51,7 +51,7 @@ public class PublicTrainingResourceManager extends AbstractPublicResourceManager
     public Browsing<TrainingResourceBundle> getAll(FacetFilter facetFilter, Authentication authentication) {
         Browsing<TrainingResourceBundle> browsing = super.getAll(facetFilter, authentication);
         if (!browsing.getResults().isEmpty() && !browsing.getFacets().isEmpty()) {
-            browsing.setFacets(facetLabelService.createLabels(browsing.getFacets()));
+            browsing.setFacets(facetLabelService.generateLabels(browsing.getFacets()));
         }
         return browsing;
     }
