@@ -44,9 +44,23 @@
     },
     {
       "multivalued": true,
+      "name": "categories",
+      "label": "Category",
+      "path": "//*[local-name()='category']/*[local-name()='category']/text()",
+      "type": "java.lang.String"
+    },
+    {
+      "multivalued": true,
       "name": "subcategories",
       "label": "Subcategory",
       "path": "//*[local-name()='category']/*[local-name()='subcategory']/text()",
+      "type": "java.lang.String"
+    },
+    {
+      "multivalued": true,
+      "name": "scientific_domains",
+      "label": "Scientific Domain",
+      "path": "//*[local-name()='scientificDomain']/*[local-name()='scientificDomain']/text()",
       "type": "java.lang.String"
     },
     {

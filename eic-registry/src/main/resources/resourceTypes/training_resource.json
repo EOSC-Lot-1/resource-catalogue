@@ -86,6 +86,13 @@
     },
     {
       "multivalued": true,
+      "name": "scientific_domains",
+      "label": "Scientific Domain",
+      "path": "//*[local-name()='scientificDomain']/*[local-name()='scientificDomain']/text()",
+      "type": "java.lang.String"
+    },
+    {
+      "multivalued": true,
       "name": "scientific_subdomains",
       "label": "Scientific Subdomain",
       "path": "//*[local-name()='scientificDomain']/*[local-name()='scientificSubdomain']/text()",
