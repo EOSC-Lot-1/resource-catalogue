@@ -128,6 +128,12 @@ public abstract class AbstractPublicResourceManager<T extends Identifiable> exte
                         resourceInteroperabilityRecordBundle.getResourceInteroperabilityRecord().getCatalogueId(),
                         allCatalogueIds));
     }
+    
+    protected void updateToolsIdsToPublic(ToolBundle toolBundle) {
+        //List<String> allCatalogueIds = getAllCatalogueIds();
+        // Resource Organisation
+    	toolBundle.getTool().setResourceOrganisation(toolBundle.getTool().getResourceOrganisation());
+    }
 
     protected List<String> getAllCatalogueIds() {
         List<String> catalogueIds = new ArrayList<>();
