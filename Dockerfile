@@ -1,3 +1,5 @@
+# FIXME: this dockerfile seems outdated; paths (e.g. eic-registry) do not exist
+
 ### Build using Maven ###
 FROM maven:3.6 AS maven
 ARG profile
