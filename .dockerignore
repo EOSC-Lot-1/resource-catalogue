@@ -1,2 +1,14 @@
 **/target
 **/*.iml
+
+.env
+
+docker-compose.yaml
+
+Dockerfile
+*.dockerfile
+
+#.git/**
+
+secrets
+config/application.properties
