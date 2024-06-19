@@ -35,3 +35,12 @@ hs_err_pid*
 
 # properties file
 **/registry.properties
+
+.env
+.envrc
+
+config/*
+secrets/*
+setup/*
+
+docker-compose.yaml

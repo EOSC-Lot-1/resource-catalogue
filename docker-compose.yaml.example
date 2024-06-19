@@ -1,0 +1,50 @@
+# vim: set syntax=yaml:
+
+version: '3.6'
+
+volumes:
+  postgres_data:
+
+networks:
+  network1:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.25.0/24
+
+services:
+
+  catalogue:
+    image: docker-registry.eosc.athenarc.gr/resource-catalogue:${APP_VERSION}
+    build:
+      context: .
+      dockerfile: default.dockerfile
+    volumes:
+    - type: bind
+      source: ./config/application.properties
+      target: /app/application.properties
+      read_only: true
+    environment:
+      {}
+    networks:
+    - network1
+  
+  postgres:
+    image: postgres:15-alpine
+    volumes:
+    - type: volume
+      source: postgres_data
+      target: /var/lib/postgresql/data
+    - type: bind
+      source: ./setup/postgres/init-scripts/
+      target: /docker-entrypoint-initdb.d/
+      read_only: true
+    - type: bind
+      source: ./secrets/postgres/
+      target: /secrets
+      read_only: true
+    environment:
+      POSTGRES_PASSWORD_FILE: /secrets/password
+    networks:
+    - network1
+
