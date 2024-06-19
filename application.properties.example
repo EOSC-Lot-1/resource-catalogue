@@ -1,0 +1,155 @@
+server.port=8080
+server.servlet.context-path=/resource-catalogue
+
+spring.main.allow-bean-definition-overriding=true
+spring.main.allow-circular-references=true
+
+logging.level.root=INFO
+
+
+## Springdoc Properties ##
+springdoc.group-configs[0].group=catalogue
+springdoc.group-configs[0].display-name=Resource Catalogue
+springdoc.group-configs[0].packages-to-scan=gr.uoa.di.madgik.resourcecatalogue
+springdoc.group-configs[1].group=registry
+springdoc.group-configs[1].display-name=Registry
+springdoc.group-configs[1].packages-to-scan=gr.uoa.di.madgik.registry
+
+springdoc.swagger-ui.docExpansion=none
+springdoc.swagger-ui.operationsSorter=method
+springdoc.swagger-ui.tagsSorter=alpha
+springdoc.swagger-ui.syntaxHighlight.theme=obsidian
+springdoc.swagger-ui.syntaxHighlight.activated=false
+springdoc.swagger-ui.tryItOutEnabled=true
+spring.jpa.open-in-view=false
+
+## Profiles ##
+spring.profiles.active=crud
+
+springdoc.api-docs.path=/api-docs
+springdoc.swagger-ui.path=/swagger-ui.html
+
+
+##########################
+## Mandatory Properties ##
+##########################
+fqdn=localhost
+platform.root=http://${fqdn}/
+registry.host=http://${fqdn}:8080/resource-catalogue
+
+
+## DB Properties ##
+jdbc.url=
+jdbc.username=
+jdbc.password=
+
+
+## Redis Properties ##
+spring.redis.host=
+spring.redis.port=
+spring.redis.password=
+
+## Spring Security Configuration ##
+spring.security.oauth2.client.registration.google.client-id=
+spring.security.oauth2.client.registration.google.client-secret=
+spring.security.oauth2.client.registration.google.scope=openid,email,profile
+spring.security.oauth2.client.registration.google.redirect-uri=http://localhost:8080/resource-catalogue/openid_connect_login
+
+aai.baseUrl=
+spring.security.oauth2.client.registration.eosc.client-id=
+spring.security.oauth2.client.registration.eosc.client-name=
+spring.security.oauth2.client.registration.eosc.client-secret=
+spring.security.oauth2.client.registration.eosc.scope=openid,email,profile
+spring.security.oauth2.client.registration.eosc.redirect-uri=http://localhost:8080/resource-catalogue/openid_connect_login
+spring.security.oauth2.client.provider.eosc.issuer-uri=${aai.baseUrl}
+spring.security.oauth2.resourceserver.jwt.issuer-uri=${aai.baseUrl}
+
+
+#########################
+## Optional Properties ##
+#########################
+
+## Catalogue Properties
+catalogue.admins=
+catalogue.onboarding-team=
+catalogue.homepage=http://localhost:3000
+catalogue.login-redirect=http://localhost:3000
+catalogue.logout-redirect=http://localhost:3000
+
+catalogue.debug=false
+catalogue.version=
+
+catalogue.id=
+catalogue.name=
+
+catalogue.email-properties.emails-enabled=false
+catalogue.email-properties.admin-notifications=false
+catalogue.email-properties.provider-notifications=false
+catalogue.email-properties.registration-emails.to=
+catalogue.email-properties.helpdesk-emails.to=
+catalogue.email-properties.helpdesk-emails.cc=
+catalogue.email-properties.monitoring-emails.to=
+
+## Mail Properties ##
+catalogue.mailer.host=
+catalogue.mailer.from=
+catalogue.mailer.username=
+catalogue.mailer.password=
+catalogue.mailer.port=
+catalogue.mailer.protocol=smtp
+catalogue.mailer.auth=true
+catalogue.mailer.ssl=true
+
+## sync ##
+sync.enable=false
+sync.host=
+sync.token.filepath=
+
+## Matomo Properties ##
+matomoHost=
+matomoToken=
+matomoSiteId=
+matomoAuthorizationHeader=
+
+## Openaire Datasources Manager ##
+openaire.dsm.api=https://beta.services.openaire.eu/
+openaire.ds.metrics=
+openaire.ds.metrics.validated=
+
+## Argo GRNET Monitoring Status ##
+argo.grnet.monitoring.service.types=
+argo.grnet.monitoring.availability=
+argo.grnet.monitoring.status=
+argo.grnet.monitoring.token=
+
+## InternalToPublicConsistency ##
+resource.consistency.enable=false
+resource.consistency.email=
+resource.consistency.cc=
+
+
+## PIDS BETA ##
+pid.username=
+pid.key=
+pid.auth=
+pid.prefix=
+pid.api=
+marketplace.url=
+
+## Resource Prefixes ##
+## PID related ##
+prefix.services=21.11161
+prefix.tools=21.11162
+prefix.trainings=21.11163
+prefix.providers=21.15120
+prefix.guidelines=21.15121
+prefix.future.use=21.15122
+## Non PID related ##
+prefix.catalogues=cat
+prefix.configurationTemplates=con
+prefix.configurationTemplateInstances=cti
+prefix.datasources=dat
+prefix.helpdesks=hel
+prefix.monitorings=mon
+prefix.resourceInteroperabilityRecords=rir
+prefix.vocabularyCurations=cur
