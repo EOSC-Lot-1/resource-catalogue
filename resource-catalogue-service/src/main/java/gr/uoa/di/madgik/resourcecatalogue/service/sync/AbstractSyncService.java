@@ -5,9 +5,9 @@ import gr.uoa.di.madgik.resourcecatalogue.domain.Identifiable;
 import gr.uoa.di.madgik.resourcecatalogue.domain.Provider;
 import gr.uoa.di.madgik.resourcecatalogue.domain.TrainingResource;
 import gr.uoa.di.madgik.resourcecatalogue.service.SynchronizerService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.javatuples.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -28,7 +28,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @Service
 public abstract class AbstractSyncService<T extends Identifiable> implements SynchronizerService<T> {
-    private static final Logger logger = LogManager.getLogger(AbstractSyncService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractSyncService.class);
     private static boolean isInitialized = false;
 
     protected RestTemplate restTemplate;

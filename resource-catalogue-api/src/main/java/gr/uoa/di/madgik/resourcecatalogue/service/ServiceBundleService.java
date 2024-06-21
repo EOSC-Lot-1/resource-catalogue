@@ -6,7 +6,6 @@ import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import gr.uoa.di.madgik.registry.domain.Paging;
 import gr.uoa.di.madgik.registry.domain.Resource;
 import gr.uoa.di.madgik.registry.exception.ResourceNotFoundException;
-import gr.uoa.di.madgik.registry.service.ResourceCRUDService;
 import gr.uoa.di.madgik.registry.service.SearchService;
 import gr.uoa.di.madgik.resourcecatalogue.domain.*;
 import org.springframework.security.core.Authentication;
@@ -14,7 +13,7 @@ import org.springframework.security.core.Authentication;
 import java.util.List;
 import java.util.Map;
 
-public interface ServiceBundleService<T> extends ResourceCRUDService<T, Authentication> {
+public interface ServiceBundleService<T extends Bundle<?>> extends ResourceService<T>, BundleOperations<T> {
 
     /**
      * Method to add a new resource.
@@ -89,7 +88,7 @@ public interface ServiceBundleService<T> extends ResourceCRUDService<T, Authenti
     /**
      * @param authentication Authentication
      * @param ids            List of Service IDs
-     * @return {@link List<  ServiceBundle  >}
+     * @return the list of matching resources.
      */
     List<ServiceBundle> getByIds(Authentication authentication, String... ids);
 
@@ -111,24 +110,6 @@ public interface ServiceBundleService<T> extends ResourceCRUDService<T, Authenti
     Resource getResource(String id, String catalogueId);
 
     /**
-     * Validates the given resource.
-     *
-     * @param resource The Resource
-     * @return {@link boolean}
-     */
-    boolean validate(T resource);
-
-    /**
-     * Sets a Resource as active/inactive.
-     *
-     * @param resourceId Service ID
-     * @param active     Service active field
-     * @param auth       Authentication
-     * @return {@link T}
-     */
-    T publish(String resourceId, Boolean active, Authentication auth);
-
-    /**
      * Return children vocabularies from parent vocabularies
      *
      * @param type   Vocabulary's type
@@ -146,19 +127,6 @@ public interface ServiceBundleService<T> extends ResourceCRUDService<T, Authenti
      * @return {@link Browsing}&lt;{@link T}&gt;
      */
     Browsing<T> getAllForAdmin(FacetFilter filter, Authentication auth);
-
-    /**
-     * Audit a Service
-     *
-     * @param resourceId  Service ID
-     * @param catalogueId Catalogue ID
-     * @param comment     Comment
-     * @param actionType  Audit's action type
-     * @param auth        Authentication
-     * @return {@link T}
-     */
-    T auditResource(String resourceId, String catalogueId, String comment, LoggingInfo.ActionType actionType,
-                    Authentication auth);
 
     /**
      * Get a paging of random Services
@@ -233,17 +201,6 @@ public interface ServiceBundleService<T> extends ResourceCRUDService<T, Authenti
     Paging<LoggingInfo> getLoggingInfoHistory(String id, String catalogueId);
 
     /**
-     * Verify the Service providing its ID
-     *
-     * @param id     Service ID
-     * @param status Service's status (approved/rejected)
-     * @param active True/False
-     * @param auth   Authentication
-     * @return {@link T}
-     */
-    T verifyResource(String id, String status, Boolean active, Authentication auth);
-
-    /**
      * Change the Provider of the specific Service
      *
      * @param resourceId  Service ID
@@ -294,17 +251,6 @@ public interface ServiceBundleService<T> extends ResourceCRUDService<T, Authenti
     T createPublicResource(T resource, Authentication auth);
 
     /**
-     * Suspend the Service given its ID
-     *
-     * @param resourceId  Service ID
-     * @param catalogueId Catalogue ID
-     * @param suspend     True/False
-     * @param auth        Authentication
-     * @return {@link ServiceBundle}
-     */
-    ServiceBundle suspend(String resourceId, String catalogueId, boolean suspend, Authentication auth);
-
-    /**
      * Publish Service's related resources
      *
      * @param serviceId   Service ID
@@ -313,12 +259,4 @@ public interface ServiceBundleService<T> extends ResourceCRUDService<T, Authenti
      * @param auth        Authentication
      */
     void publishServiceRelatedResources(String serviceId, String catalogueId, Boolean active, Authentication auth);
-
-    /**
-     * Add a list of ServiceBundles on the Resource Catalogue
-     *
-     * @param serviceList List of ServiceBundles
-     * @param auth        Authentication
-     */
-    void addBulk(List<ServiceBundle> serviceList, Authentication auth);
 }

@@ -1,20 +1,19 @@
 package gr.uoa.di.madgik.resourcecatalogue.utils;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import gr.uoa.di.madgik.resourcecatalogue.domain.*;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceException;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceNotFoundException;
 import gr.uoa.di.madgik.resourcecatalogue.manager.*;
 import gr.uoa.di.madgik.resourcecatalogue.service.*;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
@@ -25,13 +24,13 @@ import java.util.*;
 @Component
 public class InternalToPublicConsistency {
 
-    private static final Logger logger = LogManager.getLogger(InternalToPublicConsistency.class);
+    private static final Logger logger = LoggerFactory.getLogger(InternalToPublicConsistency.class);
 
-    private final ProviderService<ProviderBundle, Authentication> providerService;
-    private final ServiceBundleService<ServiceBundle> serviceBundleService;
-    private final TrainingResourceService<TrainingResourceBundle> trainingResourceService;
-    private final InteroperabilityRecordService<InteroperabilityRecordBundle> interoperabilityRecordService;
-    private final ResourceInteroperabilityRecordService<ResourceInteroperabilityRecordBundle> resourceInteroperabilityRecordService;
+    private final ProviderService providerService;
+    private final ServiceBundleService serviceBundleService;
+    private final TrainingResourceService trainingResourceService;
+    private final InteroperabilityRecordService interoperabilityRecordService;
+    private final ResourceInteroperabilityRecordService resourceInteroperabilityRecordService;
 
 
     private final PublicProviderManager publicProviderManager;
@@ -45,8 +44,8 @@ public class InternalToPublicConsistency {
     private final MailService mailService;
 
 
-    @Value("${project.name:Resource Catalogue}")
-    private String projectName;
+    @Value("${catalogue.name:Resource Catalogue}")
+    private String catalogueName;
     @Value("${resource.consistency.enable}")
     private boolean enableConsistencyEmails;
     @Value("${resource.consistency.email}")
@@ -54,11 +53,11 @@ public class InternalToPublicConsistency {
     @Value("${resource.consistency.cc}")
     private String consistencyCC;
 
-    public InternalToPublicConsistency(ProviderService<ProviderBundle, Authentication> providerService,
-                                       ServiceBundleService<ServiceBundle> serviceBundleService,
-                                       TrainingResourceService<TrainingResourceBundle> trainingResourceService,
-                                       InteroperabilityRecordService<InteroperabilityRecordBundle> interoperabilityRecordService,
-                                       ResourceInteroperabilityRecordService<ResourceInteroperabilityRecordBundle> resourceInteroperabilityRecordService,
+    public InternalToPublicConsistency(ProviderService providerService,
+                                       ServiceBundleService serviceBundleService,
+                                       TrainingResourceService trainingResourceService,
+                                       InteroperabilityRecordService interoperabilityRecordService,
+                                       ResourceInteroperabilityRecordService resourceInteroperabilityRecordService,
                                        PublicProviderManager publicProviderManager, PublicServiceManager publicServiceManager,
                                        PublicTrainingResourceManager publicTrainingResourceManager,
                                        PublicInteroperabilityRecordManager publicInteroperabilityRecordManager,
@@ -174,13 +173,13 @@ public class InternalToPublicConsistency {
         Map<String, Object> root = new HashMap<>();
         StringWriter out = new StringWriter();
         root.put("logs", logs);
-        root.put("project", projectName);
+        root.put("project", catalogueName);
 
         try {
             Template temp = cfg.getTemplate("internalToPublicResourceConsistency.ftl");
             temp.process(root, out);
             String teamMail = out.getBuffer().toString();
-            String subject = String.format("[%s Portal] Internal to Public Resource Consistency Logs", projectName);
+            String subject = String.format("[%s Portal] Internal to Public Resource Consistency Logs", catalogueName);
             if (enableConsistencyEmails) {
                 mailService.sendMail(Collections.singletonList(consistencyEmail), null, Collections.singletonList(consistencyCC), subject, teamMail);
             }

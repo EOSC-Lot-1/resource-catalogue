@@ -1,8 +1,8 @@
 package gr.uoa.di.madgik.resourcecatalogue.config;
 
 import com.google.common.cache.CacheBuilder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
@@ -10,11 +10,7 @@ import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.scheduling.annotation.Scheduled;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -23,7 +19,7 @@ import static gr.uoa.di.madgik.resourcecatalogue.config.Properties.Cache.*;
 @Configuration
 @EnableCaching
 public class CacheConfig {
-    private static final Logger logger = LogManager.getLogger(CacheConfig.class);
+    private static final Logger logger = LoggerFactory.getLogger(CacheConfig.class);
 
     @Primary
     @Bean

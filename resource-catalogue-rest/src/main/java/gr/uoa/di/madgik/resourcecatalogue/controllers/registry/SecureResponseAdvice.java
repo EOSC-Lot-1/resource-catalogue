@@ -1,14 +1,14 @@
 package gr.uoa.di.madgik.resourcecatalogue.controllers.registry;
 
-import gr.uoa.di.madgik.resourcecatalogue.domain.*;
+import gr.uoa.di.madgik.registry.domain.Paging;
 import gr.uoa.di.madgik.resourcecatalogue.domain.*;
 import gr.uoa.di.madgik.resourcecatalogue.service.AuthoritiesMapper;
 import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
-import gr.uoa.di.madgik.registry.domain.Paging;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import java.util.Collection;
 
+@Profile("beyond")
 @ControllerAdvice
 public class SecureResponseAdvice<T> implements ResponseBodyAdvice<T> {
 
@@ -31,7 +32,7 @@ public class SecureResponseAdvice<T> implements ResponseBodyAdvice<T> {
 
     @Autowired
     public SecureResponseAdvice(SecurityService securityService, AuthoritiesMapper authoritiesMapper,
-                                @Value("${project.registration.email:registration@catalogue.eu}") String epotEmail) {
+                                @Value("${catalogue.email-properties.registration-emails.to:registration@catalogue.eu}") String epotEmail) {
         this.securityService = securityService;
         this.authoritiesMapper = authoritiesMapper;
         this.epotEmail = epotEmail;

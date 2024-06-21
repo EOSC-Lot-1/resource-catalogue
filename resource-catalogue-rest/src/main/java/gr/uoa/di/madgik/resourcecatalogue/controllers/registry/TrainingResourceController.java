@@ -1,18 +1,18 @@
 package gr.uoa.di.madgik.resourcecatalogue.controllers.registry;
 
-import gr.uoa.di.madgik.resourcecatalogue.annotations.Browse;
-import gr.uoa.di.madgik.resourcecatalogue.annotations.BrowseCatalogue;
-import gr.uoa.di.madgik.resourcecatalogue.domain.*;
-import gr.uoa.di.madgik.resourcecatalogue.exception.ValidationException;
-import gr.uoa.di.madgik.resourcecatalogue.service.GenericResourceService;
-import gr.uoa.di.madgik.resourcecatalogue.service.ProviderService;
-import gr.uoa.di.madgik.resourcecatalogue.service.TrainingResourceService;
-import gr.uoa.di.madgik.resourcecatalogue.utils.FacetFilterUtils;
 import gr.uoa.di.madgik.registry.domain.Browsing;
 import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import gr.uoa.di.madgik.registry.domain.Paging;
 import gr.uoa.di.madgik.registry.exception.ResourceNotFoundException;
-
+import gr.uoa.di.madgik.resourcecatalogue.annotations.Browse;
+import gr.uoa.di.madgik.resourcecatalogue.annotations.BrowseCatalogue;
+import gr.uoa.di.madgik.resourcecatalogue.domain.*;
+import gr.uoa.di.madgik.resourcecatalogue.exception.ValidationException;
+import gr.uoa.di.madgik.resourcecatalogue.service.DraftResourceService;
+import gr.uoa.di.madgik.resourcecatalogue.service.GenericResourceService;
+import gr.uoa.di.madgik.resourcecatalogue.service.ProviderService;
+import gr.uoa.di.madgik.resourcecatalogue.service.TrainingResourceService;
+import gr.uoa.di.madgik.resourcecatalogue.utils.FacetFilterUtils;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,8 +22,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,68 +35,83 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.sql.DataSource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+@Profile("beyond")
 @RestController
 @RequestMapping({"trainingResource"})
 @Tag(name = "training resource")
 public class TrainingResourceController {
 
     private static final Logger logger = LogManager.getLogger(TrainingResourceController.class.getName());
-    private final TrainingResourceService<TrainingResourceBundle> trainingResourceService;
-    private final ProviderService<ProviderBundle, Authentication> providerService;
+    private final TrainingResourceService trainingResourceService;
+    private final DraftResourceService<TrainingResourceBundle> draftTrainingResourceService;
+    private final ProviderService providerService;
     private final DataSource commonDataSource;
     private final GenericResourceService genericResourceService;
 
     @Value("${auditing.interval:6}")
     private String auditingInterval;
 
-    @Value("${project.catalogue.name}")
+    @Value("${catalogue.id}")
+    private String catalogueId;
+
+    @Value("${catalogue.name:Resource Catalogue}")
     private String catalogueName;
 
-    @Value("${project.name:Resource Catalogue}")
-    private String projectName;
-
-    @Autowired
-    TrainingResourceController(TrainingResourceService<TrainingResourceBundle> trainingResourceService,
-                               ProviderService<ProviderBundle, Authentication> providerService,
+    TrainingResourceController(TrainingResourceService trainingResourceService,
+                               DraftResourceService<TrainingResourceBundle> draftTrainingResourceService,
+                               ProviderService providerService,
                                DataSource commonDataSource, GenericResourceService genericResourceService) {
         this.trainingResourceService = trainingResourceService;
+        this.draftTrainingResourceService = draftTrainingResourceService;
         this.providerService = providerService;
         this.commonDataSource = commonDataSource;
         this.genericResourceService = genericResourceService;
     }
 
-    @DeleteMapping(path = {"{id}"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isResourceProviderAdmin(#auth, #id)")
-    public ResponseEntity<TrainingResourceBundle> delete(@PathVariable("id") String id,
-                                                         @RequestParam(defaultValue = "${project.catalogue.name}", name = "catalogue_id") String catalogueId,
+    @DeleteMapping(path = "{prefix}/{suffix}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isResourceProviderAdmin(#auth, #prefix+'/'+#suffix)")
+    public ResponseEntity<TrainingResourceBundle> delete(@Parameter(description = "The left part of the ID before the '/'") @PathVariable("prefix") String prefix,
+                                                         @Parameter(description = "The right part of the ID after the '/'") @PathVariable("suffix") String suffix,
+                                                         @RequestParam(defaultValue = "${catalogue.id}", name = "catalogue_id") String catalogueId,
                                                          @Parameter(hidden = true) Authentication auth) throws ResourceNotFoundException {
+        String id = prefix + "/" + suffix;
         TrainingResourceBundle trainingResourceBundle;
         trainingResourceBundle = trainingResourceService.get(id, catalogueId);
 
         // Block users of deleting Services of another Catalogue
-        if (!trainingResourceBundle.getTrainingResource().getCatalogueId().equals(catalogueName)) {
-            throw new ValidationException(String.format("You cannot delete a Training Resource of a non [%s] Catalogue.", projectName));
+        if (!trainingResourceBundle.getTrainingResource().getCatalogueId().equals(this.catalogueId)) {
+            throw new ValidationException(String.format("You cannot delete a Training Resource of a non [%s] Catalogue.", catalogueName));
         }
         //TODO: Maybe return Provider's template status to 'no template status' if this was its only TR
         trainingResourceService.delete(trainingResourceBundle);
-        logger.info("User '{}' deleted Training Resource '{}' with id: '{}' of the Catalogue: '{}'", User.of(auth).getEmail(), trainingResourceBundle.getTrainingResource().getTitle(),
+        logger.info("Deleted Training Resource '{}' with id: '{}' of the Catalogue: '{}'", trainingResourceBundle.getTrainingResource().getTitle(),
                 trainingResourceBundle.getTrainingResource().getId(), trainingResourceBundle.getTrainingResource().getCatalogueId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "Get the most current version of a specific Training Resource, providing the Resource id.")
-    @GetMapping(path = "{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    @PreAuthorize("@securityService.trainingResourceIsActive(#id, #catalogueId) or hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isResourceProviderAdmin(#auth, #id)")
-    public ResponseEntity<TrainingResource> getTrainingResource(@PathVariable("id") String id, @RequestParam(defaultValue = "${project.catalogue.name}", name = "catalogue_id") String catalogueId, @Parameter(hidden = true) Authentication auth) {
+    @GetMapping(path = "{prefix}/{suffix}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @PreAuthorize("@securityService.trainingResourceIsActive(#prefix+'/'+#suffix, #catalogueId) or hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isResourceProviderAdmin(#auth, #prefix+'/'+#suffix)")
+    public ResponseEntity<TrainingResource> getTrainingResource(@Parameter(description = "The left part of the ID before the '/'") @PathVariable("prefix") String prefix,
+                                                                @Parameter(description = "The right part of the ID after the '/'") @PathVariable("suffix") String suffix,
+                                                                @RequestParam(defaultValue = "${catalogue.id}", name = "catalogue_id") String catalogueId,
+                                                                @Parameter(hidden = true) Authentication auth) {
+        String id = prefix + "/" + suffix;
         return new ResponseEntity<>(trainingResourceService.get(id, catalogueId).getTrainingResource(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "bundle/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isResourceProviderAdmin(#auth, #id)")
-    public ResponseEntity<TrainingResourceBundle> getTrainingResourceBundle(@PathVariable("id") String id, @RequestParam(defaultValue = "${project.catalogue.name}", name = "catalogue_id") String catalogueId, @Parameter(hidden = true) Authentication auth) {
+    @GetMapping(path = "bundle/{prefix}/{suffix}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isResourceProviderAdmin(#auth, #prefix+'/'+#suffix)")
+    public ResponseEntity<TrainingResourceBundle> getTrainingResourceBundle(@Parameter(description = "The left part of the ID before the '/'") @PathVariable("prefix") String prefix,
+                                                                            @Parameter(description = "The right part of the ID after the '/'") @PathVariable("suffix") String suffix,
+                                                                            @RequestParam(defaultValue = "${catalogue.id}", name = "catalogue_id") String catalogueId, @Parameter(hidden = true) Authentication auth) {
+        String id = prefix + "/" + suffix;
         return new ResponseEntity<>(trainingResourceService.get(id, catalogueId), HttpStatus.OK);
     }
 
@@ -104,7 +119,7 @@ public class TrainingResourceController {
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.providerCanAddResources(#auth, #trainingResource)")
     public ResponseEntity<TrainingResource> addTrainingResource(@RequestBody TrainingResource trainingResource, @Parameter(hidden = true) Authentication auth) {
-        TrainingResourceBundle ret = this.trainingResourceService.addResource(new TrainingResourceBundle(trainingResource), auth);
+        TrainingResourceBundle ret = this.trainingResourceService.add(new TrainingResourceBundle(trainingResource), auth);
         logger.info("User '{}' created a new Training Resource with title '{}' and id '{}'", User.of(auth).getEmail(), trainingResource.getTitle(), trainingResource.getId());
         return new ResponseEntity<>(ret.getTrainingResource(), HttpStatus.CREATED);
     }
@@ -113,18 +128,22 @@ public class TrainingResourceController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isResourceProviderAdmin(#auth,#trainingResource)")
     @PutMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<TrainingResource> updateTrainingResource(@RequestBody TrainingResource trainingResource, @RequestParam(required = false) String comment, @Parameter(hidden = true) Authentication auth) throws ResourceNotFoundException {
-        TrainingResourceBundle ret = this.trainingResourceService.updateResource(new TrainingResourceBundle(trainingResource), comment, auth);
-        logger.info("User '{}' updated Training Resource with title '{}' and id '{}'", User.of(auth).getEmail(), trainingResource.getTitle(), trainingResource.getId());
+        TrainingResourceBundle ret = this.trainingResourceService.update(new TrainingResourceBundle(trainingResource), comment, auth);
+        logger.info("Updated Training Resource with title '{}' and id '{}'", trainingResource.getTitle(), trainingResource.getId());
         return new ResponseEntity<>(ret.getTrainingResource(), HttpStatus.OK);
     }
 
     // Accept/Reject a Resource.
-    @PatchMapping(path = "verifyTrainingResource/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PatchMapping(path = "verifyTrainingResource/{prefix}/{suffix}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT')")
-    public ResponseEntity<TrainingResourceBundle> verifyTrainingResource(@PathVariable("id") String id, @RequestParam(required = false) Boolean active,
-                                                                         @RequestParam(required = false) String status, @Parameter(hidden = true) Authentication auth) {
-        TrainingResourceBundle trainingResourceBundle = trainingResourceService.verifyResource(id, status, active, auth);
-        logger.info("User '{}' updated Training Resource with title '{}' [status: {}] [active: {}]", auth, trainingResourceBundle.getTrainingResource().getTitle(), status, active);
+    public ResponseEntity<TrainingResourceBundle> verifyTrainingResource(@Parameter(description = "The left part of the ID before the '/'") @PathVariable("prefix") String prefix,
+                                                                         @Parameter(description = "The right part of the ID after the '/'") @PathVariable("suffix") String suffix,
+                                                                         @RequestParam(required = false) Boolean active,
+                                                                         @RequestParam(required = false) String status,
+                                                                         @Parameter(hidden = true) Authentication auth) {
+        String id = prefix + "/" + suffix;
+        TrainingResourceBundle trainingResourceBundle = trainingResourceService.verify(id, status, active, auth);
+        logger.info("Updated Training Resource with title '{}' [status: {}] [active: {}]", trainingResourceBundle.getTrainingResource().getTitle(), status, active);
         return new ResponseEntity<>(trainingResourceBundle, HttpStatus.OK);
     }
 
@@ -163,12 +182,9 @@ public class TrainingResourceController {
         return trainingResourceService.getChildrenFromParent(type, parent, rec);
     }
 
-    //    @Operation(summary = "Get a list of Training Resources based on a set of ids.")
-    @Parameters({
-            @Parameter(name = "ids", description = "Comma-separated list of Training Resource ids", content = @Content(schema = @Schema(type = "boolean", defaultValue = "")))
-    })
-    @GetMapping(path = "byID/{ids}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<List<TrainingResource>> getSomeTrainingResources(@PathVariable("ids") String[] ids, @Parameter(hidden = true) Authentication auth) {
+    @Operation(summary = "Get a list of Training Resources based on a set of ids.")
+    @GetMapping(path = "ids", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<List<TrainingResource>> getSomeTrainingResources(@RequestParam("ids") String[] ids, @Parameter(hidden = true) Authentication auth) {
         return ResponseEntity.ok(trainingResourceService.getByIds(auth, ids));
     }
 
@@ -195,12 +211,14 @@ public class TrainingResourceController {
     }
 
     @Browse
-    @GetMapping(path = "byProvider/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isProviderAdmin(#auth,#id,#catalogueId)")
+    @GetMapping(path = "byProvider/{prefix}/{suffix}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isProviderAdmin(#auth,#prefix+'/'+#suffix,#catalogueId)")
     public ResponseEntity<Paging<TrainingResourceBundle>> getTrainingResourcesByProvider(@Parameter(hidden = true) @RequestParam MultiValueMap<String, Object> allRequestParams,
-                                                                                         @RequestParam(defaultValue = "${project.catalogue.name}", name = "catalogue_id") String catalogueId,
-                                                                                         @PathVariable String id,
+                                                                                         @Parameter(description = "The left part of the ID before the '/'") @PathVariable("prefix") String prefix,
+                                                                                         @Parameter(description = "The right part of the ID after the '/'") @PathVariable("suffix") String suffix,
+                                                                                         @RequestParam(defaultValue = "${catalogue.id}", name = "catalogue_id") String catalogueId,
                                                                                          @Parameter(hidden = true) Authentication auth) {
+        String id = prefix + "/" + suffix;
         FacetFilter ff = FacetFilterUtils.createFacetFilter(allRequestParams);
         ff.setResourceType("training_resource");
         ff.addFilter("published", false);
@@ -237,9 +255,13 @@ public class TrainingResourceController {
     }
 
     // Providing the Training Resource id, set the Training Resource to active or inactive.
-    @PatchMapping(path = "publish/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.providerIsActiveAndUserIsAdmin(#auth, #id)")
-    public ResponseEntity<TrainingResourceBundle> setActive(@PathVariable String id, @RequestParam Boolean active, @Parameter(hidden = true) Authentication auth) {
+    @PatchMapping(path = "publish/{prefix}/{suffix}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.providerIsActiveAndUserIsAdmin(#auth, #prefix+'/'+#suffix)")
+    public ResponseEntity<TrainingResourceBundle> setActive(@Parameter(description = "The left part of the ID before the '/'") @PathVariable("prefix") String prefix,
+                                                            @Parameter(description = "The right part of the ID after the '/'") @PathVariable("suffix") String suffix,
+                                                            @RequestParam Boolean active,
+                                                            @Parameter(hidden = true) Authentication auth) {
+        String id = prefix + "/" + suffix;
         logger.info("User '{}-{}' attempts to save Training Resource with id '{}' as '{}'", User.of(auth).getFullName(), User.of(auth).getEmail(), id, active);
         return ResponseEntity.ok(trainingResourceService.publish(id, active, auth));
     }
@@ -272,14 +294,16 @@ public class TrainingResourceController {
         return ResponseEntity.ok(paging);
     }
 
-    @PatchMapping(path = "auditResource/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PatchMapping(path = "auditResource/{prefix}/{suffix}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT')")
-    public ResponseEntity<TrainingResourceBundle> auditResource(@PathVariable("id") String id,
+    public ResponseEntity<TrainingResourceBundle> auditResource(@Parameter(description = "The left part of the ID before the '/'") @PathVariable("prefix") String prefix,
+                                                                @Parameter(description = "The right part of the ID after the '/'") @PathVariable("suffix") String suffix,
                                                                 @RequestParam("catalogueId") String catalogueId,
                                                                 @RequestParam(required = false) String comment,
                                                                 @RequestParam LoggingInfo.ActionType actionType,
                                                                 @Parameter(hidden = true) Authentication auth) {
-        TrainingResourceBundle trainingResource = trainingResourceService.auditResource(id, catalogueId, comment, actionType, auth);
+        String id = prefix + "/" + suffix;
+        TrainingResourceBundle trainingResource = trainingResourceService.audit(id, comment, actionType, auth);
         return new ResponseEntity<>(trainingResource, HttpStatus.OK);
     }
 
@@ -298,17 +322,22 @@ public class TrainingResourceController {
     }
 
     // Get all modification details of a specific Resource based on id.
-    @GetMapping(path = {"loggingInfoHistory/{id}"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Paging<LoggingInfo>> loggingInfoHistory(@PathVariable String id,
-                                                                  @RequestParam(defaultValue = "${project.catalogue.name}", name = "catalogue_id") String catalogueId) {
+    @GetMapping(path = {"loggingInfoHistory/{prefix}/{suffix}"}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Paging<LoggingInfo>> loggingInfoHistory(@Parameter(description = "The left part of the ID before the '/'") @PathVariable("prefix") String prefix,
+                                                                  @Parameter(description = "The right part of the ID after the '/'") @PathVariable("suffix") String suffix,
+                                                                  @RequestParam(defaultValue = "${catalogue.id}", name = "catalogue_id") String catalogueId) {
+        String id = prefix + "/" + suffix;
         Paging<LoggingInfo> loggingInfoHistory = this.trainingResourceService.getLoggingInfoHistory(id, catalogueId);
         return ResponseEntity.ok(loggingInfoHistory);
     }
 
     // Send emails to Providers whose Resources are outdated
-    @GetMapping(path = {"sendEmailForOutdatedResource/{resourceId}"}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = {"sendEmailForOutdatedResource/{prefix}/{suffix}"}, produces = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT')")
-    public void sendEmailNotificationsToProvidersWithOutdatedResources(@PathVariable String resourceId, @Parameter(hidden = true) Authentication authentication) {
+    public void sendEmailNotificationsToProvidersWithOutdatedResources(@Parameter(description = "The left part of the ID before the '/'") @PathVariable("prefix") String prefix,
+                                                                       @Parameter(description = "The right part of the ID after the '/'") @PathVariable("suffix") String suffix,
+                                                                       @Parameter(hidden = true) Authentication authentication) {
+        String resourceId = prefix + "/" + suffix;
         trainingResourceService.sendEmailNotificationsToProvidersWithOutdatedResources(resourceId, authentication);
     }
 
@@ -320,9 +349,13 @@ public class TrainingResourceController {
     }
 
     @Browse
-    @GetMapping(path = "getSharedResources/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasRole('ROLE_ADMIN') or @securityService.isProviderAdmin(#auth,#id)")
-    public ResponseEntity<Paging<TrainingResourceBundle>> getSharedResources(@Parameter(hidden = true) @RequestParam MultiValueMap<String, Object> allRequestParams, @PathVariable String id, @Parameter(hidden = true) Authentication auth) {
+    @GetMapping(path = "getSharedResources/{prefix}/{suffix}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @securityService.isProviderAdmin(#auth,#prefix+'/'+#suffix)")
+    public ResponseEntity<Paging<TrainingResourceBundle>> getSharedResources(@Parameter(hidden = true) @RequestParam MultiValueMap<String, Object> allRequestParams,
+                                                                             @Parameter(description = "The left part of the ID before the '/'") @PathVariable("prefix") String prefix,
+                                                                             @Parameter(description = "The right part of the ID after the '/'") @PathVariable("suffix") String suffix,
+                                                                             @Parameter(hidden = true) Authentication auth) {
+        String id = prefix + "/" + suffix;
         FacetFilter ff = FacetFilterUtils.createFacetFilter(allRequestParams);
         ff.addFilter("resource_providers", id);
         return ResponseEntity.ok(trainingResourceService.getAll(ff, null));
@@ -342,7 +375,7 @@ public class TrainingResourceController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<TrainingResourceBundle> add(@RequestBody TrainingResourceBundle trainingResourceBundle, Authentication authentication) {
         ResponseEntity<TrainingResourceBundle> ret = new ResponseEntity<>(trainingResourceService.add(trainingResourceBundle, authentication), HttpStatus.OK);
-        logger.info("User '{}' added TrainingResourceBundle '{}' with id: {}", authentication, trainingResourceBundle.getTrainingResource().getTitle(), trainingResourceBundle.getTrainingResource().getId());
+        logger.info("Added TrainingResourceBundle '{}' with id: {}", trainingResourceBundle.getTrainingResource().getTitle(), trainingResourceBundle.getTrainingResource().getId());
         return ret;
     }
 
@@ -350,20 +383,89 @@ public class TrainingResourceController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<TrainingResourceBundle> update(@RequestBody TrainingResourceBundle trainingResourceBundle, @Parameter(hidden = true) Authentication authentication) throws ResourceNotFoundException {
         ResponseEntity<TrainingResourceBundle> ret = new ResponseEntity<>(trainingResourceService.update(trainingResourceBundle, authentication), HttpStatus.OK);
-        logger.info("User '{}' updated TrainingResourceBundle '{}' with id: {}", authentication, trainingResourceBundle.getTrainingResource().getTitle(), trainingResourceBundle.getTrainingResource().getId());
+        logger.info("Updated TrainingResourceBundle '{}' with id: {}", trainingResourceBundle.getTrainingResource().getTitle(), trainingResourceBundle.getTrainingResource().getId());
         return ret;
     }
 
     @Operation(summary = "Suspends a specific Training Resource.")
     @PutMapping(path = "suspend", produces = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT')")
-    public TrainingResourceBundle suspendTrainingResource(@RequestParam String trainingResourceId, @RequestParam String catalogueId, @RequestParam boolean suspend, @Parameter(hidden = true) Authentication auth) {
-        return trainingResourceService.suspend(trainingResourceId, catalogueId, suspend, auth);
+    public TrainingResourceBundle suspendTrainingResource(@RequestParam String trainingResourceId, @RequestParam boolean suspend, @Parameter(hidden = true) Authentication auth) {
+        return trainingResourceService.suspend(trainingResourceId, suspend, auth);
     }
 
     @PostMapping(path = "/addBulk", produces = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void addBulk(@RequestBody List<TrainingResourceBundle> trainingResourceList, @Parameter(hidden = true) Authentication auth) {
         trainingResourceService.addBulk(trainingResourceList, auth);
+    }
+
+
+    // Drafts
+    @GetMapping(path = "/draft/{prefix}/{suffix}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<TrainingResource> getDraftTrainingResource(@Parameter(description = "The left part of the ID before the '/'") @PathVariable("prefix") String prefix,
+                                                                     @Parameter(description = "The right part of the ID after the '/'") @PathVariable("suffix") String suffix) {
+        String id = prefix + "/" + suffix;
+        return new ResponseEntity<>(draftTrainingResourceService.get(id).getTrainingResource(), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/draft/getMyDraftTrainingResources", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<List<TrainingResourceBundle>> getMyDraftTrainingResources(@Parameter(hidden = true) Authentication auth) {
+        return new ResponseEntity<>(draftTrainingResourceService.getMy(auth), HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/draft", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<TrainingResource> addDraftTrainingResource(@RequestBody TrainingResource trainingResource,
+                                                                     @Parameter(hidden = true) Authentication auth) {
+        TrainingResourceBundle trainingResourceBundle = draftTrainingResourceService.add(new TrainingResourceBundle(trainingResource), auth);
+        logger.info("User '{}' added the Draft Training Resource with name '{}' and id '{}'", User.of(auth).getEmail(),
+                trainingResource.getTitle(), trainingResource.getId());
+        return new ResponseEntity<>(trainingResourceBundle.getTrainingResource(), HttpStatus.CREATED);
+    }
+
+    @PutMapping(path = "/draft", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isResourceProviderAdmin(#auth, #trainingResource)")
+    public ResponseEntity<TrainingResource> updateDraftTrainingResource(@RequestBody TrainingResource trainingResource,
+                                                                        @Parameter(hidden = true) Authentication auth)
+            throws ResourceNotFoundException {
+        TrainingResourceBundle trainingResourceBundle = draftTrainingResourceService.get(trainingResource.getId());
+        trainingResourceBundle.setTrainingResource(trainingResource);
+        trainingResourceBundle = draftTrainingResourceService.update(trainingResourceBundle, auth);
+        logger.info("User '{}' updated the Draft Training Resource with name '{}' and id '{}'", User.of(auth).getEmail(),
+                trainingResource.getTitle(), trainingResource.getId());
+        return new ResponseEntity<>(trainingResourceBundle.getTrainingResource(), HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/draft/{prefix}/{suffix}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isResourceProviderAdmin(#auth, #prefix+'/'+#suffix)")
+    public ResponseEntity<TrainingResource> deleteDraftTrainingResource(@Parameter(description = "The left part of the ID before the '/'") @PathVariable("prefix") String prefix,
+                                                                        @Parameter(description = "The right part of the ID after the '/'") @PathVariable("suffix") String suffix,
+                                                                        @Parameter(hidden = true) Authentication auth)
+            throws ResourceNotFoundException {
+        String id = prefix + "/" + suffix;
+        TrainingResourceBundle trainingResourceBundle = draftTrainingResourceService.get(id);
+        if (trainingResourceBundle == null) {
+            return new ResponseEntity<>(HttpStatus.GONE);
+        }
+        draftTrainingResourceService.delete(trainingResourceBundle);
+        logger.info("User '{}' deleted the Draft Training Resource '{}'-'{}'", User.of(auth).getEmail(),
+                id, trainingResourceBundle.getTrainingResource().getTitle());
+        return new ResponseEntity<>(trainingResourceBundle.getTrainingResource(), HttpStatus.OK);
+    }
+
+    @PutMapping(path = "draft/transform", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<TrainingResource> transformToTrainingResource(@RequestBody TrainingResource trainingResource,
+                                                                        @Parameter(hidden = true) Authentication auth)
+            throws ResourceNotFoundException {
+        TrainingResourceBundle trainingResourceBundle = draftTrainingResourceService.get(trainingResource.getId());
+        trainingResourceBundle.setTrainingResource(trainingResource);
+
+        trainingResourceService.validate(trainingResourceBundle);
+        draftTrainingResourceService.update(trainingResourceBundle, auth);
+        trainingResourceBundle = draftTrainingResourceService.transformToNonDraft(trainingResourceBundle.getId(), auth);
+
+        return new ResponseEntity<>(trainingResourceBundle.getTrainingResource(), HttpStatus.OK);
     }
 }

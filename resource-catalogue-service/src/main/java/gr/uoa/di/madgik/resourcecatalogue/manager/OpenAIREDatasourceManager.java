@@ -3,15 +3,15 @@ package gr.uoa.di.madgik.resourcecatalogue.manager;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
+import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import gr.uoa.di.madgik.resourcecatalogue.domain.Datasource;
 import gr.uoa.di.madgik.resourcecatalogue.dto.OpenAIREMetrics;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceNotFoundException;
 import gr.uoa.di.madgik.resourcecatalogue.service.OpenAIREDatasourceService;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +28,7 @@ import java.util.Map;
 @Service
 public class OpenAIREDatasourceManager implements OpenAIREDatasourceService {
 
-    private static final Logger logger = LogManager.getLogger(OpenAIREDatasourceManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(OpenAIREDatasourceManager.class);
 
     private final String openaireAPI;
     private final String openaireMetricsValidated;
@@ -180,7 +180,7 @@ public class OpenAIREDatasourceManager implements OpenAIREDatasourceService {
                     try {
                         registerBy = jsonObj.getAsJsonObject().get("registeredby") != JsonNull.INSTANCE ? jsonObj.getAsJsonObject().get("registeredby").getAsString() : null;
                     } catch (UnsupportedOperationException e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(), e);
                     }
                 }
             }

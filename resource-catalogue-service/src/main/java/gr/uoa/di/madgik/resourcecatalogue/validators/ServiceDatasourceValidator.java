@@ -3,10 +3,10 @@ package gr.uoa.di.madgik.resourcecatalogue.validators;
 import gr.uoa.di.madgik.resourcecatalogue.domain.Service;
 import gr.uoa.di.madgik.resourcecatalogue.domain.ServiceBundle;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ValidationException;
-import gr.uoa.di.madgik.resourcecatalogue.utils.VocabularyValidationUtils;
 import gr.uoa.di.madgik.resourcecatalogue.service.ServiceBundleService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import gr.uoa.di.madgik.resourcecatalogue.utils.VocabularyValidationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -19,13 +19,13 @@ import java.util.List;
 @Component("serviceValidator")
 public class ServiceDatasourceValidator implements Validator {
 
-    private static final Logger logger = LogManager.getLogger(ServiceDatasourceValidator.class);
-    private final ServiceBundleService<ServiceBundle> serviceBundleService;
+    private static final Logger logger = LoggerFactory.getLogger(ServiceDatasourceValidator.class);
+    private final ServiceBundleService serviceBundleService;
     private final String catalogueName;
 
     @Autowired
-    public ServiceDatasourceValidator(@Value("${project.catalogue.name}") String catalogueName,
-                                      @Lazy ServiceBundleService<ServiceBundle> serviceBundleService) {
+    public ServiceDatasourceValidator(@Value("${catalogue.id}") String catalogueName,
+                                      @Lazy ServiceBundleService serviceBundleService) {
         this.catalogueName = catalogueName;
         this.serviceBundleService = serviceBundleService;
     }

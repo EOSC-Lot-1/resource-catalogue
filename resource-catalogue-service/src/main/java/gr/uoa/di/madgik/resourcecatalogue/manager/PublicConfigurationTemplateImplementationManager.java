@@ -1,21 +1,20 @@
 package gr.uoa.di.madgik.resourcecatalogue.manager;
 
+import gr.uoa.di.madgik.registry.domain.Browsing;
+import gr.uoa.di.madgik.registry.domain.FacetFilter;
+import gr.uoa.di.madgik.registry.service.ResourceCRUDService;
 import gr.uoa.di.madgik.resourcecatalogue.domain.Identifiers;
 import gr.uoa.di.madgik.resourcecatalogue.domain.configurationTemplates.ConfigurationTemplateInstanceBundle;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceException;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceNotFoundException;
-import gr.uoa.di.madgik.resourcecatalogue.utils.JmsService;
 import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
-import gr.uoa.di.madgik.registry.domain.Browsing;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
-import gr.uoa.di.madgik.registry.service.ResourceCRUDService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import gr.uoa.di.madgik.resourcecatalogue.utils.JmsService;
+import org.apache.commons.beanutils.BeanUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.apache.commons.beanutils.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -26,14 +25,13 @@ import java.lang.reflect.InvocationTargetException;
 public class PublicConfigurationTemplateImplementationManager extends ResourceManager<ConfigurationTemplateInstanceBundle>
         implements ResourceCRUDService<ConfigurationTemplateInstanceBundle, Authentication> {
 
-    private static final Logger logger = LogManager.getLogger(PublicConfigurationTemplateImplementationManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(PublicConfigurationTemplateImplementationManager.class);
     private final JmsService jmsService;
     private final SecurityService securityService;
-    @Value("${project.catalogue.name}")
-    private String catalogueName;
 
+    @Value("${catalogue.id}")
+    private String catalogueId;
 
-    @Autowired
     public PublicConfigurationTemplateImplementationManager(JmsService jmsService, SecurityService securityService) {
         super(ConfigurationTemplateInstanceBundle.class);
         this.jmsService = jmsService;
@@ -56,13 +54,13 @@ public class PublicConfigurationTemplateImplementationManager extends ResourceMa
     public ConfigurationTemplateInstanceBundle add(ConfigurationTemplateInstanceBundle configurationTemplateInstanceBundle, Authentication authentication) {
         String lowerLevelResourceId = configurationTemplateInstanceBundle.getId();
         Identifiers.createOriginalId(configurationTemplateInstanceBundle);
-        configurationTemplateInstanceBundle.setId(String.format("%s.%s", catalogueName, configurationTemplateInstanceBundle.getId()));
-        configurationTemplateInstanceBundle.getConfigurationTemplateInstance().setResourceId(String.format("%s.%s", catalogueName,
+        configurationTemplateInstanceBundle.setId(String.format("%s.%s", catalogueId, configurationTemplateInstanceBundle.getId()));
+        configurationTemplateInstanceBundle.getConfigurationTemplateInstance().setResourceId(String.format("%s.%s", catalogueId,
                 configurationTemplateInstanceBundle.getConfigurationTemplateInstance().getResourceId()));
         JSONParser parser = new JSONParser();
         try {
             JSONObject payload = (JSONObject) parser.parse(configurationTemplateInstanceBundle.getConfigurationTemplateInstance().getPayload().replaceAll("'", "\""));
-            payload.put("interoperabilityRecordId", catalogueName + "." + payload.get("interoperabilityRecordId"));
+            payload.put("interoperabilityRecordId", catalogueId + "." + payload.get("interoperabilityRecordId"));
             configurationTemplateInstanceBundle.getConfigurationTemplateInstance().setPayload(payload.toString());
         } catch (ParseException e) {
             //continue
@@ -77,14 +75,14 @@ public class PublicConfigurationTemplateImplementationManager extends ResourceMa
 
     @Override
     public ConfigurationTemplateInstanceBundle update(ConfigurationTemplateInstanceBundle configurationTemplateInstanceBundle, Authentication authentication) {
-        ConfigurationTemplateInstanceBundle published = super.get(String.format("%s.%s", catalogueName, configurationTemplateInstanceBundle.getId()));
-        ConfigurationTemplateInstanceBundle ret = super.get(String.format("%s.%s", catalogueName, configurationTemplateInstanceBundle.getId()));
+        ConfigurationTemplateInstanceBundle published = super.get(String.format("%s.%s", catalogueId, configurationTemplateInstanceBundle.getId()));
+        ConfigurationTemplateInstanceBundle ret = super.get(String.format("%s.%s", catalogueId, configurationTemplateInstanceBundle.getId()));
         try {
             BeanUtils.copyProperties(ret, configurationTemplateInstanceBundle);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        ret.getConfigurationTemplateInstance().setResourceId(String.format("%s.%s", catalogueName,
+        ret.getConfigurationTemplateInstance().setResourceId(String.format("%s.%s", catalogueId,
                 configurationTemplateInstanceBundle.getConfigurationTemplateInstance().getResourceId()));
         ret.setIdentifiers(published.getIdentifiers());
         ret.getConfigurationTemplateInstance().setPayload(published.getConfigurationTemplateInstance().getPayload()); //TODO: refactor when users will be able to update CTIs
@@ -100,7 +98,7 @@ public class PublicConfigurationTemplateImplementationManager extends ResourceMa
     public void delete(ConfigurationTemplateInstanceBundle configurationTemplateInstanceBundle) {
         try {
             ConfigurationTemplateInstanceBundle publicConfigurationTemplateInstanceBundle = get(String.format("%s.%s",
-                    catalogueName, configurationTemplateInstanceBundle.getId()));
+                    catalogueId, configurationTemplateInstanceBundle.getId()));
             logger.info(String.format("Deleting public ConfigurationTemplateInstanceBundle with id [%s]", publicConfigurationTemplateInstanceBundle.getId()));
             super.delete(publicConfigurationTemplateInstanceBundle);
             jmsService.convertAndSendTopic("configuration_template_instance.delete", publicConfigurationTemplateInstanceBundle);

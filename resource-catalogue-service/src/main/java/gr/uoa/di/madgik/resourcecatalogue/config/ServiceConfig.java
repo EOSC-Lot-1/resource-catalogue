@@ -1,20 +1,21 @@
 package gr.uoa.di.madgik.resourcecatalogue.config;
 
+import gr.uoa.di.madgik.resourcecatalogue.config.security.ResourceCatalogueProperties;
 import gr.uoa.di.madgik.resourcecatalogue.domain.*;
 import gr.uoa.di.madgik.resourcecatalogue.domain.configurationTemplates.ConfigurationTemplate;
 import gr.uoa.di.madgik.resourcecatalogue.domain.configurationTemplates.ConfigurationTemplateBundle;
 import gr.uoa.di.madgik.resourcecatalogue.domain.configurationTemplates.ConfigurationTemplateInstance;
 import gr.uoa.di.madgik.resourcecatalogue.domain.configurationTemplates.ConfigurationTemplateInstanceBundle;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.session.MapSessionRepository;
-import org.springframework.session.SessionRepository;
 import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
+import org.springframework.web.util.UrlPathHelper;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -27,13 +28,19 @@ import java.util.Random;
         "gr.uoa.di.madgik.resourcecatalogue.utils",
         "gr.uoa.di.madgik.resourcecatalogue.validators",
         "gr.uoa.di.madgik.resourcecatalogue.service",
-        "gr.uoa.di.madgik.resourcecatalogue.matomo",
-        "gr.uoa.di.madgik.resourcecatalogue.recdb"})
+        "gr.uoa.di.madgik.resourcecatalogue.matomo"})
 @EnableSpringHttpSession
 @EnableAspectJAutoProxy
 @EnableAsync
+@EnableConfigurationProperties(ResourceCatalogueProperties.class)
 public class ServiceConfig {
 
+    @Bean
+    public UrlPathHelper urlPathHelper() {
+        UrlPathHelper urlPathHelper = new UrlPathHelper();
+        urlPathHelper.setUrlDecode(false);
+        return urlPathHelper;
+    }
 
     @Bean
     JAXBContext eicJAXBContext() throws JAXBException {
@@ -52,17 +59,12 @@ public class ServiceConfig {
     @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer defaultCookieSerializer = new DefaultCookieSerializer();
-        defaultCookieSerializer.setCookieName("EICSESSION");
+        defaultCookieSerializer.setCookieName("SESSION");
         defaultCookieSerializer.setCookiePath("/");
 //        defaultCookieSerializer.setUseSecureCookie(Boolean.parseBoolean(env.getProperty(COOKIE_SECURE)));
         defaultCookieSerializer.setUseHttpOnlyCookie(true);
 //        defaultCookieSerializer.setDomainNamePattern("^.+?\\.(\\w+\\.[a-z]+)$");
         return defaultCookieSerializer;
-    }
-
-    @Bean
-    public SessionRepository sessionRepository() {
-        return new MapSessionRepository();
     }
 
     @Bean

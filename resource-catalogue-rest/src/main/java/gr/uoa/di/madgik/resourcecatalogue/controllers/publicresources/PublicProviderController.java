@@ -1,17 +1,18 @@
 package gr.uoa.di.madgik.resourcecatalogue.controllers.publicresources;
 
 import com.google.gson.Gson;
+import gr.uoa.di.madgik.registry.domain.FacetFilter;
+import gr.uoa.di.madgik.registry.domain.Paging;
 import gr.uoa.di.madgik.resourcecatalogue.annotations.Browse;
 import gr.uoa.di.madgik.resourcecatalogue.annotations.BrowseCatalogue;
-import gr.uoa.di.madgik.resourcecatalogue.domain.*;
+import gr.uoa.di.madgik.resourcecatalogue.domain.Provider;
+import gr.uoa.di.madgik.resourcecatalogue.domain.ProviderBundle;
+import gr.uoa.di.madgik.resourcecatalogue.domain.User;
 import gr.uoa.di.madgik.resourcecatalogue.service.GenericResourceService;
-import gr.uoa.di.madgik.resourcecatalogue.utils.FacetFilterUtils;
 import gr.uoa.di.madgik.resourcecatalogue.service.ProviderService;
 import gr.uoa.di.madgik.resourcecatalogue.service.ResourceService;
 import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
-import gr.uoa.di.madgik.registry.domain.Paging;
-
+import gr.uoa.di.madgik.resourcecatalogue.utils.FacetFilterUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,6 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Profile("beyond")
 @RestController
 @RequestMapping
 @Tag(name = "public provider")
@@ -39,13 +42,13 @@ public class PublicProviderController {
     private static final Gson gson = new Gson();
 
     private final SecurityService securityService;
-    private final ProviderService<ProviderBundle, Authentication> providerService;
-    private final ResourceService<ProviderBundle, Authentication> publicProviderManager;
+    private final ProviderService providerService;
+    private final ResourceService<ProviderBundle> publicProviderManager;
     private final GenericResourceService genericResourceService;
 
     public PublicProviderController(SecurityService securityService,
-                                    ProviderService<ProviderBundle, Authentication> providerService,
-                                    @Qualifier("publicProviderManager") ResourceService<ProviderBundle, Authentication> publicProviderManager,
+                                    ProviderService providerService,
+                                    @Qualifier("publicProviderManager") ResourceService<ProviderBundle> publicProviderManager,
                                     GenericResourceService genericResourceService) {
         this.securityService = securityService;
         this.providerService = providerService;
@@ -56,9 +59,8 @@ public class PublicProviderController {
     @Operation(description = "Returns the Public Provider with the given id.")
     @GetMapping(path = "public/provider/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<?> getPublicProvider(@PathVariable("id") String id,
-                                               @RequestParam(defaultValue = "${project.catalogue.name}", name = "catalogue_id") String catalogueId,
                                                @Parameter(hidden = true) Authentication auth) {
-        ProviderBundle providerBundle = providerService.get(catalogueId, id, auth);
+        ProviderBundle providerBundle = providerService.get(id, auth);
         if (auth != null && auth.isAuthenticated()) {
             User user = User.of(auth);
             if (securityService.hasRole(auth, "ROLE_ADMIN") || securityService.hasRole(auth, "ROLE_EPOT")
@@ -81,9 +83,8 @@ public class PublicProviderController {
     @GetMapping(path = "public/provider/bundle/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isProviderAdmin(#auth, #id, #catalogueId)")
     public ResponseEntity<?> getPublicProviderBundle(@PathVariable("id") String id,
-                                                     @RequestParam(defaultValue = "${project.catalogue.name}", name = "catalogue_id") String catalogueId,
                                                      @Parameter(hidden = true) Authentication auth) {
-        ProviderBundle providerBundle = providerService.get(catalogueId, id, auth);
+        ProviderBundle providerBundle = providerService.get(id, auth);
         if (auth != null && auth.isAuthenticated()) {
             User user = User.of(auth);
             if (securityService.hasRole(auth, "ROLE_ADMIN") || securityService.hasRole(auth, "ROLE_EPOT")

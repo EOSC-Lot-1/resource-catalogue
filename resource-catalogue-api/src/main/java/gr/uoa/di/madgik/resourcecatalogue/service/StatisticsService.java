@@ -1,7 +1,6 @@
 package gr.uoa.di.madgik.resourcecatalogue.service;
 
 
-
 import gr.uoa.di.madgik.resourcecatalogue.domain.Event;
 import gr.uoa.di.madgik.resourcecatalogue.dto.MapValues;
 import gr.uoa.di.madgik.resourcecatalogue.dto.PlaceCount;
@@ -26,12 +25,12 @@ public interface StatisticsService {
     Map<String, Integer> addToProject(String serviceId, Interval by);
 
     /**
-     * Get time series of visits for a Service.
-     *
      * @param serviceId Service ID
      * @param by        interval (Day, Week, Month, Year)
      * @return {@link Map}&lt;{@link String},{@link Integer}&gt;
+     * @deprecated Get time series of visits for a Service.
      */
+    @Deprecated(forRemoval = true)
     Map<String, Integer> visits(String serviceId, Interval by);
 
     /**
@@ -44,21 +43,21 @@ public interface StatisticsService {
     Map<String, Integer> providerAddToProject(String providerId, Interval by);
 
     /**
-     * Get time series of aggregate visits for all Services offered by a Provider.
-     *
      * @param providerId Provider ID
      * @param by         interval (Day, Week, Month, Year)
      * @return {@link Map}&lt;{@link String},{@link Integer}&gt;
+     * @deprecated Get time series of aggregate visits for all Services offered by a Provider.
      */
+    @Deprecated(forRemoval = true)
     Map<String, Integer> providerVisits(String providerId, Interval by);
 
     /**
-     * Get visitation percentages of a Provider's Services for the specified interval.
-     *
      * @param providerId Provider ID
      * @param by         interval (Day, Week, Month, Year)
      * @return {@link Map}&lt;{@link String},{@link Float}&gt;
+     * @deprecated Get visitation percentages of a Provider's Services for the specified interval.
      */
+    @Deprecated(forRemoval = true)
     Map<String, Float> providerVisitation(String providerId, Interval by);
 
     /**

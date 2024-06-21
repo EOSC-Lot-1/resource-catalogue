@@ -6,12 +6,13 @@ import gr.uoa.di.madgik.registry.domain.Resource;
 import gr.uoa.di.madgik.resourcecatalogue.domain.ProviderBundle;
 import gr.uoa.di.madgik.resourcecatalogue.domain.Vocabulary;
 import gr.uoa.di.madgik.resourcecatalogue.dto.VocabularyTree;
+import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceAlreadyExistsException;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceException;
 import gr.uoa.di.madgik.resourcecatalogue.service.IdCreator;
 import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
 import gr.uoa.di.madgik.resourcecatalogue.service.VocabularyService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
@@ -20,7 +21,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,22 +28,13 @@ import static gr.uoa.di.madgik.resourcecatalogue.config.Properties.Cache.*;
 
 @Service
 public class VocabularyManager extends ResourceManager<Vocabulary> implements VocabularyService {
-    private static final Logger logger = LogManager.getLogger(VocabularyManager.class);
-
-    private final Map<String, String[]> regions = new HashMap<>();
+    private static final Logger logger = LoggerFactory.getLogger(VocabularyManager.class);
 
     private final ProviderManager providerManager;
 
     private final SecurityService securityService;
 
     private final IdCreator idCreator;
-
-    @PostConstruct
-    private void postConstruct() {
-        logger.debug("Initializing Regions");
-        regions.put("EU", getRegion("EU"));
-        regions.put("WW", getRegion("WW"));
-    }
 
     public VocabularyManager(@Lazy ProviderManager providerManager, @Lazy IdCreator idCreator, @Lazy SecurityService securityService) {
         super(Vocabulary.class);
@@ -75,7 +66,8 @@ public class VocabularyManager extends ResourceManager<Vocabulary> implements Vo
             return allCountries.stream().map(Vocabulary::getId).toArray(String[]::new);
         } else {
             return allCountries.stream()
-                    .filter(vocabulary -> !vocabulary.getExtras().isEmpty())
+                    .filter(vocabulary -> vocabulary.getExtras().containsKey("region"))
+                    .filter(vocabulary -> vocabulary.getExtras().get("region").equals(name))
                     .map(Vocabulary::getId)
                     .toArray(String[]::new);
         }
@@ -126,9 +118,7 @@ public class VocabularyManager extends ResourceManager<Vocabulary> implements Vo
     @Override
     @CacheEvict(value = {CACHE_VOCABULARIES, CACHE_VOCABULARY_MAP, CACHE_VOCABULARY_TREE}, allEntries = true)
     public void addBulk(List<Vocabulary> vocabularies, Authentication auth) {
-        for (Vocabulary vocabulary : vocabularies) {
-            add(vocabulary, auth);
-        }
+        super.addBulk(vocabularies, auth);
     }
 
     @Override
@@ -141,7 +131,7 @@ public class VocabularyManager extends ResourceManager<Vocabulary> implements Vo
 
     @Override
     @CacheEvict(value = {CACHE_VOCABULARIES, CACHE_VOCABULARY_MAP, CACHE_VOCABULARY_TREE}, allEntries = true)
-    public void deleteBulk(Authentication auth) {
+    public void deleteAll(Authentication auth) {
         FacetFilter ff = new FacetFilter();
         ff.setQuantity(maxQuantity);
         List<Vocabulary> allVocs = getAll(ff, auth).getResults();
@@ -203,8 +193,7 @@ public class VocabularyManager extends ResourceManager<Vocabulary> implements Vo
             vocabulary.setId(id);
         }
         if (exists(vocabulary)) {
-            logger.error("{} already exists!\n{}", resourceType.getName(), vocabulary);
-            throw new ResourceException(String.format("%s already exists!", resourceType.getName()), HttpStatus.CONFLICT);
+            throw new ResourceAlreadyExistsException(String.format("%s already exists!%n%s", resourceType.getName(), vocabulary));
         }
         String serialized = serialize(vocabulary);
         Resource created = new Resource();

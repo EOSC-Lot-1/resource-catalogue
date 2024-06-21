@@ -1,25 +1,21 @@
 package gr.uoa.di.madgik.resourcecatalogue.service;
 
+import gr.uoa.di.madgik.registry.domain.FacetFilter;
+import gr.uoa.di.madgik.registry.service.ServiceException;
 import gr.uoa.di.madgik.resourcecatalogue.domain.*;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceException;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceNotFoundException;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ValidationException;
-import gr.uoa.di.madgik.resourcecatalogue.domain.*;
 import gr.uoa.di.madgik.resourcecatalogue.manager.CatalogueManager;
-import gr.uoa.di.madgik.resourcecatalogue.manager.PendingProviderManager;
+import gr.uoa.di.madgik.resourcecatalogue.manager.DraftProviderManager;
 import gr.uoa.di.madgik.resourcecatalogue.manager.ProviderManager;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
-import gr.uoa.di.madgik.registry.service.ServiceException;
-import gr.uoa.di.madgik.resourcecatalogue.service.*;
-import org.mitre.openid.connect.model.DefaultUserInfo;
-import org.mitre.openid.connect.model.OIDCAuthenticationToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -30,28 +26,22 @@ public class OIDCSecurityService implements SecurityService {
 
     private final ProviderManager providerManager;
     private final CatalogueManager catalogueManager;
-    private final PendingProviderManager pendingProviderManager;
+    private final DraftProviderManager pendingProviderManager;
     private final ServiceBundleService<ServiceBundle> serviceBundleService;
-    private final TrainingResourceService<TrainingResourceBundle> trainingResourceService;
-    private final PendingResourceService<ServiceBundle> pendingServiceManager;
-    private final InteroperabilityRecordService<InteroperabilityRecordBundle> interoperabilityRecordService;
-    private OIDCAuthenticationToken adminAccess;
+    private final TrainingResourceService trainingResourceService;
+    private final DraftResourceService<ServiceBundle> pendingServiceManager;
+    private final InteroperabilityRecordService interoperabilityRecordService;
+    private final Authentication adminAccess = new AdminAuthentication();
 
-    @Value("${project.catalogue.name}")
-    private String catalogueName;
-
-    @Value("${project.name:Resource Catalogue}")
-    private String projectName;
-
-    @Value("${mail.smtp.from:}")
-    private String projectEmail;
+    @Value("${catalogue.id}")
+    private String catalogueId;
 
     OIDCSecurityService(@Lazy ProviderManager providerManager, CatalogueManager catalogueManager,
                         @Lazy ServiceBundleService<ServiceBundle> serviceBundleService,
-                        @Lazy TrainingResourceService<TrainingResourceBundle> trainingResourceService,
-                        @Lazy PendingProviderManager pendingProviderManager,
-                        @Lazy PendingResourceService<ServiceBundle> pendingServiceManager,
-                        @Lazy InteroperabilityRecordService<InteroperabilityRecordBundle> interoperabilityRecordService) {
+                        @Lazy TrainingResourceService trainingResourceService,
+                        @Lazy DraftProviderManager pendingProviderManager,
+                        @Lazy DraftResourceService<ServiceBundle> pendingServiceManager,
+                        @Lazy InteroperabilityRecordService interoperabilityRecordService) {
         this.providerManager = providerManager;
         this.catalogueManager = catalogueManager;
         this.serviceBundleService = serviceBundleService;
@@ -59,16 +49,6 @@ public class OIDCSecurityService implements SecurityService {
         this.pendingProviderManager = pendingProviderManager;
         this.pendingServiceManager = pendingServiceManager;
         this.interoperabilityRecordService = interoperabilityRecordService;
-
-        // create admin access
-        List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        DefaultUserInfo userInfo = new DefaultUserInfo();
-        userInfo.setEmail(projectEmail);
-        userInfo.setId(1L);
-        userInfo.setGivenName(projectName);
-        userInfo.setFamilyName("");
-        adminAccess = new OIDCAuthenticationToken("", "", userInfo, roles, null, "", "");
     }
 
     public Authentication getAdminAccess() {
@@ -103,7 +83,7 @@ public class OIDCSecurityService implements SecurityService {
 
     @Override
     public boolean isProviderAdmin(Authentication auth, @NotNull String providerId) {
-        return isProviderAdmin(auth, providerId, catalogueName);
+        return isProviderAdmin(auth, providerId, catalogueId);
     }
 
     @Override
@@ -117,7 +97,7 @@ public class OIDCSecurityService implements SecurityService {
 
     @Override
     public boolean isProviderAdmin(Authentication auth, @NotNull String providerId, boolean noThrow) {
-        return isProviderAdmin(auth, providerId, catalogueName, noThrow);
+        return isProviderAdmin(auth, providerId, catalogueId, noThrow);
     }
 
     @Override
@@ -221,7 +201,7 @@ public class OIDCSecurityService implements SecurityService {
             return false;
         }
         User user = User.of(auth);
-        return userIsResourceProviderAdmin(user, resourceId, catalogueName);
+        return userIsResourceProviderAdmin(user, resourceId, catalogueId);
     }
 
     @Override
@@ -331,7 +311,7 @@ public class OIDCSecurityService implements SecurityService {
     public boolean providerCanAddResources(Authentication auth, ServiceBundle serviceBundle) {
         String providerId = serviceBundle.getService().getResourceOrganisation();
         if (serviceBundle.getService().getCatalogueId() == null || serviceBundle.getService().getCatalogueId().equals("")) {
-            serviceBundle.getService().setCatalogueId(catalogueName);
+            serviceBundle.getService().setCatalogueId(catalogueId);
         }
         ProviderBundle provider = providerManager.get(serviceBundle.getService().getCatalogueId(), providerId, auth);
         if (isProviderAdmin(auth, provider.getId(), provider.getPayload().getCatalogueId())) {
@@ -356,7 +336,7 @@ public class OIDCSecurityService implements SecurityService {
     public <T extends gr.uoa.di.madgik.resourcecatalogue.domain.Service> boolean providerCanAddResources(Authentication auth, T service) {
         List<String> providerIds = Collections.singletonList(service.getResourceOrganisation());
         if (service.getCatalogueId() == null || service.getCatalogueId().equals("")) {
-            service.setCatalogueId(catalogueName);
+            service.setCatalogueId(catalogueId);
         }
         for (String providerId : providerIds) {
             ProviderBundle provider = providerManager.get(service.getCatalogueId(), providerId, auth);
@@ -382,7 +362,7 @@ public class OIDCSecurityService implements SecurityService {
     public boolean providerCanAddResources(Authentication auth, TrainingResource trainingResource) {
         List<String> providerIds = Collections.singletonList(trainingResource.getResourceOrganisation());
         if (trainingResource.getCatalogueId() == null || trainingResource.getCatalogueId().equals("")) {
-            trainingResource.setCatalogueId(catalogueName);
+            trainingResource.setCatalogueId(catalogueId);
         }
         for (String providerId : providerIds) {
             ProviderBundle provider = providerManager.get(trainingResource.getCatalogueId(), providerId, auth);
@@ -407,7 +387,7 @@ public class OIDCSecurityService implements SecurityService {
 
     public boolean providerCanAddResources(Authentication auth, InteroperabilityRecord interoperabilityRecord) {
         if (interoperabilityRecord.getCatalogueId() == null || interoperabilityRecord.getCatalogueId().equals("")) {
-            interoperabilityRecord.setCatalogueId(catalogueName);
+            interoperabilityRecord.setCatalogueId(catalogueId);
         }
         ProviderBundle provider = providerManager.get(interoperabilityRecord.getCatalogueId(), interoperabilityRecord.getProviderId(), auth);
         if (isProviderAdmin(auth, provider.getId(), interoperabilityRecord.getCatalogueId())) {
@@ -421,7 +401,7 @@ public class OIDCSecurityService implements SecurityService {
 
     @Override
     public boolean providerIsActiveAndUserIsAdmin(Authentication auth, String resourceId) {
-        return providerIsActiveAndUserIsAdmin(auth, resourceId, catalogueName);
+        return providerIsActiveAndUserIsAdmin(auth, resourceId, catalogueId);
     }
 
     @Override
@@ -461,5 +441,54 @@ public class OIDCSecurityService implements SecurityService {
     public boolean trainingResourceIsActive(String resourceId, String catalogueId) {
         TrainingResourceBundle trainingResourceBundle = trainingResourceService.get(resourceId, catalogueId);
         return trainingResourceBundle.isActive();
+    }
+
+    static class AdminAuthentication implements Authentication {
+
+        private final String name = "Administrator";
+        private boolean authenticated = true;
+
+        private AdminAuthentication() {
+            // no-arg constructor
+        }
+
+        @Override
+        public Collection<? extends GrantedAuthority> getAuthorities() {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
+
+        @Override
+        public Object getCredentials() {
+            return null;
+        }
+
+        @Override
+        public Object getDetails() {
+            Map<String, Object> info = new HashMap<>();
+            info.put("email", "admin@resource-catalogue.gr");
+            info.put("givenName", "Admin");
+            info.put("familyName", "Administrator");
+            return new OidcUserInfo(info);
+        }
+
+        @Override
+        public Object getPrincipal() {
+            return name;
+        }
+
+        @Override
+        public boolean isAuthenticated() {
+            return authenticated;
+        }
+
+        @Override
+        public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+            this.authenticated = isAuthenticated;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
     }
 }

@@ -1,13 +1,14 @@
 package gr.uoa.di.madgik.resourcecatalogue.controllers;
 
 import com.google.common.collect.Lists;
+import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import gr.uoa.di.madgik.resourcecatalogue.domain.*;
 import gr.uoa.di.madgik.resourcecatalogue.service.*;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Profile("beyond")
 @RestController
 @RequestMapping("mails")
 @Tag(name = "mails", description = "Send emails to Users")
@@ -29,17 +31,17 @@ public class MailController {
     @Autowired
     MailService mailService;
     @Autowired
-    CatalogueService<CatalogueBundle, Authentication> catalogueService;
+    CatalogueService catalogueService;
     @Autowired
-    ProviderService<ProviderBundle, Authentication> providerService;
+    ProviderService providerService;
     @Autowired
-    PendingResourceService<ProviderBundle> pendingProviderService;
+    DraftResourceService<ProviderBundle> pendingProviderService;
     @Autowired
-    ServiceBundleService<ServiceBundle> serviceBundleService;
+    ServiceBundleService serviceBundleService;
     @Autowired
-    PendingResourceService<ServiceBundle> pendingServiceService;
+    DraftResourceService<ServiceBundle> pendingServiceService;
     @Autowired
-    TrainingResourceService<TrainingResourceBundle> trainingResourceService;
+    TrainingResourceService trainingResourceService;
     @Autowired
     SecurityService securityService;
 

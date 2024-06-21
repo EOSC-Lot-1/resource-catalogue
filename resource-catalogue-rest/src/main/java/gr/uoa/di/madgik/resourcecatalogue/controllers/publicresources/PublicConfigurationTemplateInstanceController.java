@@ -1,6 +1,8 @@
 package gr.uoa.di.madgik.resourcecatalogue.controllers.publicresources;
 
 import com.google.gson.Gson;
+import gr.uoa.di.madgik.registry.domain.FacetFilter;
+import gr.uoa.di.madgik.registry.domain.Paging;
 import gr.uoa.di.madgik.resourcecatalogue.annotations.Browse;
 import gr.uoa.di.madgik.resourcecatalogue.domain.User;
 import gr.uoa.di.madgik.resourcecatalogue.domain.configurationTemplates.ConfigurationTemplateInstanceBundle;
@@ -8,14 +10,12 @@ import gr.uoa.di.madgik.resourcecatalogue.domain.configurationTemplates.Configur
 import gr.uoa.di.madgik.resourcecatalogue.service.ConfigurationTemplateInstanceService;
 import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
 import gr.uoa.di.madgik.resourcecatalogue.utils.FacetFilterUtils;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
-import gr.uoa.di.madgik.registry.domain.Paging;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +23,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+@Profile("beyond")
 @RestController
 @RequestMapping
 @Tag(name = "public configuration template instance")
@@ -37,11 +37,11 @@ public class PublicConfigurationTemplateInstanceController {
     private static final Gson gson = new Gson();
 
     private final SecurityService securityService;
-    private final ConfigurationTemplateInstanceService<ConfigurationTemplateInstanceBundle> configurationTemplateInstanceService;
+    private final ConfigurationTemplateInstanceService configurationTemplateInstanceService;
 
 
     PublicConfigurationTemplateInstanceController(SecurityService securityService,
-                                                  ConfigurationTemplateInstanceService<ConfigurationTemplateInstanceBundle> configurationTemplateInstanceService) {
+                                                  ConfigurationTemplateInstanceService configurationTemplateInstanceService) {
         this.securityService = securityService;
         this.configurationTemplateInstanceService = configurationTemplateInstanceService;
     }

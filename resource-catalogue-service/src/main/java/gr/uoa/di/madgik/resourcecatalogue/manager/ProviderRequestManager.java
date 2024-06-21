@@ -1,20 +1,16 @@
 package gr.uoa.di.madgik.resourcecatalogue.manager;
 
-import gr.uoa.di.madgik.resourcecatalogue.domain.EmailMessage;
-import gr.uoa.di.madgik.resourcecatalogue.domain.ServiceBundle;
-import gr.uoa.di.madgik.resourcecatalogue.domain.ProviderBundle;
-import gr.uoa.di.madgik.resourcecatalogue.domain.ProviderRequest;
-import gr.uoa.di.madgik.resourcecatalogue.service.ServiceBundleService;
-import gr.uoa.di.madgik.resourcecatalogue.service.MailService;
-import gr.uoa.di.madgik.resourcecatalogue.service.ProviderRequestService;
-import gr.uoa.di.madgik.resourcecatalogue.service.ProviderService;
-import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import gr.uoa.di.madgik.registry.domain.FacetFilter;
+import gr.uoa.di.madgik.resourcecatalogue.domain.EmailMessage;
+import gr.uoa.di.madgik.resourcecatalogue.domain.ProviderBundle;
+import gr.uoa.di.madgik.resourcecatalogue.domain.ProviderRequest;
+import gr.uoa.di.madgik.resourcecatalogue.domain.ServiceBundle;
+import gr.uoa.di.madgik.resourcecatalogue.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -28,22 +24,22 @@ import java.util.*;
 
 @Component
 @Deprecated
-public class ProviderRequestManager extends ResourceManager<ProviderRequest> implements ProviderRequestService<Authentication> {
+public class ProviderRequestManager extends ResourceManager<ProviderRequest> implements ProviderRequestService {
 
-    private static final Logger logger = LogManager.getLogger(ProviderRequestManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProviderRequestManager.class);
     private final MailService mailService;
     private final ServiceBundleService<ServiceBundle> serviceBundleService;
-    private final ProviderService<ProviderBundle, Authentication> providerService;
+    private final ProviderService providerService;
     private final SecurityService securityService;
     private final Configuration cfg;
 
-    @Value("${project.name:Resource Catalogue}")
-    private String projectName;
+    @Value("${catalogue.name:Resource Catalogue}")
+    private String catalogueName;
 
     @Autowired
     public ProviderRequestManager(MailService mailService, Configuration cfg,
                                   ServiceBundleService<ServiceBundle> serviceBundleService,
-                                  ProviderService<ProviderBundle, Authentication> providerService,
+                                  ProviderService providerService,
                                   SecurityService securityService) {
         super(ProviderRequest.class);
         this.mailService = mailService;
@@ -117,12 +113,12 @@ public class ProviderRequestManager extends ResourceManager<ProviderRequest> imp
             String key = fullname.getKey();
             providerContactNames.remove(key);
 
-            String providerSubject = String.format("[%s] You have a new message from user [%s]-[%s], considering the Provider [%s]", projectName, message.getSenderName(), message.getSenderEmail(), entry.getKey());
-            String userSubject = String.format("[%s] Your message considering the [%s] Services has been sent successfully", projectName, projectName);
+            String providerSubject = String.format("[%s] You have a new message from user [%s]-[%s], considering the Provider [%s]", catalogueName, message.getSenderName(), message.getSenderEmail(), entry.getKey());
+            String userSubject = String.format("[%s] Your message considering the [%s] Services has been sent successfully", catalogueName, catalogueName);
 
             root.put("providerContactLastName", fullname.getKey());
             root.put("providerContactFirstName", fullname.getValue());
-            root.put("project", projectName);
+            root.put("project", catalogueName);
             root.put("provider", entry.getKey());
             root.put("message", message);
             root.put("services", serviceNames);

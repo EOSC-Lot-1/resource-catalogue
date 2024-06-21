@@ -1,23 +1,18 @@
 package gr.uoa.di.madgik.resourcecatalogue.manager;
 
-import gr.uoa.di.madgik.resourcecatalogue.domain.*;
-import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceNotFoundException;
-import gr.uoa.di.madgik.resourcecatalogue.exception.ValidationException;
-import gr.uoa.di.madgik.resourcecatalogue.service.RegistrationMailService;
-import gr.uoa.di.madgik.resourcecatalogue.utils.ObjectUtils;
-import gr.uoa.di.madgik.resourcecatalogue.utils.ProviderResourcesCommonMethods;
-import gr.uoa.di.madgik.resourcecatalogue.utils.ResourceValidationUtils;
-import gr.uoa.di.madgik.resourcecatalogue.service.DatasourceService;
-import gr.uoa.di.madgik.resourcecatalogue.service.ServiceBundleService;
-import gr.uoa.di.madgik.resourcecatalogue.service.VocabularyService;
-import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
 import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import gr.uoa.di.madgik.registry.domain.Paging;
 import gr.uoa.di.madgik.registry.domain.Resource;
 import gr.uoa.di.madgik.registry.service.SearchService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import gr.uoa.di.madgik.resourcecatalogue.domain.*;
+import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceNotFoundException;
+import gr.uoa.di.madgik.resourcecatalogue.exception.ValidationException;
+import gr.uoa.di.madgik.resourcecatalogue.service.*;
+import gr.uoa.di.madgik.resourcecatalogue.utils.ObjectUtils;
+import gr.uoa.di.madgik.resourcecatalogue.utils.ProviderResourcesCommonMethods;
+import gr.uoa.di.madgik.resourcecatalogue.utils.ResourceValidationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
@@ -28,23 +23,25 @@ import java.util.List;
 @org.springframework.stereotype.Service
 public class DatasourceManager extends ResourceManager<DatasourceBundle> implements DatasourceService {
 
-    private static final Logger logger = LogManager.getLogger(DatasourceManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(DatasourceManager.class);
     private final ServiceBundleService<ServiceBundle> serviceBundleService;
     private final SecurityService securityService;
     private final RegistrationMailService registrationMailService;
     private final VocabularyService vocabularyService;
     private final ProviderResourcesCommonMethods commonMethods;
     private final OpenAIREDatasourceManager openAIREDatasourceManager;
-    @Value("${project.catalogue.name}")
-    private String catalogueName;
+    private final IdCreator idCreator;
 
-    @Autowired
+    @Value("${catalogue.id}")
+    private String catalogueId;
+
     public DatasourceManager(ServiceBundleService<ServiceBundle> serviceBundleService,
                              @Lazy SecurityService securityService,
                              @Lazy RegistrationMailService registrationMailService,
                              @Lazy VocabularyService vocabularyService,
                              ProviderResourcesCommonMethods commonMethods,
-                             OpenAIREDatasourceManager openAIREDatasourceManager) {
+                             OpenAIREDatasourceManager openAIREDatasourceManager,
+                             IdCreator idCreator) {
         super(DatasourceBundle.class);
         this.serviceBundleService = serviceBundleService;
         this.securityService = securityService;
@@ -52,6 +49,7 @@ public class DatasourceManager extends ResourceManager<DatasourceBundle> impleme
         this.vocabularyService = vocabularyService;
         this.commonMethods = commonMethods;
         this.openAIREDatasourceManager = openAIREDatasourceManager;
+        this.idCreator = idCreator;
     }
 
     @Override
@@ -76,8 +74,8 @@ public class DatasourceManager extends ResourceManager<DatasourceBundle> impleme
         if (datasourceBundle.getId() != null && !datasourceBundle.getId().equals("")) {
             checkOpenAIREIDExistence(datasourceBundle);
         }
-        datasourceBundle.setId(datasourceBundle.getDatasource().getServiceId());
-        logger.trace("User '{}' is attempting to add a new Datasource: {}", auth, datasourceBundle);
+        datasourceBundle.setId(idCreator.generate(getResourceType()));
+        logger.trace("Attempting to add a new Datasource: {}", datasourceBundle);
 
         this.validate(datasourceBundle);
 
@@ -93,7 +91,7 @@ public class DatasourceManager extends ResourceManager<DatasourceBundle> impleme
     }
 
     private void differentiateInternalFromExternalCatalogueAddition(DatasourceBundle datasourceBundle) {
-        if (datasourceBundle.getDatasource().getCatalogueId().equals(catalogueName)) {
+        if (datasourceBundle.getDatasource().getCatalogueId().equals(catalogueId)) {
             datasourceBundle.setActive(false);
             datasourceBundle.setStatus(vocabularyService.get("pending datasource").getId());
             datasourceBundle.setLatestOnboardingInfo(datasourceBundle.getLoggingInfo().get(0));
@@ -110,7 +108,7 @@ public class DatasourceManager extends ResourceManager<DatasourceBundle> impleme
 
     @Override
     public DatasourceBundle update(DatasourceBundle datasourceBundle, String comment, Authentication auth) {
-        logger.trace("User '{}' is attempting to update the Datasource with id '{}'", auth, datasourceBundle.getId());
+        logger.trace("Attempting to update the Datasource with id '{}'", datasourceBundle.getId());
 
         DatasourceBundle ret = ObjectUtils.clone(datasourceBundle);
         Resource existingResource = whereID(ret.getId(), true);
@@ -162,7 +160,7 @@ public class DatasourceManager extends ResourceManager<DatasourceBundle> impleme
     }
 
     public void updateBundle(DatasourceBundle datasourceBundle, Authentication auth) {
-        logger.trace("User '{}' is attempting to update the Datasource: {}", auth, datasourceBundle);
+        logger.trace("Attempting to update the Datasource: {}", datasourceBundle);
 
         Resource existing = getResource(datasourceBundle.getId());
         if (existing == null) {
@@ -193,7 +191,7 @@ public class DatasourceManager extends ResourceManager<DatasourceBundle> impleme
         return super.validate(datasourceBundle);
     }
 
-    public DatasourceBundle verifyDatasource(String id, String status, Boolean active, Authentication auth) {
+    public DatasourceBundle verify(String id, String status, Boolean active, Authentication auth) {
         Vocabulary statusVocabulary = vocabularyService.getOrElseThrow(status);
         if (!statusVocabulary.getType().equals("Datasource state")) {
             throw new ValidationException(String.format("Vocabulary %s does not consist an Datasource state!", status));
@@ -286,12 +284,6 @@ public class DatasourceManager extends ResourceManager<DatasourceBundle> impleme
             throw new ResourceNotFoundException(String.format("There is no Datasource with ID [%s]", id));
         }
         return found;
-    }
-
-    public void addBulk(List<DatasourceBundle> datasourceList, Authentication auth) {
-        for (DatasourceBundle datasourceBundle : datasourceList) {
-            super.add(datasourceBundle, auth);
-        }
     }
 
 //    public DatasourceBundle createPublicResource(DatasourceBundle datasourceBundle, Authentication auth){

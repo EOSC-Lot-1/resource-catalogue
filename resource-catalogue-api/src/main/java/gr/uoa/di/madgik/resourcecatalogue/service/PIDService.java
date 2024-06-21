@@ -7,18 +7,16 @@ public interface PIDService {
     /**
      * Get a Resource via its PID
      *
-     * @param resourceType Resource Type
-     * @param pid          PID
+     * @param prefix PID prefix
+     * @param suffix PID suffix
      * @return Bundle<?>
      */
-    Bundle<?> get(String resourceType, String pid);
+    Bundle<?> get(String prefix, String suffix);
 
     /**
-     * Update the PID of a specific Public resource
+     * Registers a PID on a specific resource
      *
-     * @param pid              Resource's PID
-     * @param resourceId       Resource's ID
-     * @param resourceTypePath Resource's type needed to create MP URL
+     * @param pid PID
      */
-    void updatePID(String pid, String resourceId, String resourceTypePath);
+    void register(String pid);
 }

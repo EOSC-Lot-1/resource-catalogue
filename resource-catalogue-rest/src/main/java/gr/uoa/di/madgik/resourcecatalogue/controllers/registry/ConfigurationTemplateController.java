@@ -1,6 +1,5 @@
 package gr.uoa.di.madgik.resourcecatalogue.controllers.registry;
 
-import gr.uoa.di.madgik.resourcecatalogue.domain.User;
 import gr.uoa.di.madgik.resourcecatalogue.domain.configurationTemplates.ConfigurationTemplate;
 import gr.uoa.di.madgik.resourcecatalogue.domain.configurationTemplates.ConfigurationTemplateBundle;
 import gr.uoa.di.madgik.resourcecatalogue.service.ConfigurationTemplateService;
@@ -25,9 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ConfigurationTemplateController {
 
     private static final Logger logger = LogManager.getLogger(ConfigurationTemplateController.class);
-    private final ConfigurationTemplateService<ConfigurationTemplateBundle> configurationTemplateService;
+    private final ConfigurationTemplateService configurationTemplateService;
 
-    public ConfigurationTemplateController(ConfigurationTemplateService<ConfigurationTemplateBundle> configurationTemplateService) {
+    public ConfigurationTemplateController(ConfigurationTemplateService configurationTemplateService) {
         this.configurationTemplateService = configurationTemplateService;
     }
 
@@ -37,7 +36,7 @@ public class ConfigurationTemplateController {
     public ResponseEntity<ConfigurationTemplate> addConfigurationTemplate(@RequestBody ConfigurationTemplate configurationTemplate,
                                                                           @Parameter(hidden = true) Authentication auth) {
         ConfigurationTemplateBundle configurationTemplateBundle = configurationTemplateService.addConfigurationTemplate(new ConfigurationTemplateBundle(configurationTemplate), auth);
-        logger.info("User '{}' added the Configuration Template Instance with id '{}'", User.of(auth).getEmail(), configurationTemplate.getId());
+        logger.info("Added the Configuration Template Instance with id '{}'", configurationTemplate.getId());
         return new ResponseEntity<>(configurationTemplateBundle.getConfigurationTemplate(), HttpStatus.CREATED);
     }
 }

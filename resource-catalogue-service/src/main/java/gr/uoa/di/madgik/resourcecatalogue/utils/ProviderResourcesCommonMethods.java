@@ -4,42 +4,42 @@ import gr.uoa.di.madgik.resourcecatalogue.domain.*;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceNotFoundException;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ValidationException;
 import gr.uoa.di.madgik.resourcecatalogue.service.*;
-import gr.uoa.di.madgik.registry.domain.Browsing;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
-
-import java.net.*;
-import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.json.*;
 
 @Component
 public class ProviderResourcesCommonMethods {
 
-    private static final Logger logger = LogManager.getLogger(ProviderResourcesCommonMethods.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProviderResourcesCommonMethods.class);
 
     @Value("${elastic.index.max_result_window:10000}")
     protected int maxQuantity;
 
-    private final CatalogueService<CatalogueBundle, Authentication> catalogueService;
-    private final ProviderService<ProviderBundle, Authentication> providerService;
+    private final CatalogueService catalogueService;
+    private final ProviderService providerService;
     private final DatasourceService datasourceService;
-    private final HelpdeskService<HelpdeskBundle, Authentication> helpdeskService;
-    private final MonitoringService<MonitoringBundle, Authentication> monitoringService;
-    private final ResourceInteroperabilityRecordService<ResourceInteroperabilityRecordBundle> resourceInteroperabilityRecordService;
+    private final HelpdeskService helpdeskService;
+    private final MonitoringService monitoringService;
+    private final ResourceInteroperabilityRecordService resourceInteroperabilityRecordService;
     private final GenericResourceService genericResourceService;
     private final VocabularyService vocabularyService;
     private final SecurityService securityService;
@@ -52,17 +52,27 @@ public class ProviderResourcesCommonMethods {
     private String pidAuth;
     @Value("${pid.prefix}")
     private String pidPrefix;
+    @Value("${prefix.services}")
+    private String servicesPrefix;
+    @Value("${prefix.tools}")
+    private String toolsPrefix;
+    @Value("${prefix.trainings}")
+    private String trainingsPrefix;
+    @Value("${prefix.providers}")
+    private String providersPrefix;
+    @Value("${prefix.guidelines}")
+    private String guidelinesPrefix;
     @Value("${pid.api}")
     private String pidApi;
     @Value("${marketplace.url}")
     private String marketplaceUrl;
 
-    public ProviderResourcesCommonMethods(@Lazy CatalogueService<CatalogueBundle, Authentication> catalogueService,
-                                          @Lazy ProviderService<ProviderBundle, Authentication> providerService,
+    public ProviderResourcesCommonMethods(@Lazy CatalogueService catalogueService,
+                                          @Lazy ProviderService providerService,
                                           @Lazy DatasourceService datasourceService,
-                                          @Lazy HelpdeskService<HelpdeskBundle, Authentication> helpdeskService,
-                                          @Lazy MonitoringService<MonitoringBundle, Authentication> monitoringService,
-                                          @Lazy ResourceInteroperabilityRecordService<ResourceInteroperabilityRecordBundle>
+                                          @Lazy HelpdeskService helpdeskService,
+                                          @Lazy MonitoringService monitoringService,
+                                          @Lazy ResourceInteroperabilityRecordService
                                                   resourceInteroperabilityRecordService,
                                           @Lazy GenericResourceService genericResourceService,
                                           @Lazy VocabularyService vocabularyService,
@@ -79,7 +89,9 @@ public class ProviderResourcesCommonMethods {
     }
 
     public void checkCatalogueIdConsistency(Object o, String catalogueId) {
-        catalogueService.existsOrElseThrow(catalogueId);
+        if (!catalogueService.exists(catalogueId)) {
+            throw new ResourceNotFoundException(String.format("Catalogue with id '%s' does not exists.", catalogueId));
+        }
         if (o != null) {
             if (o instanceof ProviderBundle) {
                 if (((ProviderBundle) o).getPayload().getCatalogueId() == null || ((ProviderBundle) o).getPayload().getCatalogueId().equals("")) {
@@ -234,7 +246,7 @@ public class ProviderResourcesCommonMethods {
         }
     }
 
-    public void suspendResource(Bundle<?> bundle, String catalogueId, boolean suspend, Authentication auth) {
+    public void suspendResource(Bundle<?> bundle, boolean suspend, Authentication auth) {
         if (bundle != null) {
             bundle.setSuspended(suspend);
 
@@ -253,8 +265,8 @@ public class ProviderResourcesCommonMethods {
             bundle.setLatestUpdateInfo(loggingInfo);
 
             String[] parts = bundle.getPayload().getClass().getName().split("\\.");
-            logger.info(String.format("User [%s] set 'suspended' of %s [%s]-[%s] to [%s]",
-                    User.of(auth).getEmail(), parts[3], catalogueId, bundle.getId(), suspend));
+            logger.info(String.format("User [%s] set 'suspended' of %s [%s] to [%s]",
+                    User.of(auth).getEmail(), parts[3], bundle.getId(), suspend));
         }
     }
 
@@ -269,7 +281,7 @@ public class ProviderResourcesCommonMethods {
                 throw new ValidationException("You cannot unsuspend a Provider when its Catalogue is suspended");
             }
         } else {
-            ProviderBundle providerBundle = providerService.get(catalogueId, providerId, auth);
+            ProviderBundle providerBundle = providerService.get(providerId, auth);
             if ((catalogueBundle.isSuspended() || providerBundle.isSuspended()) && !suspend) {
                 throw new ValidationException("You cannot unsuspend a Resource when its Provider and/or Catalogue are suspended");
             }
@@ -331,61 +343,53 @@ public class ProviderResourcesCommonMethods {
         return loggingInfoList;
     }
 
-    public void createPIDAndCorrespondingAlternativeIdentifier(Bundle<?> bundle, String resourceTypePath) {
+    public void createPIDAndCorrespondingAlternativeIdentifier(Bundle<?> bundle, String resourceType) {
         AlternativeIdentifier alternativeIdentifier;
         List<AlternativeIdentifier> alternativeIdentifiers = new ArrayList<>();
         List<AlternativeIdentifier> existingAlternativeIdentifiers;
-        switch (resourceTypePath) {
-            case "providers/":
+        switch (resourceType) {
+            case "provider":
                 ProviderBundle providerBundle = (ProviderBundle) bundle;
                 existingAlternativeIdentifiers = providerBundle.getProvider().getAlternativeIdentifiers();
-                alternativeIdentifier = createAlternativeIdentifierForPID(providerBundle, resourceTypePath);
-                if (alternativeIdentifier != null) {
-                    if (existingAlternativeIdentifiers != null && !existingAlternativeIdentifiers.isEmpty()) {
-                        existingAlternativeIdentifiers.add(alternativeIdentifier);
-                    } else {
-                        alternativeIdentifiers.add(alternativeIdentifier);
-                        providerBundle.getProvider().setAlternativeIdentifiers(alternativeIdentifiers);
-                    }
+                alternativeIdentifier = createAlternativeIdentifierForPID(providerBundle);
+                if (existingAlternativeIdentifiers != null && !existingAlternativeIdentifiers.isEmpty()) {
+                    existingAlternativeIdentifiers.add(alternativeIdentifier);
+                } else {
+                    alternativeIdentifiers.add(alternativeIdentifier);
+                    providerBundle.getProvider().setAlternativeIdentifiers(alternativeIdentifiers);
                 }
                 break;
-            case "services/":
+            case "service":
                 ServiceBundle serviceBundle = (ServiceBundle) bundle;
                 existingAlternativeIdentifiers = serviceBundle.getService().getAlternativeIdentifiers();
-                alternativeIdentifier = createAlternativeIdentifierForPID(serviceBundle, resourceTypePath);
-                if (alternativeIdentifier != null) {
-                    if (existingAlternativeIdentifiers != null && !existingAlternativeIdentifiers.isEmpty()) {
-                        existingAlternativeIdentifiers.add(alternativeIdentifier);
-                    } else {
-                        alternativeIdentifiers.add(alternativeIdentifier);
-                        serviceBundle.getService().setAlternativeIdentifiers(alternativeIdentifiers);
-                    }
+                alternativeIdentifier = createAlternativeIdentifierForPID(serviceBundle);
+                if (existingAlternativeIdentifiers != null && !existingAlternativeIdentifiers.isEmpty()) {
+                    existingAlternativeIdentifiers.add(alternativeIdentifier);
+                } else {
+                    alternativeIdentifiers.add(alternativeIdentifier);
+                    serviceBundle.getService().setAlternativeIdentifiers(alternativeIdentifiers);
                 }
                 break;
-            case "trainings/":
+            case "training_resource":
                 TrainingResourceBundle trainingResourceBundle = (TrainingResourceBundle) bundle;
                 existingAlternativeIdentifiers = trainingResourceBundle.getTrainingResource().getAlternativeIdentifiers();
-                alternativeIdentifier = createAlternativeIdentifierForPID(trainingResourceBundle, resourceTypePath);
-                if (alternativeIdentifier != null) {
-                    if (existingAlternativeIdentifiers != null && !existingAlternativeIdentifiers.isEmpty()) {
-                        existingAlternativeIdentifiers.add(alternativeIdentifier);
-                    } else {
-                        alternativeIdentifiers.add(alternativeIdentifier);
-                        trainingResourceBundle.getTrainingResource().setAlternativeIdentifiers(alternativeIdentifiers);
-                    }
+                alternativeIdentifier = createAlternativeIdentifierForPID(trainingResourceBundle);
+                if (existingAlternativeIdentifiers != null && !existingAlternativeIdentifiers.isEmpty()) {
+                    existingAlternativeIdentifiers.add(alternativeIdentifier);
+                } else {
+                    alternativeIdentifiers.add(alternativeIdentifier);
+                    trainingResourceBundle.getTrainingResource().setAlternativeIdentifiers(alternativeIdentifiers);
                 }
                 break;
-            case "guidelines/":
+            case "interoperability_record":
                 InteroperabilityRecordBundle interoperabilityRecordBundle = (InteroperabilityRecordBundle) bundle;
                 existingAlternativeIdentifiers = interoperabilityRecordBundle.getInteroperabilityRecord().getAlternativeIdentifiers();
-                alternativeIdentifier = createAlternativeIdentifierForPID(interoperabilityRecordBundle, resourceTypePath);
-                if (alternativeIdentifier != null) {
-                    if (existingAlternativeIdentifiers != null && !existingAlternativeIdentifiers.isEmpty()) {
-                        existingAlternativeIdentifiers.add(alternativeIdentifier);
-                    } else {
-                        alternativeIdentifiers.add(alternativeIdentifier);
-                        interoperabilityRecordBundle.getInteroperabilityRecord().setAlternativeIdentifiers(alternativeIdentifiers);
-                    }
+                alternativeIdentifier = createAlternativeIdentifierForPID(interoperabilityRecordBundle);
+                if (existingAlternativeIdentifiers != null && !existingAlternativeIdentifiers.isEmpty()) {
+                    existingAlternativeIdentifiers.add(alternativeIdentifier);
+                } else {
+                    alternativeIdentifiers.add(alternativeIdentifier);
+                    interoperabilityRecordBundle.getInteroperabilityRecord().setAlternativeIdentifiers(alternativeIdentifiers);
                 }
                 break;
             default:
@@ -393,80 +397,89 @@ public class ProviderResourcesCommonMethods {
         }
     }
 
-    private AlternativeIdentifier createAlternativeIdentifierForPID(Bundle<?> bundle, String resourceTypePath) {
-        if (bundle.getMetadata().isPublished()) {
-            // create PID
-            String pid = ShortHashGenerator(bundle.getId());
-            // create AlternativeIdentifier
-            AlternativeIdentifier alternativeIdentifier = new AlternativeIdentifier();
-            alternativeIdentifier.setType("EOSC PID");
-            alternativeIdentifier.setValue(pid);
-            // post PID
-            postPID(bundle.getId(), pid, resourceTypePath);
-            return alternativeIdentifier;
+    private AlternativeIdentifier createAlternativeIdentifierForPID(Bundle<?> bundle) {
+        AlternativeIdentifier alternativeIdentifier = new AlternativeIdentifier();
+        alternativeIdentifier.setType("EOSC PID");
+        alternativeIdentifier.setValue(bundle.getId());
+        return alternativeIdentifier;
+    }
+
+    public void postPID(String pid) {
+        String pidPrefix = pid.split("/")[0];
+        String urlPath = determineUrlPathFromPidPrefix(pidPrefix);
+        if (!urlPath.equals("no_path")) {
+            String url = pidApi + pid;
+            String payload = createPID(pid, pidPrefix, urlPath);
+            HttpURLConnection con;
+            try {
+                con = (HttpURLConnection) new URL(url).openConnection();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                con.setRequestMethod("PUT");
+            } catch (ProtocolException e) {
+                throw new RuntimeException(e);
+            }
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Authorization", pidAuth);
+            con.setDoOutput(true);
+            try (OutputStream os = con.getOutputStream()) {
+                byte[] input = payload.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
+                StringBuilder response = new StringBuilder();
+                String responseLine;
+                while ((responseLine = br.readLine()) != null) {
+                    response.append(responseLine.trim());
+                }
+                logger.info("Resource with ID [{}] has been posted with PID [{}]", pid, pid);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } else {
-            return null;
+            logger.info("Could not register/update PID for resource {}, because url path is wrong", pid);
         }
     }
 
-    private String ShortHashGenerator(String resourceId) {
-        try {
-            // Create MD5 hash instance
-            MessageDigest md = MessageDigest.getInstance("MD5");
-
-            // Generate hash value for the input string
-            byte[] hashBytes = md.digest(resourceId.getBytes());
-
-            // Convert byte array to a hexadecimal string
-            StringBuilder sb = new StringBuilder();
-            for (byte hashByte : hashBytes) {
-                sb.append(Integer.toString((hashByte & 0xff) + 0x100, 16).substring(1));
-            }
-
-            // Return the first 8 characters of the hash string
-            return sb.substring(0, 8);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+    public String determineResourceTypeFromPidPrefix(String prefix) {
+        if (prefix.equals(servicesPrefix)) {
+            return "service";
+        } else if (prefix.equals(toolsPrefix)) {
+            return "tool";
+        } else if (prefix.equals(trainingsPrefix)) {
+            return "training_resource";
+        } else if (prefix.equals(providersPrefix)) {
+            return "provider";
+        } else if (prefix.equals(guidelinesPrefix)) {
+            return "interoperability_record";
+        } else {
+            return "no_resource_type";
         }
     }
 
-    private void postPID(String resourceId, String pid, String resourceTypePath) {
-        String url = pidApi + pidPrefix + "/" + pid;
-        String payload = createPID(resourceId, resourceTypePath);
-        HttpURLConnection con;
-        try {
-            con = (HttpURLConnection) new URL(url).openConnection();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            con.setRequestMethod("PUT");
-        } catch (ProtocolException e) {
-            throw new RuntimeException(e);
-        }
-        con.setRequestProperty("Content-Type", "application/json");
-        con.setRequestProperty("Authorization", pidAuth);
-        con.setDoOutput(true);
-        try (OutputStream os = con.getOutputStream()) {
-            byte[] input = payload.getBytes(StandardCharsets.UTF_8);
-            os.write(input, 0, input.length);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
-            StringBuilder response = new StringBuilder();
-            String responseLine;
-            while ((responseLine = br.readLine()) != null) {
-                response.append(responseLine.trim());
-            }
-            logger.info("Resource with ID [{}] has been posted with PID [{}]", resourceId, pid);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    //TODO: Update with new URL paths
+    public String determineUrlPathFromPidPrefix(String prefix) {
+        if (prefix.equals(servicesPrefix)) {
+            return "services/";
+        } else if (prefix.equals(toolsPrefix)) {
+            return "tools/";
+        } else if (prefix.equals(trainingsPrefix)) {
+            return "trainings/";
+        } else if (prefix.equals(providersPrefix)) {
+            return "providers/";
+        } else if (prefix.equals(guidelinesPrefix)) {
+            return "guidelines/";
+        } else {
+            return "no_path";
         }
     }
 
-    private String createPID(String resourceId, String resourceTypePath) {
+    private String createPID(String resourceId, String pidPrefix, String resourceTypePath) {
         JSONObject data = new JSONObject();
         JSONArray values = new JSONArray();
         JSONObject hs_admin = new JSONObject();
@@ -487,6 +500,7 @@ public class ProviderResourcesCommonMethods {
         marketplaceUrl.put("index", 1);
         marketplaceUrl.put("type", "url");
         String url = this.marketplaceUrl;
+        //TODO: Refactor this according to new endpoints
         if (resourceTypePath.equals("trainings/") || resourceTypePath.equals("guidelines/")) {
             url = url.replace("marketplace", "search.marketplace");
         }
@@ -498,23 +512,6 @@ public class ProviderResourcesCommonMethods {
         values.put(id);
         data.put("values", values);
         return data.toString();
-    }
-
-    public Bundle<?> getPublicResourceViaPID(String resourceType, String pid) {
-        List<String> resourceTypes = Arrays.asList("catalogue", "provider", "service", "datasource",
-                "training_resource", "interoperability_record", "helpdesk", "monitoring");
-        if (!resourceTypes.contains(resourceType)) {
-            throw new ValidationException("The resource type you provided does not exist -> " + resourceType);
-        }
-        FacetFilter ff = new FacetFilter();
-        ff.setQuantity(10000);
-        ff.setResourceType(resourceType);
-        ff.addFilter("alternative_identifiers_values", pid);
-        Browsing<Bundle<?>> browsing = genericResourceService.getResults(ff);
-        if (browsing.getResults().size() > 0) {
-            return browsing.getResults().get(0);
-        }
-        return null;
     }
 
     public void blockResourceDeletion(String status, boolean isPublished) {
@@ -551,7 +548,7 @@ public class ProviderResourcesCommonMethods {
                 logger.info("Deleting Datasource of Service with id: {}", serviceId);
                 datasourceService.delete(datasourceBundle);
             } catch (gr.uoa.di.madgik.registry.exception.ResourceNotFoundException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -564,7 +561,7 @@ public class ProviderResourcesCommonMethods {
                 logger.info("Deleting Helpdesk of {} with id: {}", resourceType, resourceId);
                 helpdeskService.delete(helpdeskBundle);
             } catch (gr.uoa.di.madgik.registry.exception.ResourceNotFoundException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             }
         }
         MonitoringBundle monitoringBundle = monitoringService.get(resourceId, catalogueId);
@@ -573,17 +570,17 @@ public class ProviderResourcesCommonMethods {
                 logger.info("Deleting Monitoring of {} with id: {}", resourceType, resourceId);
                 monitoringService.delete(monitoringBundle);
             } catch (gr.uoa.di.madgik.registry.exception.ResourceNotFoundException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             }
         }
         // resource interoperability records
-        ResourceInteroperabilityRecordBundle resourceInteroperabilityRecordBundle = resourceInteroperabilityRecordService.getWithResourceId(resourceId, catalogueId);
+        ResourceInteroperabilityRecordBundle resourceInteroperabilityRecordBundle = resourceInteroperabilityRecordService.getWithResourceId(resourceId);
         if (resourceInteroperabilityRecordBundle != null) {
             try {
                 logger.info("Deleting ResourceInteroperabilityRecord of {} with id: {}", resourceType, resourceId);
                 resourceInteroperabilityRecordService.delete(resourceInteroperabilityRecordBundle);
             } catch (gr.uoa.di.madgik.registry.exception.ResourceNotFoundException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -611,15 +608,28 @@ public class ProviderResourcesCommonMethods {
         }
     }
 
-    public void prohibitEOSCRelatedPIDs(List<AlternativeIdentifier> alternativeIdentifiers) {
-        // prohibit EOSC related Alternative Identifier Types
-        if (alternativeIdentifiers != null && !alternativeIdentifiers.isEmpty()) {
-            for (AlternativeIdentifier alternativeIdentifier : alternativeIdentifiers) {
-                if (alternativeIdentifier.getType().toLowerCase().contains("eosc")) {
-                    throw new ValidationException("You cannot create an EOSC related PID. Found in field 'alternativeIdentifiers'");
+    public List<AlternativeIdentifier> ensureResourceCataloguePidUniqueness(String id, List<AlternativeIdentifier> alternativeIdentifiers) {
+        // Removes duplicates and ensures that EOSC PID has the appropriate value
+        List<AlternativeIdentifier> uniqueIdentifiers = removeDuplicates(alternativeIdentifiers);
+        if (!uniqueIdentifiers.isEmpty()) {
+            for (AlternativeIdentifier uniqueIdentifier : uniqueIdentifiers) {
+                if (uniqueIdentifier.getType().equalsIgnoreCase("EOSC PID")) {
+                    uniqueIdentifier.setValue(id);
                 }
             }
         }
+        return uniqueIdentifiers;
+    }
+
+    private static List<AlternativeIdentifier> removeDuplicates(List<AlternativeIdentifier> alternativeIdentifiers) {
+        Set<String> uniqueTypes = new HashSet<>();
+        List<AlternativeIdentifier> uniqueIdentifiers = new ArrayList<>();
+        for (AlternativeIdentifier identifier : alternativeIdentifiers) {
+            if (uniqueTypes.add(identifier.getType().toLowerCase())) {
+                uniqueIdentifiers.add(identifier);
+            }
+        }
+        return uniqueIdentifiers;
     }
 
     public String determineAuditState(List<LoggingInfo> loggingInfoList) {
@@ -661,5 +671,21 @@ public class ProviderResourcesCommonMethods {
         }
 
         return auditState;
+    }
+
+    public void addAuthenticatedUser(Object object, Authentication auth) {
+        if (object instanceof Catalogue) {
+            Catalogue catalogue = (Catalogue) object;
+            User authUser = User.of(auth);
+            Set<User> users = catalogue.getUsers() == null ? new HashSet<>() : new HashSet<>(catalogue.getUsers());
+            users.add(authUser);
+            catalogue.setUsers(new ArrayList<>(users));
+        } else if (object instanceof Provider) {
+            Provider provider = (Provider) object;
+            User authUser = User.of(auth);
+            Set<User> users = provider.getUsers() == null ? new HashSet<>() : new HashSet<>(provider.getUsers());
+            users.add(authUser);
+            provider.setUsers(new ArrayList<>(users));
+        }
     }
 }

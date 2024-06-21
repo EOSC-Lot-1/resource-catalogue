@@ -8,11 +8,13 @@ import gr.uoa.di.madgik.registry.service.ParserService;
 import gr.uoa.di.madgik.registry.service.SearchService;
 import gr.uoa.di.madgik.registry.service.ServiceException;
 import gr.uoa.di.madgik.resourcecatalogue.domain.Identifiable;
+import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceAlreadyExistsException;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceException;
+import gr.uoa.di.madgik.resourcecatalogue.service.IdCreator;
 import gr.uoa.di.madgik.resourcecatalogue.service.ResourceService;
 import gr.uoa.di.madgik.resourcecatalogue.validators.FieldValidator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -25,16 +27,25 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class ResourceManager<T extends Identifiable> extends AbstractGenericService<T> implements ResourceService<T, Authentication> {
+public abstract class ResourceManager<T extends Identifiable> extends AbstractGenericService<T> implements ResourceService<T> {
 
-    private static final Logger logger = LogManager.getLogger(ResourceManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResourceManager.class);
 
     @Lazy
     @Autowired
     private FieldValidator fieldValidator;
 
+    @Lazy
+    @Autowired
+    private IdCreator idCreator;
+
     public ResourceManager(Class<T> typeParameterClass) {
         super(typeParameterClass);
+    }
+
+    @Override
+    public String createId(T t) {
+        return idCreator.generate(getResourceType());
     }
 
     @Override
@@ -61,6 +72,12 @@ public abstract class ResourceManager<T extends Identifiable> extends AbstractGe
     }
 
     @Override
+    public final Browsing<T> getAll(FacetFilter filter) {
+        filter.setBrowseBy(getBrowseBy());
+        return getResults(filter);
+    }
+
+    @Override
     public Browsing<T> getAll(FacetFilter ff, Authentication auth) {
         ff.setBrowseBy(getBrowseBy());
         Browsing<T> browsing;
@@ -80,7 +97,7 @@ public abstract class ResourceManager<T extends Identifiable> extends AbstractGe
     @Override
     public T add(T t, Authentication auth) {
         if (exists(t)) {
-            throw new ResourceException(String.format("%s with id = '%s' already exists!", resourceType.getName(), t.getId()), HttpStatus.CONFLICT);
+            throw new ResourceAlreadyExistsException(String.format("%s with id = '%s' already exists!", resourceType.getName(), t.getId()));
         }
         String serialized = serialize(t);
         Resource created = new Resource();
@@ -98,6 +115,29 @@ public abstract class ResourceManager<T extends Identifiable> extends AbstractGe
         existing.setResourceType(resourceType);
         resourceService.updateResource(existing);
         logger.debug("Updating Resource {}", t);
+        return t;
+    }
+
+    @Override
+    public final T save(T t) {
+        Resource resource = new Resource();
+        if (exists(t)) { // update
+            resource = whereID(t.getId(), true);
+            resource.setPayload(serialize(t));
+            resource.setResourceType(resourceType);
+            resourceService.updateResource(resource);
+            logger.debug("Updated Resource: {}", t);
+        } else { // add
+            // create id
+            String id = createId(t);
+            t.setId(id);
+            // save
+            String serialized = serialize(t);
+            resource.setPayload(serialized);
+            resource.setResourceType(resourceType);
+            resourceService.addResource(resource);
+            logger.debug("Added Resource: {}", t);
+        }
         return t;
     }
 
@@ -150,7 +190,12 @@ public abstract class ResourceManager<T extends Identifiable> extends AbstractGe
 
     @Override
     public boolean exists(T t) {
-        return whereID(t.getId(), false) != null;
+        return exists(t.getId());
+    }
+
+    @Override
+    public boolean exists(String id) {
+        return id != null && whereID(id, false) != null;
     }
 
     protected String serialize(T t) {
@@ -177,7 +222,7 @@ public abstract class ResourceManager<T extends Identifiable> extends AbstractGe
     }
 
     protected Resource whereID(String id, boolean throwOnNull) {
-        return where(throwOnNull, new SearchService.KeyValue("resource_internal_id", id));
+        return id == null ? null : where(throwOnNull, new SearchService.KeyValue("resource_internal_id", id));
     }
 
     protected Resource where(boolean throwOnNull, SearchService.KeyValue... keyValues) {

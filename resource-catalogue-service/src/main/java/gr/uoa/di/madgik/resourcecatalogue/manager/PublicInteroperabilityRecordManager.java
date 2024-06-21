@@ -1,21 +1,22 @@
 package gr.uoa.di.madgik.resourcecatalogue.manager;
 
+import gr.uoa.di.madgik.registry.domain.Browsing;
+import gr.uoa.di.madgik.registry.domain.FacetFilter;
+import gr.uoa.di.madgik.registry.service.ResourceCRUDService;
+import gr.uoa.di.madgik.resourcecatalogue.domain.AlternativeIdentifier;
 import gr.uoa.di.madgik.resourcecatalogue.domain.Identifiers;
 import gr.uoa.di.madgik.resourcecatalogue.domain.InteroperabilityRecordBundle;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceException;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceNotFoundException;
+import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
 import gr.uoa.di.madgik.resourcecatalogue.utils.JmsService;
 import gr.uoa.di.madgik.resourcecatalogue.utils.ProviderResourcesCommonMethods;
-import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
-import gr.uoa.di.madgik.registry.domain.Browsing;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
-import gr.uoa.di.madgik.registry.service.ResourceCRUDService;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.common.exceptions.UnauthorizedUserException;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,7 +27,7 @@ import java.util.List;
 public class PublicInteroperabilityRecordManager extends ResourceManager<InteroperabilityRecordBundle>
         implements ResourceCRUDService<InteroperabilityRecordBundle, Authentication> {
 
-    private static final Logger logger = LogManager.getLogger(PublicInteroperabilityRecordManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(PublicInteroperabilityRecordManager.class);
     private final JmsService jmsService;
     private final SecurityService securityService;
     private final ProviderResourcesCommonMethods commonMethods;
@@ -53,7 +54,7 @@ public class PublicInteroperabilityRecordManager extends ResourceManager<Interop
     @Override
     public Browsing<InteroperabilityRecordBundle> getMy(FacetFilter facetFilter, Authentication authentication) {
         if (authentication == null) {
-            throw new UnauthorizedUserException("Please log in.");
+            throw new InsufficientAuthenticationException("Please log in.");
         }
 
         List<InteroperabilityRecordBundle> interoperabilityRecordBundleList = new ArrayList<>();
@@ -81,8 +82,20 @@ public class PublicInteroperabilityRecordManager extends ResourceManager<Interop
                 interoperabilityRecordBundle.getInteroperabilityRecord().getProviderId()));
 
         interoperabilityRecordBundle.getMetadata().setPublished(true);
-        // create PID and set it as Alternative Identifier
-        commonMethods.createPIDAndCorrespondingAlternativeIdentifier(interoperabilityRecordBundle, "guidelines/");
+        // POST PID
+        String pid = "no_pid";
+        for (AlternativeIdentifier alternativeIdentifier : interoperabilityRecordBundle.getInteroperabilityRecord().getAlternativeIdentifiers()) {
+            if (alternativeIdentifier.getType().equalsIgnoreCase("EOSC PID")) {
+                pid = alternativeIdentifier.getValue();
+                break;
+            }
+        }
+        if (pid.equalsIgnoreCase("no_pid")) {
+            logger.info("Interoperability Record with id {} does not have a PID registered under its AlternativeIdentifiers.",
+                    interoperabilityRecordBundle.getId());
+        } else {
+            commonMethods.postPID(pid);
+        }
         InteroperabilityRecordBundle ret;
         logger.info(String.format("Interoperability Record [%s] is being published with id [%s]", lowerLevelResourceId, interoperabilityRecordBundle.getId()));
         ret = super.add(interoperabilityRecordBundle, null);

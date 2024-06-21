@@ -1,45 +1,45 @@
 package gr.uoa.di.madgik.resourcecatalogue.manager;
 
-import gr.uoa.di.madgik.resourcecatalogue.domain.*;
+import gr.uoa.di.madgik.registry.domain.Resource;
+import gr.uoa.di.madgik.registry.service.SearchService;
+import gr.uoa.di.madgik.resourcecatalogue.domain.HelpdeskBundle;
+import gr.uoa.di.madgik.resourcecatalogue.domain.LoggingInfo;
+import gr.uoa.di.madgik.resourcecatalogue.domain.Metadata;
+import gr.uoa.di.madgik.resourcecatalogue.domain.User;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceNotFoundException;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ValidationException;
-import gr.uoa.di.madgik.resourcecatalogue.service.RegistrationMailService;
+import gr.uoa.di.madgik.resourcecatalogue.service.*;
 import gr.uoa.di.madgik.resourcecatalogue.utils.ObjectUtils;
 import gr.uoa.di.madgik.resourcecatalogue.utils.ProviderResourcesCommonMethods;
 import gr.uoa.di.madgik.resourcecatalogue.utils.ResourceValidationUtils;
-import gr.uoa.di.madgik.resourcecatalogue.service.HelpdeskService;
-import gr.uoa.di.madgik.resourcecatalogue.service.ServiceBundleService;
-import gr.uoa.di.madgik.resourcecatalogue.service.TrainingResourceService;
-import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
-import gr.uoa.di.madgik.registry.domain.Resource;
-import gr.uoa.di.madgik.registry.service.SearchService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
-import java.util.UUID;
 
 @org.springframework.stereotype.Service("helpdeskManager")
-public class HelpdeskManager extends ResourceManager<HelpdeskBundle> implements HelpdeskService<HelpdeskBundle, Authentication> {
+public class HelpdeskManager extends ResourceManager<HelpdeskBundle> implements HelpdeskService {
 
-    private static final Logger logger = LogManager.getLogger(HelpdeskManager.class);
-    private final ServiceBundleService<ServiceBundle> serviceBundleService;
-    private final TrainingResourceService<TrainingResourceBundle> trainingResourceService;
+    private static final Logger logger = LoggerFactory.getLogger(HelpdeskManager.class);
+    private final ServiceBundleService serviceBundleService;
+    private final TrainingResourceService trainingResourceService;
     private final PublicHelpdeskManager publicHelpdeskManager;
     private final SecurityService securityService;
     private final RegistrationMailService registrationMailService;
     private final ProviderResourcesCommonMethods commonMethods;
+    private final IdCreator idCreator;
 
     @Autowired
-    public HelpdeskManager(ServiceBundleService<ServiceBundle> serviceBundleService,
-                           TrainingResourceService<TrainingResourceBundle> trainingResourceService,
+    public HelpdeskManager(ServiceBundleService serviceBundleService,
+                           TrainingResourceService trainingResourceService,
                            PublicHelpdeskManager publicHelpdeskManager,
                            @Lazy SecurityService securityService,
                            @Lazy RegistrationMailService registrationMailService,
-                           ProviderResourcesCommonMethods commonMethods) {
+                           ProviderResourcesCommonMethods commonMethods,
+                           IdCreator idCreator) {
         super(HelpdeskBundle.class);
         this.serviceBundleService = serviceBundleService;
         this.trainingResourceService = trainingResourceService;
@@ -47,6 +47,7 @@ public class HelpdeskManager extends ResourceManager<HelpdeskBundle> implements 
         this.securityService = securityService;
         this.registrationMailService = registrationMailService;
         this.commonMethods = commonMethods;
+        this.idCreator = idCreator;
     }
 
     @Override
@@ -80,8 +81,8 @@ public class HelpdeskManager extends ResourceManager<HelpdeskBundle> implements 
     public HelpdeskBundle add(HelpdeskBundle helpdesk, String resourceType, Authentication auth) {
         validate(helpdesk, resourceType);
 
-        helpdesk.setId(UUID.randomUUID().toString());
-        logger.trace("User '{}' is attempting to add a new Helpdesk: {}", auth, helpdesk);
+        helpdesk.setId(idCreator.generate(getResourceType()));
+        logger.trace("Attempting to add a new Helpdesk: {}", helpdesk);
 
         helpdesk.setMetadata(Metadata.createMetadata(User.of(auth).getFullName(), User.of(auth).getEmail()));
         List<LoggingInfo> loggingInfoList = commonMethods.returnLoggingInfoListAndCreateRegistrationInfoIfEmpty(helpdesk, auth);
@@ -106,7 +107,7 @@ public class HelpdeskManager extends ResourceManager<HelpdeskBundle> implements 
 
     @Override
     public HelpdeskBundle update(HelpdeskBundle helpdeskBundle, Authentication auth) {
-        logger.trace("User '{}' is attempting to update the Helpdesk with id '{}'", auth, helpdeskBundle.getId());
+        logger.trace("Attempting to update the Helpdesk with id '{}'", helpdeskBundle.getId());
 
         HelpdeskBundle ret = ObjectUtils.clone(helpdeskBundle);
         Resource existingResource = whereID(ret.getId(), true);
@@ -147,7 +148,7 @@ public class HelpdeskManager extends ResourceManager<HelpdeskBundle> implements 
     }
 
     public void updateBundle(HelpdeskBundle helpdeskBundle, Authentication auth) {
-        logger.trace("User '{}' is attempting to update the Helpdesk: {}", auth, helpdeskBundle);
+        logger.trace("Attempting to update the Helpdesk: {}", helpdeskBundle);
 
         Resource existing = getResource(helpdeskBundle.getId());
         if (existing == null) {
@@ -171,11 +172,5 @@ public class HelpdeskManager extends ResourceManager<HelpdeskBundle> implements 
     public HelpdeskBundle createPublicResource(HelpdeskBundle helpdeskBundle, Authentication auth) {
         publicHelpdeskManager.add(helpdeskBundle, auth);
         return helpdeskBundle;
-    }
-
-    public void addBulk(List<HelpdeskBundle> helpdeskList, Authentication auth) {
-        for (HelpdeskBundle helpdeskBundle : helpdeskList) {
-            super.add(helpdeskBundle, auth);
-        }
     }
 }

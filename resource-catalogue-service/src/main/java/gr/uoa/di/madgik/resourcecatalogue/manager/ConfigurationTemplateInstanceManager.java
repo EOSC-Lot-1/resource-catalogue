@@ -1,5 +1,7 @@
 package gr.uoa.di.madgik.resourcecatalogue.manager;
 
+import gr.uoa.di.madgik.registry.domain.FacetFilter;
+import gr.uoa.di.madgik.registry.domain.Resource;
 import gr.uoa.di.madgik.resourcecatalogue.domain.LoggingInfo;
 import gr.uoa.di.madgik.resourcecatalogue.domain.Metadata;
 import gr.uoa.di.madgik.resourcecatalogue.domain.ResourceInteroperabilityRecordBundle;
@@ -9,49 +11,46 @@ import gr.uoa.di.madgik.resourcecatalogue.domain.configurationTemplates.Configur
 import gr.uoa.di.madgik.resourcecatalogue.domain.configurationTemplates.ConfigurationTemplateInstanceBundle;
 import gr.uoa.di.madgik.resourcecatalogue.domain.configurationTemplates.ConfigurationTemplateInstanceDto;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ValidationException;
+import gr.uoa.di.madgik.resourcecatalogue.service.*;
 import gr.uoa.di.madgik.resourcecatalogue.utils.ObjectUtils;
 import gr.uoa.di.madgik.resourcecatalogue.utils.ProviderResourcesCommonMethods;
-import gr.uoa.di.madgik.resourcecatalogue.service.ConfigurationTemplateInstanceService;
-import gr.uoa.di.madgik.resourcecatalogue.service.ConfigurationTemplateService;
-import gr.uoa.di.madgik.resourcecatalogue.service.ResourceInteroperabilityRecordService;
-import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
-import gr.uoa.di.madgik.registry.domain.Resource;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 
 @org.springframework.stereotype.Service("configurationTemplateInstanceManager")
 public class ConfigurationTemplateInstanceManager extends ResourceManager<ConfigurationTemplateInstanceBundle>
-        implements ConfigurationTemplateInstanceService<ConfigurationTemplateInstanceBundle> {
+        implements ConfigurationTemplateInstanceService {
 
-    private static final Logger logger = LogManager.getLogger(ConfigurationTemplateInstanceManager.class);
-    private final ConfigurationTemplateInstanceService<ConfigurationTemplateInstanceBundle> configurationTemplateInstanceService;
-    private final ResourceInteroperabilityRecordService<ResourceInteroperabilityRecordBundle> resourceInteroperabilityRecordService;
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationTemplateInstanceManager.class);
+    private final ConfigurationTemplateInstanceService configurationTemplateInstanceService;
+    private final ResourceInteroperabilityRecordService resourceInteroperabilityRecordService;
 
-    private final ConfigurationTemplateService<ConfigurationTemplateBundle> configurationTemplateService;
+    private final ConfigurationTemplateService configurationTemplateService;
     private final SecurityService securityService;
     private final ProviderResourcesCommonMethods commonMethods;
+    private final IdCreator idCreator;
 
-    public ConfigurationTemplateInstanceManager(@Lazy ConfigurationTemplateInstanceService<ConfigurationTemplateInstanceBundle> configurationTemplateInstanceService,
-                                                @Lazy ConfigurationTemplateService<ConfigurationTemplateBundle> configurationTemplateService,
-                                                @Lazy ResourceInteroperabilityRecordService<ResourceInteroperabilityRecordBundle> resourceInteroperabilityRecordService,
-                                                SecurityService securityService, ProviderResourcesCommonMethods commonMethods) {
+    public ConfigurationTemplateInstanceManager(@Lazy ConfigurationTemplateInstanceService configurationTemplateInstanceService,
+                                                @Lazy ConfigurationTemplateService configurationTemplateService,
+                                                @Lazy ResourceInteroperabilityRecordService resourceInteroperabilityRecordService,
+                                                SecurityService securityService, ProviderResourcesCommonMethods commonMethods,
+                                                IdCreator idCreator) {
         super(ConfigurationTemplateInstanceBundle.class);
         this.configurationTemplateInstanceService = configurationTemplateInstanceService;
         this.configurationTemplateService = configurationTemplateService;
         this.resourceInteroperabilityRecordService = resourceInteroperabilityRecordService;
         this.securityService = securityService;
         this.commonMethods = commonMethods;
+        this.idCreator = idCreator;
     }
 
     @Override
@@ -66,8 +65,8 @@ public class ConfigurationTemplateInstanceManager extends ResourceManager<Config
         validate(configurationTemplateInstanceBundle);
         checkResourceIdAndConfigurationTemplateIdConsistency(configurationTemplateInstanceBundle, auth);
 
-        configurationTemplateInstanceBundle.setId(UUID.randomUUID().toString());
-        logger.trace("User '{}' is attempting to add a new ConfigurationTemplateInstance: {}", auth, configurationTemplateInstanceBundle);
+        configurationTemplateInstanceBundle.setId(idCreator.generate(getResourceType()));
+        logger.trace("Attempting to add a new ConfigurationTemplateInstance: {}", configurationTemplateInstanceBundle);
 
         configurationTemplateInstanceBundle.setMetadata(Metadata.createMetadata(User.of(auth).getFullName(), User.of(auth).getEmail()));
         List<LoggingInfo> loggingInfoList = commonMethods.returnLoggingInfoListAndCreateRegistrationInfoIfEmpty(configurationTemplateInstanceBundle, auth);
@@ -86,7 +85,7 @@ public class ConfigurationTemplateInstanceManager extends ResourceManager<Config
 
     @Override
     public ConfigurationTemplateInstanceBundle update(ConfigurationTemplateInstanceBundle configurationTemplateInstanceBundle, Authentication auth) {
-        logger.trace("User '{}' is attempting to update the ConfigurationTemplateInstance with id '{}'", auth, configurationTemplateInstanceBundle.getId());
+        logger.trace("Attempting to update the ConfigurationTemplateInstance with id '{}'", configurationTemplateInstanceBundle.getId());
 
         ConfigurationTemplateInstanceBundle ret = ObjectUtils.clone(configurationTemplateInstanceBundle);
         Resource existingResource = whereID(ret.getId(), true);

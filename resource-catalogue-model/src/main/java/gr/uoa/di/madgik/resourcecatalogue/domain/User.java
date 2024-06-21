@@ -4,9 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.mitre.openid.connect.model.OIDCAuthenticationToken;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -49,23 +53,33 @@ public class User implements Identifiable {
         User user = new User();
         if (auth == null) {
             throw new InsufficientAuthenticationException("You are not authenticated, please log in.");
-        } else if (auth instanceof OIDCAuthenticationToken) {
-            user.id = ((OIDCAuthenticationToken) auth).getUserInfo().getSub();
+        } else if (auth.getPrincipal() instanceof OidcUser) {
+            OidcUser principal = ((OidcUser) auth.getPrincipal());
+            user.id = principal.getSubject();
             if (user.id == null) {
                 user.id = "";
             }
-            user.email = ((OIDCAuthenticationToken) auth).getUserInfo().getEmail();
+            user.email = principal.getEmail();
             if (user.email == null) {
                 user.email = "";
             }
-            user.name = ((OIDCAuthenticationToken) auth).getUserInfo().getGivenName();
-            user.surname = ((OIDCAuthenticationToken) auth).getUserInfo().getFamilyName();
+            user.name = principal.getGivenName();
+            user.surname = principal.getFamilyName();
+        } else if (auth instanceof JwtAuthenticationToken) {
+            Jwt principal = (Jwt) auth.getPrincipal();
+            user.id = principal.getClaimAsString("sub");
+            user.email = principal.getClaimAsString("email");
+            user.name = principal.getClaimAsString("given_name");
+            user.surname = principal.getClaimAsString("family_name");
+        } else if (auth instanceof OAuth2AuthenticationToken) {
+            OAuth2User principal = ((OAuth2AuthenticationToken) auth).getPrincipal();
+            user.id = principal.getAttribute("subject");
+            user.email = principal.getAttribute("email");
+            user.name = principal.getAttribute("given_name");
+            user.surname = principal.getAttribute("family_name");
         } else if (auth.isAuthenticated()) {
-            user.name = auth.getName();
-            user.id = "";
-            user.email = "";
-            user.surname = "";
             logger.warn("Authenticated User has missing information: {}", auth);
+            return null;
         } else {
             throw new InsufficientAuthenticationException("Could not create user. Insufficient user authentication");
         }

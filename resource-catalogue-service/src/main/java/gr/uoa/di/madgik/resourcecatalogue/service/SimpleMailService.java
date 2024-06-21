@@ -1,10 +1,8 @@
 package gr.uoa.di.madgik.resourcecatalogue.service;
 
-import gr.uoa.di.madgik.resourcecatalogue.service.MailService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import gr.uoa.di.madgik.resourcecatalogue.config.security.ResourceCatalogueProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -20,51 +18,35 @@ import java.util.stream.Collectors;
 //@PropertySource({"classpath:application.properties", "classpath:registry.properties"})
 public class SimpleMailService implements MailService {
 
-    private static final Logger logger = LogManager.getLogger(SimpleMailService.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleMailService.class);
     private Session session;
 
-    @Value("${mail.smtp.auth}")
-    String auth;
+    private final boolean enableEmails;
+    private final String from;
 
-    @Value("${mail.smtp.host}")
-    String host;
+    private final ResourceCatalogueProperties properties;
 
-    @Value("${mail.smtp.from}")
-    String from;
-
-    @Value("${mail.smtp.user}")
-    String user;
-
-    @Value("${mail.smtp.password}")
-    String password;
-
-    @Value("${mail.smtp.protocol}")
-    String protocol;
-
-    @Value("${mail.smtp.port}")
-    String port;
-
-    @Value("${mail.smtp.ssl.enable}")
-    String ssl;
-
-    @Value("${emails.send:true}")
-    boolean enableEmails;
+    public SimpleMailService(ResourceCatalogueProperties properties) {
+        this.properties = properties;
+        this.from = properties.getMailer().getFrom();
+        this.enableEmails = properties.getEmailProperties().isEmailsEnabled();
+    }
 
     @PostConstruct
     private void postConstruct() {
         Properties sessionProps = new Properties();
-        sessionProps.setProperty("mail.transport.protocol", protocol);
-        sessionProps.setProperty("mail.smtp.auth", auth);
-        sessionProps.setProperty("mail.smtp.host", host);
-        sessionProps.setProperty("mail.smtp.password", password);
-        sessionProps.setProperty("mail.smtp.port", port);
-        sessionProps.setProperty("mail.smtp.ssl.enable", ssl);
-        sessionProps.setProperty("mail.smtp.user", user);
-        sessionProps.setProperty("mail.smtp.from", from);
+        sessionProps.setProperty("mail.transport.protocol", properties.getMailer().getProtocol());
+        sessionProps.setProperty("mail.smtp.auth", String.valueOf(properties.getMailer().isAuth()));
+        sessionProps.setProperty("mail.smtp.host", properties.getMailer().getHost());
+        sessionProps.setProperty("mail.smtp.password", properties.getMailer().getPassword());
+        sessionProps.setProperty("mail.smtp.port", String.valueOf(properties.getMailer().getPort()));
+        sessionProps.setProperty("mail.smtp.ssl.enable", String.valueOf(properties.getMailer().isSsl()));
+        sessionProps.setProperty("mail.smtp.user", properties.getMailer().getUsername());
+        sessionProps.setProperty("mail.smtp.from", properties.getMailer().getFrom());
         session = Session.getInstance(sessionProps, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(user, password);
+                return new PasswordAuthentication(properties.getMailer().getUsername(), properties.getMailer().getPassword());
             }
         });
     }
@@ -142,7 +124,7 @@ public class SimpleMailService implements MailService {
                     message.setRecipients(Message.RecipientType.CC, createAddresses(ccList));
                     message.setRecipients(Message.RecipientType.BCC, createAddresses(bccList));
                 } else {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }

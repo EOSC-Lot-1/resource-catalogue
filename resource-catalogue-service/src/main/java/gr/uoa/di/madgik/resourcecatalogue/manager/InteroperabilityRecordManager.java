@@ -12,17 +12,14 @@ import gr.uoa.di.madgik.resourcecatalogue.service.*;
 import gr.uoa.di.madgik.resourcecatalogue.utils.Auditable;
 import gr.uoa.di.madgik.resourcecatalogue.utils.ObjectUtils;
 import gr.uoa.di.madgik.resourcecatalogue.utils.ProviderResourcesCommonMethods;
-import gr.uoa.di.madgik.resourcecatalogue.validators.FieldValidator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -31,26 +28,25 @@ import static gr.uoa.di.madgik.resourcecatalogue.config.Properties.Cache.CACHE_F
 import static gr.uoa.di.madgik.resourcecatalogue.config.Properties.Cache.CACHE_PROVIDERS;
 
 @org.springframework.stereotype.Service("interoperabilityRecordManager")
-public class InteroperabilityRecordManager extends ResourceManager<InteroperabilityRecordBundle> implements InteroperabilityRecordService<InteroperabilityRecordBundle> {
+public class InteroperabilityRecordManager extends ResourceManager<InteroperabilityRecordBundle> implements InteroperabilityRecordService {
 
-    private static final Logger logger = LogManager.getLogger(InteroperabilityRecordManager.class);
-    private final ProviderService<ProviderBundle, Authentication> providerService;
+    private static final Logger logger = LoggerFactory.getLogger(InteroperabilityRecordManager.class);
+    private final ProviderService providerService;
     private final IdCreator idCreator;
     private final SecurityService securityService;
     private final VocabularyService vocabularyService;
     private final PublicInteroperabilityRecordManager publicInteroperabilityRecordManager;
-    private final CatalogueService<CatalogueBundle, Authentication> catalogueService;
+    private final CatalogueService catalogueService;
     private final RegistrationMailService registrationMailService;
     private final ProviderResourcesCommonMethods commonMethods;
-    @Autowired
-    private FieldValidator fieldValidator;
-    @Value("${project.catalogue.name}")
-    private String catalogueName;
 
-    public InteroperabilityRecordManager(ProviderService<ProviderBundle, Authentication> providerService, IdCreator idCreator,
+    @Value("${catalogue.id}")
+    private String catalogueId;
+
+    public InteroperabilityRecordManager(ProviderService providerService, IdCreator idCreator,
                                          SecurityService securityService, VocabularyService vocabularyService,
                                          PublicInteroperabilityRecordManager publicInteroperabilityRecordManager,
-                                         CatalogueService<CatalogueBundle, Authentication> catalogueService,
+                                         CatalogueService catalogueService,
                                          RegistrationMailService registrationMailService, ProviderResourcesCommonMethods commonMethods) {
         super(InteroperabilityRecordBundle.class);
         this.providerService = providerService;
@@ -80,24 +76,23 @@ public class InteroperabilityRecordManager extends ResourceManager<Interoperabil
     @CacheEvict(cacheNames = {CACHE_PROVIDERS, CACHE_FEATURED}, allEntries = true)
     public InteroperabilityRecordBundle add(InteroperabilityRecordBundle interoperabilityRecordBundle, String catalogueId, Authentication auth) {
         if (catalogueId == null || catalogueId.equals("")) { // add catalogue provider
-            interoperabilityRecordBundle.getInteroperabilityRecord().setCatalogueId(catalogueName);
+            interoperabilityRecordBundle.getInteroperabilityRecord().setCatalogueId(this.catalogueId);
         } else { // external catalogue
             commonMethods.checkCatalogueIdConsistency(interoperabilityRecordBundle, catalogueId);
         }
+        interoperabilityRecordBundle.setId(idCreator.generate(getResourceType()));
 
-        // prohibit EOSC related Alternative Identifier Types
-        commonMethods.prohibitEOSCRelatedPIDs(interoperabilityRecordBundle.getInteroperabilityRecord().getAlternativeIdentifiers());
+        // register and ensure Resource Catalogue's PID uniqueness
+        commonMethods.createPIDAndCorrespondingAlternativeIdentifier(interoperabilityRecordBundle, getResourceType());
+        interoperabilityRecordBundle.getInteroperabilityRecord().setAlternativeIdentifiers(
+                commonMethods.ensureResourceCataloguePidUniqueness(interoperabilityRecordBundle.getId(),
+                        interoperabilityRecordBundle.getInteroperabilityRecord().getAlternativeIdentifiers()));
 
         ProviderBundle providerBundle = providerService.get(interoperabilityRecordBundle.getInteroperabilityRecord().getCatalogueId(), interoperabilityRecordBundle.getInteroperabilityRecord().getProviderId(), auth);
         // check if Provider is approved
         if (!providerBundle.getStatus().equals("approved provider")) {
             throw new ValidationException(String.format("The Provider ID '%s' you provided is not yet approved",
                     interoperabilityRecordBundle.getInteroperabilityRecord().getProviderId()));
-        }
-        try {
-            interoperabilityRecordBundle.getInteroperabilityRecord().setId(idCreator.createInteroperabilityRecordId(interoperabilityRecordBundle.getInteroperabilityRecord()));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
         }
         validate(interoperabilityRecordBundle);
 
@@ -115,7 +110,7 @@ public class InteroperabilityRecordManager extends ResourceManager<Interoperabil
 
         interoperabilityRecordBundle.getInteroperabilityRecord().setCreated(String.valueOf(System.currentTimeMillis()));
         interoperabilityRecordBundle.getInteroperabilityRecord().setUpdated(interoperabilityRecordBundle.getInteroperabilityRecord().getCreated());
-        logger.trace("User '{}' is attempting to add a new Interoperability Record: {}", auth, interoperabilityRecordBundle.getInteroperabilityRecord());
+        logger.trace("Attempting to add a new Interoperability Record: {}", interoperabilityRecordBundle.getInteroperabilityRecord());
         logger.info("Adding Interoperability Record: {}", interoperabilityRecordBundle.getInteroperabilityRecord());
         super.add(interoperabilityRecordBundle, auth);
         registrationMailService.sendEmailsForInteroperabilityRecordOnboarding(interoperabilityRecordBundle, User.of(auth));
@@ -134,7 +129,7 @@ public class InteroperabilityRecordManager extends ResourceManager<Interoperabil
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isResourceProviderAdmin(#auth, #interoperabilityRecordBundle.payload)")
     @CacheEvict(cacheNames = {CACHE_PROVIDERS, CACHE_FEATURED}, allEntries = true)
     public InteroperabilityRecordBundle update(InteroperabilityRecordBundle interoperabilityRecordBundle, String catalogueId, Authentication auth) {
-        logger.trace("User '{}' is attempting to update the Interoperability Record with id '{}'", auth, interoperabilityRecordBundle.getId());
+        logger.trace("Attempting to update the Interoperability Record with id '{}'", interoperabilityRecordBundle.getId());
 
         InteroperabilityRecordBundle ret = ObjectUtils.clone(interoperabilityRecordBundle);
         InteroperabilityRecordBundle existingInteroperabilityRecord;
@@ -149,13 +144,15 @@ public class InteroperabilityRecordManager extends ResourceManager<Interoperabil
         }
 
         if (catalogueId == null || catalogueId.equals("")) {
-            ret.getInteroperabilityRecord().setCatalogueId(catalogueName);
+            ret.getInteroperabilityRecord().setCatalogueId(this.catalogueId);
         } else {
             commonMethods.checkCatalogueIdConsistency(ret, catalogueId);
         }
 
-        // prohibit EOSC related Alternative Identifier Types
-        commonMethods.prohibitEOSCRelatedPIDs(ret.getInteroperabilityRecord().getAlternativeIdentifiers());
+        // ensure Resource Catalogue's PID uniqueness
+        interoperabilityRecordBundle.getInteroperabilityRecord().setAlternativeIdentifiers(
+                commonMethods.ensureResourceCataloguePidUniqueness(ret.getId(),
+                        ret.getInteroperabilityRecord().getAlternativeIdentifiers()));
 
         validate(ret);
 
@@ -223,7 +220,7 @@ public class InteroperabilityRecordManager extends ResourceManager<Interoperabil
     }
 
     @CacheEvict(cacheNames = {CACHE_PROVIDERS, CACHE_FEATURED}, allEntries = true)
-    public InteroperabilityRecordBundle verifyResource(String id, String status, Boolean active, Authentication auth) {
+    public InteroperabilityRecordBundle verify(String id, String status, Boolean active, Authentication auth) {
         Vocabulary statusVocabulary = vocabularyService.getOrElseThrow(status);
         if (!statusVocabulary.getType().equals("Interoperability Record state")) {
             throw new ValidationException(String.format("Vocabulary %s does not consist an Interoperability Record state!", status));
@@ -379,9 +376,9 @@ public class InteroperabilityRecordManager extends ResourceManager<Interoperabil
         throw new ValidationException("You cannot view the specific Interoperability Record");
     }
 
-    public InteroperabilityRecordBundle auditResource(String interoperabilityRecordId, String catalogueId, String comment, LoggingInfo.ActionType actionType, Authentication auth) {
-        InteroperabilityRecordBundle interoperabilityRecordBundle = get(interoperabilityRecordId, catalogueId);
-        ProviderBundle provider = providerService.get(catalogueId, interoperabilityRecordBundle.getInteroperabilityRecord().getProviderId(), auth);
+    public InteroperabilityRecordBundle audit(String id, String comment, LoggingInfo.ActionType actionType, Authentication auth) {
+        InteroperabilityRecordBundle interoperabilityRecordBundle = get(id);
+        ProviderBundle provider = providerService.get(interoperabilityRecordBundle.getInteroperabilityRecord().getProviderId(), auth);
         commonMethods.auditResource(interoperabilityRecordBundle, comment, actionType, auth);
         if (actionType.getKey().equals(LoggingInfo.ActionType.VALID.getKey())) {
             interoperabilityRecordBundle.setAuditState(Auditable.VALID);
@@ -407,17 +404,11 @@ public class InteroperabilityRecordManager extends ResourceManager<Interoperabil
     }
 
     @CacheEvict(cacheNames = {CACHE_PROVIDERS, CACHE_FEATURED}, allEntries = true)
-    public InteroperabilityRecordBundle suspend(String interoperabilityRecordId, String catalogueId, boolean suspend, Authentication auth) {
-        InteroperabilityRecordBundle interoperabilityRecordBundle = get(interoperabilityRecordId, catalogueId);
-        commonMethods.suspensionValidation(interoperabilityRecordBundle, catalogueId,
+    public InteroperabilityRecordBundle suspend(String interoperabilityRecordId, boolean suspend, Authentication auth) {
+        InteroperabilityRecordBundle interoperabilityRecordBundle = get(interoperabilityRecordId);
+        commonMethods.suspensionValidation(interoperabilityRecordBundle, interoperabilityRecordBundle.getInteroperabilityRecord().getCatalogueId(),
                 interoperabilityRecordBundle.getInteroperabilityRecord().getProviderId(), suspend, auth);
-        commonMethods.suspendResource(interoperabilityRecordBundle, catalogueId, suspend, auth);
+        commonMethods.suspendResource(interoperabilityRecordBundle, suspend, auth);
         return super.update(interoperabilityRecordBundle, auth);
-    }
-
-    public void addBulk(List<InteroperabilityRecordBundle> interoperabilityRecordList, Authentication auth) {
-        for (InteroperabilityRecordBundle interoperabilityRecordBundle : interoperabilityRecordList) {
-            super.add(interoperabilityRecordBundle, auth);
-        }
     }
 }

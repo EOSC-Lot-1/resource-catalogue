@@ -3,9 +3,7 @@ package gr.uoa.di.madgik.resourcecatalogue.service;
 import gr.uoa.di.madgik.resourcecatalogue.domain.HelpdeskBundle;
 import org.springframework.security.core.Authentication;
 
-import java.util.List;
-
-public interface HelpdeskService<T, U extends Authentication> extends ResourceService<T, Authentication> {
+public interface HelpdeskService extends ResourceService<HelpdeskBundle> {
 
     HelpdeskBundle add(HelpdeskBundle helpdesk, String resourceType, Authentication auth);
 
@@ -43,12 +41,4 @@ public interface HelpdeskService<T, U extends Authentication> extends ResourceSe
      * @param auth           Authentication
      */
     void updateBundle(HelpdeskBundle helpdeskBundle, Authentication auth);
-
-    /**
-     * Add a list of HelpdeskBundles on the Resource Catalogue
-     *
-     * @param helpdeskList List of HelpdeskBundles
-     * @param auth         Authentication
-     */
-    void addBulk(List<HelpdeskBundle> helpdeskList, Authentication auth);
 }

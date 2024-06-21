@@ -1,30 +1,30 @@
 package gr.uoa.di.madgik.resourcecatalogue.manager;
 
-import gr.uoa.di.madgik.resourcecatalogue.domain.Event;
-import gr.uoa.di.madgik.resourcecatalogue.domain.ServiceBundle;
-import gr.uoa.di.madgik.resourcecatalogue.domain.ProviderBundle;
-import gr.uoa.di.madgik.resourcecatalogue.domain.Service;
-import gr.uoa.di.madgik.resourcecatalogue.dto.MapValues;
-import gr.uoa.di.madgik.resourcecatalogue.dto.PlaceCount;
-import gr.uoa.di.madgik.resourcecatalogue.dto.Value;
-import gr.uoa.di.madgik.resourcecatalogue.service.*;
 import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import gr.uoa.di.madgik.registry.domain.Paging;
 import gr.uoa.di.madgik.registry.domain.Resource;
 import gr.uoa.di.madgik.registry.service.ParserService;
 import gr.uoa.di.madgik.registry.service.SearchService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import gr.uoa.di.madgik.resourcecatalogue.domain.Event;
+import gr.uoa.di.madgik.resourcecatalogue.domain.ProviderBundle;
+import gr.uoa.di.madgik.resourcecatalogue.domain.ServiceBundle;
+import gr.uoa.di.madgik.resourcecatalogue.dto.MapValues;
+import gr.uoa.di.madgik.resourcecatalogue.dto.PlaceCount;
+import gr.uoa.di.madgik.resourcecatalogue.dto.Value;
+import gr.uoa.di.madgik.resourcecatalogue.service.Analytics;
+import gr.uoa.di.madgik.resourcecatalogue.service.ProviderService;
+import gr.uoa.di.madgik.resourcecatalogue.service.StatisticsService;
+import gr.uoa.di.madgik.resourcecatalogue.service.VocabularyService;
 import org.joda.time.DateTime;
 import org.postgresql.jdbc.PgArray;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -39,9 +39,9 @@ import static gr.uoa.di.madgik.resourcecatalogue.config.Properties.Cache.CACHE_V
 @EnableScheduling
 public class DefaultStatisticsManager implements StatisticsService {
 
-    private static final Logger logger = LogManager.getLogger(DefaultStatisticsManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultStatisticsManager.class);
     private final Analytics analyticsService;
-    private final ProviderService<ProviderBundle, Authentication> providerService;
+    private final ProviderService providerService;
     private final SearchService searchService;
     private final ParserService parserService;
     private final ServiceBundleManager serviceBundleManager;
@@ -52,7 +52,7 @@ public class DefaultStatisticsManager implements StatisticsService {
     private int maxQuantity;
 
     DefaultStatisticsManager(Analytics analyticsService,
-                             ProviderService<ProviderBundle, Authentication> providerService,
+                             ProviderService providerService,
                              SearchService searchService, ParserService parserService,
                              ServiceBundleManager serviceBundleManager, VocabularyService vocabularyService,
                              DataSource dataSource) {
@@ -83,39 +83,17 @@ public class DefaultStatisticsManager implements StatisticsService {
     @Override
     @Cacheable(cacheNames = CACHE_VISITS, key = "#id+#by.getKey()")
     public Map<String, Integer> visits(String id, Interval by) {
-        throw new UnsupportedOperationException("Not implemented");
-//        try {
-//            return analyticsService.getVisitsForLabel("/service/" + id, by);
-//        } catch (Exception e) {
-//            logger.error("Could not find Matomo analytics", e);
-//        }
-//        return new HashMap<>();
+        throw new UnsupportedOperationException("Method has been removed");
     }
 
     @Override
     public Map<String, Integer> providerVisits(String id, Interval by) {
-        Map<String, Integer> results = new HashMap<>();
-        for (Service service : serviceBundleManager.getResources(id)) {
-            Set<Map.Entry<String, Integer>> entrySet = visits(service.getId(), by).entrySet();
-            for (Map.Entry<String, Integer> entry : entrySet) {
-                if (!results.containsKey(entry.getKey())) {
-                    results.put(entry.getKey(), entry.getValue());
-                } else {
-                    results.put(entry.getKey(), results.get(entry.getKey()) + entry.getValue());
-                }
-            }
-        }
-        return results;
+        throw new UnsupportedOperationException("Method has been removed");
     }
 
     @Override
     public Map<String, Float> providerVisitation(String id, Interval by) {
-        Map<String, Integer> counts = serviceBundleManager.getResources(id).stream().collect(Collectors.toMap(
-                Service::getName,
-                s -> visits(s.getId(), by).values().stream().mapToInt(Integer::intValue).sum()
-        ));
-        int grandTotal = counts.values().stream().mapToInt(Integer::intValue).sum();
-        return counts.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, v -> ((float) v.getValue()) / grandTotal));
+        throw new UnsupportedOperationException("Method has been removed");
     }
 
     public Map<DateTime, Map<String, Long>> events(Event.UserActionType type, Date from, Date to, Interval by) {
@@ -330,7 +308,7 @@ public class DefaultStatisticsManager implements StatisticsService {
                 }
             }
         } catch (SQLException throwables) {
-            logger.error(throwables);
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return toListMapValues(placeServices);
@@ -411,7 +389,7 @@ public class DefaultStatisticsManager implements StatisticsService {
                 }
             }
         } catch (SQLException throwables) {
-            logger.error(throwables);
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return toListMapValues(vocabularyServices);

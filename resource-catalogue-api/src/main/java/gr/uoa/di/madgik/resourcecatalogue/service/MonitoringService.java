@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
-public interface MonitoringService<T, U extends Authentication> extends ResourceService<T, Authentication> {
+public interface MonitoringService extends ResourceService<MonitoringBundle> {
 
     /**
      * Creates a new Monitoring
@@ -78,12 +78,4 @@ public interface MonitoringService<T, U extends Authentication> extends Resource
      * @return {@link List<MonitoringStatus>}
      */
     List<MonitoringStatus> createMonitoringStatusObject(JsonArray results);
-
-    /**
-     * Add a list of MonitoringBundles on the Resource Catalogue
-     *
-     * @param monitoringList List of MonitoringBundles
-     * @param auth           Authentication
-     */
-    void addBulk(List<MonitoringBundle> monitoringList, Authentication auth);
 }

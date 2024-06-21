@@ -3,6 +3,7 @@ package gr.uoa.di.madgik.resourcecatalogue.manager;
 import gr.uoa.di.madgik.registry.domain.Browsing;
 import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import gr.uoa.di.madgik.registry.service.ResourceCRUDService;
+import gr.uoa.di.madgik.resourcecatalogue.domain.AlternativeIdentifier;
 import gr.uoa.di.madgik.resourcecatalogue.domain.Identifiers;
 import gr.uoa.di.madgik.resourcecatalogue.domain.ProviderBundle;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceException;
@@ -12,11 +13,10 @@ import gr.uoa.di.madgik.resourcecatalogue.utils.FacetLabelService;
 import gr.uoa.di.madgik.resourcecatalogue.utils.JmsService;
 import gr.uoa.di.madgik.resourcecatalogue.utils.ProviderResourcesCommonMethods;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.common.exceptions.UnauthorizedUserException;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,7 +26,7 @@ import java.util.List;
 @Service("publicProviderManager")
 public class PublicProviderManager extends ResourceManager<ProviderBundle> implements ResourceCRUDService<ProviderBundle, Authentication> {
 
-    private static final Logger logger = LogManager.getLogger(PublicProviderManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(PublicProviderManager.class);
     private final JmsService jmsService;
     private final SecurityService securityService;
     private final ProviderResourcesCommonMethods commonMethods;
@@ -59,7 +59,7 @@ public class PublicProviderManager extends ResourceManager<ProviderBundle> imple
     @Override
     public Browsing<ProviderBundle> getMy(FacetFilter facetFilter, Authentication authentication) {
         if (authentication == null) {
-            throw new UnauthorizedUserException("Please log in.");
+            throw new InsufficientAuthenticationException("Please log in.");
         }
 
         List<ProviderBundle> providerList = new ArrayList<>();
@@ -80,8 +80,20 @@ public class PublicProviderManager extends ResourceManager<ProviderBundle> imple
         providerBundle.setId(String.format("%s.%s", providerBundle.getProvider().getCatalogueId(), providerBundle.getId()));
         commonMethods.restrictPrefixRepetitionOnPublicResources(providerBundle.getId(), providerBundle.getProvider().getCatalogueId());
         providerBundle.getMetadata().setPublished(true);
-        // create PID and set it as Alternative Identifier
-        commonMethods.createPIDAndCorrespondingAlternativeIdentifier(providerBundle, "providers/");
+        // POST PID
+        String pid = "no_pid";
+        for (AlternativeIdentifier alternativeIdentifier : providerBundle.getProvider().getAlternativeIdentifiers()) {
+            if (alternativeIdentifier.getType().equalsIgnoreCase("EOSC PID")) {
+                pid = alternativeIdentifier.getValue();
+                break;
+            }
+        }
+        if (pid.equalsIgnoreCase("no_pid")) {
+            logger.info("Provider with id {} does not have a PID registered under its AlternativeIdentifiers.",
+                    providerBundle.getId());
+        } else {
+            commonMethods.postPID(pid);
+        }
         ProviderBundle ret;
         logger.info(String.format("Provider [%s] is being published with id [%s]", lowerLevelProviderId, providerBundle.getId()));
         ret = super.add(providerBundle, null);

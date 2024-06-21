@@ -1,14 +1,16 @@
 package gr.uoa.di.madgik.resourcecatalogue.controllers.publicresources;
 
 import com.google.gson.Gson;
-import gr.uoa.di.madgik.resourcecatalogue.annotations.Browse;
-import gr.uoa.di.madgik.resourcecatalogue.annotations.BrowseCatalogue;
-import gr.uoa.di.madgik.resourcecatalogue.domain.*;
-import gr.uoa.di.madgik.resourcecatalogue.service.*;
-import gr.uoa.di.madgik.resourcecatalogue.utils.FacetFilterUtils;
 import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import gr.uoa.di.madgik.registry.domain.Paging;
-
+import gr.uoa.di.madgik.resourcecatalogue.annotations.Browse;
+import gr.uoa.di.madgik.resourcecatalogue.annotations.BrowseCatalogue;
+import gr.uoa.di.madgik.resourcecatalogue.domain.InteroperabilityRecord;
+import gr.uoa.di.madgik.resourcecatalogue.domain.InteroperabilityRecordBundle;
+import gr.uoa.di.madgik.resourcecatalogue.domain.ResourceInteroperabilityRecordBundle;
+import gr.uoa.di.madgik.resourcecatalogue.domain.User;
+import gr.uoa.di.madgik.resourcecatalogue.service.*;
+import gr.uoa.di.madgik.resourcecatalogue.utils.FacetFilterUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 
+@Profile("beyond")
 @RestController
 @RequestMapping
 @Tag(name = "public interoperability record")
@@ -38,16 +42,16 @@ public class PublicInteroperabilityRecordController {
     private static final Gson gson = new Gson();
 
     private final SecurityService securityService;
-    private final InteroperabilityRecordService<InteroperabilityRecordBundle> interoperabilityRecordService;
-    private final ResourceInteroperabilityRecordService<ResourceInteroperabilityRecordBundle> resourceInteroperabilityRecordService;
-    private final ResourceService<InteroperabilityRecordBundle, Authentication> publicInteroperabilityRecordManager;
+    private final InteroperabilityRecordService interoperabilityRecordService;
+    private final ResourceInteroperabilityRecordService resourceInteroperabilityRecordService;
+    private final ResourceService<InteroperabilityRecordBundle> publicInteroperabilityRecordManager;
     private final GenericResourceService genericResourceService;
 
 
     PublicInteroperabilityRecordController(SecurityService securityService,
-                                           InteroperabilityRecordService<InteroperabilityRecordBundle> interoperabilityRecordService,
-                                           ResourceInteroperabilityRecordService<ResourceInteroperabilityRecordBundle> resourceInteroperabilityRecordService,
-                                           @Qualifier("publicInteroperabilityRecordManager") ResourceService<InteroperabilityRecordBundle, Authentication> publicInteroperabilityRecordManager,
+                                           InteroperabilityRecordService interoperabilityRecordService,
+                                           ResourceInteroperabilityRecordService resourceInteroperabilityRecordService,
+                                           @Qualifier("publicInteroperabilityRecordManager") ResourceService<InteroperabilityRecordBundle> publicInteroperabilityRecordManager,
                                            GenericResourceService genericResourceService) {
         this.securityService = securityService;
         this.interoperabilityRecordService = interoperabilityRecordService;
@@ -59,7 +63,7 @@ public class PublicInteroperabilityRecordController {
     @Operation(description = "Returns the Public Interoperability Record with the given id.")
     @GetMapping(path = "public/interoperabilityRecord/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<?> getPublicInteroperabilityRecord(@PathVariable("id") String id,
-                                                             @RequestParam(defaultValue = "${project.catalogue.name}", name = "catalogue_id") String catalogueId) {
+                                                             @RequestParam(defaultValue = "${catalogue.id}", name = "catalogue_id") String catalogueId) {
         InteroperabilityRecordBundle interoperabilityRecordBundle = interoperabilityRecordService.get(id, catalogueId);
         if (interoperabilityRecordBundle.getMetadata().isPublished() && interoperabilityRecordBundle.isActive()
                 && interoperabilityRecordBundle.getStatus().equals("approved interoperability record")) {
@@ -71,7 +75,7 @@ public class PublicInteroperabilityRecordController {
     @GetMapping(path = "public/interoperabilityRecord/bundle/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isResourceProviderAdmin(#auth, #id, #catalogueId)")
     public ResponseEntity<?> getPublicInteroperabilityRecordBundle(@PathVariable("id") String id,
-                                                                   @RequestParam(defaultValue = "${project.catalogue.name}", name = "catalogue_id") String catalogueId,
+                                                                   @RequestParam(defaultValue = "${catalogue.id}", name = "catalogue_id") String catalogueId,
                                                                    @Parameter(hidden = true) Authentication auth) {
         InteroperabilityRecordBundle interoperabilityRecordBundle = interoperabilityRecordService.get(id, catalogueId);
         if (auth != null && auth.isAuthenticated()) {

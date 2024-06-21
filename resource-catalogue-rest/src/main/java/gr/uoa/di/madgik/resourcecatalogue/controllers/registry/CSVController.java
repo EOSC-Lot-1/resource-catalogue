@@ -1,13 +1,13 @@
 package gr.uoa.di.madgik.resourcecatalogue.controllers.registry;
 
 import com.google.gson.Gson;
+import gr.uoa.di.madgik.registry.domain.FacetFilter;
+import gr.uoa.di.madgik.registry.domain.Paging;
 import gr.uoa.di.madgik.resourcecatalogue.domain.ProviderBundle;
 import gr.uoa.di.madgik.resourcecatalogue.domain.ServiceBundle;
 import gr.uoa.di.madgik.resourcecatalogue.domain.User;
 import gr.uoa.di.madgik.resourcecatalogue.service.ProviderService;
 import gr.uoa.di.madgik.resourcecatalogue.service.ServiceBundleService;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
-import gr.uoa.di.madgik.registry.domain.Paging;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +16,7 @@ import org.json.CDL;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,24 +26,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+@Profile("beyond")
 @RestController
 @RequestMapping("exportToCSV")
 @Tag(name = "csv", description = "Download Providers and/or Services to CSV")
 public class CSVController {
 
     private static Logger logger = LogManager.getLogger(CSVController.class);
-    private final ServiceBundleService<ServiceBundle> serviceBundleService;
-    private final ProviderService<ProviderBundle, Authentication> providerService;
+    private final ServiceBundleService serviceBundleService;
+    private final ProviderService providerService;
 
     @Value("${elastic.index.max_result_window:10000}")
     private int maxQuantity;
 
     @Autowired
-    CSVController(ServiceBundleService<ServiceBundle> service, ProviderService<ProviderBundle, Authentication> provider) {
+    CSVController(ServiceBundleService service, ProviderService provider) {
         this.serviceBundleService = service;
         this.providerService = provider;
     }

@@ -1,6 +1,8 @@
 package gr.uoa.di.madgik.resourcecatalogue.controllers.publicresources;
 
 import com.google.gson.Gson;
+import gr.uoa.di.madgik.registry.domain.FacetFilter;
+import gr.uoa.di.madgik.registry.domain.Paging;
 import gr.uoa.di.madgik.resourcecatalogue.annotations.Browse;
 import gr.uoa.di.madgik.resourcecatalogue.annotations.BrowseCatalogue;
 import gr.uoa.di.madgik.resourcecatalogue.domain.TrainingResource;
@@ -8,12 +10,9 @@ import gr.uoa.di.madgik.resourcecatalogue.domain.TrainingResourceBundle;
 import gr.uoa.di.madgik.resourcecatalogue.domain.User;
 import gr.uoa.di.madgik.resourcecatalogue.service.GenericResourceService;
 import gr.uoa.di.madgik.resourcecatalogue.service.ResourceService;
-import gr.uoa.di.madgik.resourcecatalogue.service.TrainingResourceService;
 import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
+import gr.uoa.di.madgik.resourcecatalogue.service.TrainingResourceService;
 import gr.uoa.di.madgik.resourcecatalogue.utils.FacetFilterUtils;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
-import gr.uoa.di.madgik.registry.domain.Paging;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,6 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 
+@Profile("beyond")
 @RestController
 @RequestMapping
 @Tag(name = "public training resource")
@@ -42,14 +43,14 @@ public class PublicTrainingResourceController {
     private static final Gson gson = new Gson();
 
     private final SecurityService securityService;
-    private final TrainingResourceService<TrainingResourceBundle> trainingResourceBundleService;
-    private final ResourceService<TrainingResourceBundle, Authentication> publicTrainingResourceManager;
+    private final TrainingResourceService trainingResourceBundleService;
+    private final ResourceService<TrainingResourceBundle> publicTrainingResourceManager;
     private final GenericResourceService genericResourceService;
 
 
     PublicTrainingResourceController(SecurityService securityService,
-                                     TrainingResourceService<TrainingResourceBundle> trainingResourceBundleService,
-                                     @Qualifier("publicTrainingResourceManager") ResourceService<TrainingResourceBundle, Authentication> publicTrainingResourceManager,
+                                     TrainingResourceService trainingResourceBundleService,
+                                     @Qualifier("publicTrainingResourceManager") ResourceService<TrainingResourceBundle> publicTrainingResourceManager,
                                      GenericResourceService genericResourceService) {
         this.securityService = securityService;
         this.trainingResourceBundleService = trainingResourceBundleService;
@@ -60,7 +61,7 @@ public class PublicTrainingResourceController {
     @Operation(summary = "Returns the Public Training Resource with the given id.")
     @GetMapping(path = "public/trainingResource/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<?> getPublicTrainingResource(@PathVariable("id") String id,
-                                                       @RequestParam(defaultValue = "${project.catalogue.name}", name = "catalogue_id") String catalogueId,
+                                                       @RequestParam(defaultValue = "${catalogue.id}", name = "catalogue_id") String catalogueId,
                                                        @Parameter(hidden = true) Authentication auth) {
         TrainingResourceBundle trainingResourceBundle = trainingResourceBundleService.get(id, catalogueId);
         if (auth != null && auth.isAuthenticated()) {
@@ -84,7 +85,7 @@ public class PublicTrainingResourceController {
     @GetMapping(path = "public/trainingResource/trainingResourceBundle/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.isResourceProviderAdmin(#auth, #id, #catalogueId)")
     public ResponseEntity<?> getPublicTrainingResourceBundle(@PathVariable("id") String id,
-                                                             @RequestParam(defaultValue = "${project.catalogue.name}", name = "catalogue_id") String catalogueId,
+                                                             @RequestParam(defaultValue = "${catalogue.id}", name = "catalogue_id") String catalogueId,
                                                              @Parameter(hidden = true) Authentication auth) {
         TrainingResourceBundle trainingResourceBundle = trainingResourceBundleService.get(id, catalogueId);
         if (auth != null && auth.isAuthenticated()) {

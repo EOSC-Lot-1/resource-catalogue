@@ -8,11 +8,10 @@ import gr.uoa.di.madgik.resourcecatalogue.exception.ValidationException;
 import gr.uoa.di.madgik.resourcecatalogue.manager.ProviderManager;
 import gr.uoa.di.madgik.resourcecatalogue.service.*;
 import org.apache.commons.validator.routines.EmailValidator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -27,14 +26,14 @@ import java.util.stream.Collectors;
 @Service
 public class FieldValidator {
 
-    private static final Logger logger = LogManager.getLogger(FieldValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(FieldValidator.class);
 
     private final VocabularyService vocabularyService;
     private final ProviderManager providerService;
-    private final ServiceBundleService<ServiceBundle> serviceBundleService;
-    private final TrainingResourceService<TrainingResourceBundle> trainingResourceService;
-    private final CatalogueService<CatalogueBundle, Authentication> catalogueService;
-    private final InteroperabilityRecordService<InteroperabilityRecordBundle> interoperabilityRecordService;
+    private final ServiceBundleService serviceBundleService;
+    private final TrainingResourceService trainingResourceService;
+    private final CatalogueService catalogueService;
+    private final InteroperabilityRecordService interoperabilityRecordService;
 
     private static final String MANDATORY_FIELD = "Field '%s' is mandatory.";
     private static final String NULL_OBJECT = "Attempt to validate null object..";
@@ -44,10 +43,10 @@ public class FieldValidator {
     @Autowired
     public FieldValidator(VocabularyService vocabularyService,
                           ProviderManager providerService,
-                          @Lazy ServiceBundleService<ServiceBundle> serviceBundleService,
-                          @Lazy TrainingResourceService<TrainingResourceBundle> trainingResourceService,
-                          @Lazy CatalogueService<CatalogueBundle, Authentication> catalogueService,
-                          @Lazy InteroperabilityRecordService<InteroperabilityRecordBundle> interoperabilityRecordService) {
+                          @Lazy ServiceBundleService serviceBundleService,
+                          @Lazy TrainingResourceService trainingResourceService,
+                          @Lazy CatalogueService catalogueService,
+                          @Lazy InteroperabilityRecordService interoperabilityRecordService) {
         this.vocabularyService = vocabularyService;
         this.providerService = providerService;
         this.serviceBundleService = serviceBundleService;

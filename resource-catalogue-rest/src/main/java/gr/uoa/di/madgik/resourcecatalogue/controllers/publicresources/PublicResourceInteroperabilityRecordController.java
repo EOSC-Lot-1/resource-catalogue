@@ -1,23 +1,25 @@
 package gr.uoa.di.madgik.resourcecatalogue.controllers.publicresources;
 
 import com.google.gson.Gson;
+import gr.uoa.di.madgik.registry.domain.FacetFilter;
+import gr.uoa.di.madgik.registry.domain.Paging;
 import gr.uoa.di.madgik.resourcecatalogue.annotations.Browse;
 import gr.uoa.di.madgik.resourcecatalogue.annotations.BrowseCatalogue;
-import gr.uoa.di.madgik.resourcecatalogue.domain.*;
+import gr.uoa.di.madgik.resourcecatalogue.domain.ResourceInteroperabilityRecord;
+import gr.uoa.di.madgik.resourcecatalogue.domain.ResourceInteroperabilityRecordBundle;
+import gr.uoa.di.madgik.resourcecatalogue.domain.User;
 import gr.uoa.di.madgik.resourcecatalogue.service.GenericResourceService;
 import gr.uoa.di.madgik.resourcecatalogue.service.ResourceInteroperabilityRecordService;
 import gr.uoa.di.madgik.resourcecatalogue.service.ResourceService;
 import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
 import gr.uoa.di.madgik.resourcecatalogue.utils.FacetFilterUtils;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
-import gr.uoa.di.madgik.registry.domain.Paging;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Profile("beyond")
 @RestController
 @RequestMapping
 @Tag(name = "public resource interoperability record")
@@ -37,13 +40,13 @@ public class PublicResourceInteroperabilityRecordController {
     private static final Gson gson = new Gson();
 
     private final SecurityService securityService;
-    private final ResourceInteroperabilityRecordService<ResourceInteroperabilityRecordBundle> resourceInteroperabilityRecordService;
-    private final ResourceService<ResourceInteroperabilityRecordBundle, Authentication> publicResourceInteroperabilityRecordManager;
+    private final ResourceInteroperabilityRecordService resourceInteroperabilityRecordService;
+    private final ResourceService<ResourceInteroperabilityRecordBundle> publicResourceInteroperabilityRecordManager;
     private final GenericResourceService genericResourceService;
 
     PublicResourceInteroperabilityRecordController(SecurityService securityService,
-                                                   ResourceInteroperabilityRecordService<ResourceInteroperabilityRecordBundle> resourceInteroperabilityRecordService,
-                                                   @Qualifier("publicResourceInteroperabilityRecordManager") ResourceService<ResourceInteroperabilityRecordBundle, Authentication> publicResourceInteroperabilityRecordManager,
+                                                   ResourceInteroperabilityRecordService resourceInteroperabilityRecordService,
+                                                   @Qualifier("publicResourceInteroperabilityRecordManager") ResourceService<ResourceInteroperabilityRecordBundle> publicResourceInteroperabilityRecordManager,
                                                    GenericResourceService genericResourceService) {
 
         this.securityService = securityService;

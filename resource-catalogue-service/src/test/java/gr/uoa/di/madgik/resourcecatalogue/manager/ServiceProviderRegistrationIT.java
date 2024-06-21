@@ -8,12 +8,11 @@ import gr.uoa.di.madgik.resourcecatalogue.service.VocabularyService;
 import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
 import gr.uoa.di.madgik.registry.exception.ResourceNotFoundException;
 import gr.uoa.di.madgik.registry.service.ServiceException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -32,13 +31,13 @@ import java.util.List;
 @WebAppConfiguration
 public class ServiceProviderRegistrationIT {
 
-    private static final Logger logger = LogManager.getLogger(ServiceProviderRegistrationIT.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServiceProviderRegistrationIT.class);
 
     @Autowired
-    ProviderService<ProviderBundle, Authentication> providerService;
+    ProviderService providerService;
 
     @Autowired
-    ServiceBundleService<ServiceBundle> serviceBundleService;
+    ServiceBundleService serviceBundleService;
 
     @Autowired
     VocabularyService vocabularyService;
@@ -53,7 +52,7 @@ public class ServiceProviderRegistrationIT {
         try {
             provider = addProvider("*&*");
         } catch (ServiceException e) {
-            logger.info(e);
+            logger.info(e.getMessage(), e);
         }
         assert provider == null;
     }
@@ -73,21 +72,21 @@ public class ServiceProviderRegistrationIT {
             provider = updateProvider(providerId);
             assert provider != null;
 
-            providerService.verifyProvider(providerId, "pending template submission", true, securityService.getAdminAccess());
+            providerService.verify(providerId, "pending template submission", true, securityService.getAdminAccess());
 
             serviceBundle = new ServiceBundle(createService("WP4_TestService", provider.getProvider()));
 
-            serviceBundle = serviceBundleService.addResource(serviceBundle, securityService.getAdminAccess());
+            serviceBundle = (ServiceBundle) serviceBundleService.addResource(serviceBundle, securityService.getAdminAccess());
 
             assert serviceBundle != null;
 
-            providerService.verifyProvider(providerId, "rejected template", false, securityService.getAdminAccess());
+            providerService.verify(providerId, "rejected template", false, securityService.getAdminAccess());
 
             serviceBundleService.updateResource(serviceBundle, "woof", securityService.getAdminAccess());
 
-            providerService.verifyProvider(providerId, "approved", true, securityService.getAdminAccess());
-            providerService.verifyProvider(providerId, "approved", false, securityService.getAdminAccess());
-            providerService.verifyProvider(providerId, "rejected", false, securityService.getAdminAccess());
+            providerService.verify(providerId, "approved", true, securityService.getAdminAccess());
+            providerService.verify(providerId, "approved", false, securityService.getAdminAccess());
+            providerService.verify(providerId, "rejected", false, securityService.getAdminAccess());
 
         } catch (RuntimeException e) {
             logger.error("ERROR", e);

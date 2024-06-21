@@ -3,16 +3,13 @@ package gr.uoa.di.madgik.resourcecatalogue.service;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gr.uoa.di.madgik.resourcecatalogue.service.Analytics;
-import gr.uoa.di.madgik.resourcecatalogue.service.StatisticsService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -30,7 +27,7 @@ import static gr.uoa.di.madgik.resourcecatalogue.config.Properties.Cache.CACHE_V
 @Component
 public class AnalyticsService implements Analytics {
 
-    private static final Logger logger = LogManager.getLogger(AnalyticsService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AnalyticsService.class);
     private static final String visitsTemplate = "%s/index.php?token_auth=%s&module=API&method=Actions.getPageUrls&format=JSON&idSite=%s&period=day&flat=1&filter_limit=100&period=%s&date=last30";
     private static final String serviceVisitsTemplate = "%s/index.php?token_auth=%s&module=API&method=Actions.getPageUrls&format=JSON&idSite=%s&flat=1&period=range&date=2017-01-01,%s";
     private String visits;

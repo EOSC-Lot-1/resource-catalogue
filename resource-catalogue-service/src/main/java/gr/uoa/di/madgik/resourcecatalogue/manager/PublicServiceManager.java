@@ -3,6 +3,7 @@ package gr.uoa.di.madgik.resourcecatalogue.manager;
 import gr.uoa.di.madgik.registry.domain.Browsing;
 import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import gr.uoa.di.madgik.registry.service.ResourceCRUDService;
+import gr.uoa.di.madgik.resourcecatalogue.domain.AlternativeIdentifier;
 import gr.uoa.di.madgik.resourcecatalogue.domain.Identifiers;
 import gr.uoa.di.madgik.resourcecatalogue.domain.ServiceBundle;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceException;
@@ -12,11 +13,11 @@ import gr.uoa.di.madgik.resourcecatalogue.utils.FacetLabelService;
 import gr.uoa.di.madgik.resourcecatalogue.utils.JmsService;
 import gr.uoa.di.madgik.resourcecatalogue.utils.ProviderResourcesCommonMethods;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.common.exceptions.UnauthorizedUserException;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,14 +27,15 @@ import java.util.List;
 @Service("publicServiceManager")
 public class PublicServiceManager extends AbstractPublicResourceManager<ServiceBundle> implements ResourceCRUDService<ServiceBundle, Authentication> {
 
-    private static final Logger logger = LogManager.getLogger(PublicServiceManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(PublicServiceManager.class);
     private final JmsService jmsService;
     private final SecurityService securityService;
     private final ProviderResourcesCommonMethods commonMethods;
     private final FacetLabelService facetLabelService;
 
     @Autowired
-    public PublicServiceManager(JmsService jmsService, SecurityService securityService,
+    public PublicServiceManager(JmsService jmsService,
+                                SecurityService securityService,
                                 ProviderResourcesCommonMethods commonMethods,
                                 FacetLabelService facetLabelService) {
         super(ServiceBundle.class);
@@ -60,7 +62,7 @@ public class PublicServiceManager extends AbstractPublicResourceManager<ServiceB
     @Override
     public Browsing<ServiceBundle> getMy(FacetFilter facetFilter, Authentication authentication) {
         if (authentication == null) {
-            throw new UnauthorizedUserException("Please log in.");
+            throw new InsufficientAuthenticationException("Please log in.");
         }
 
         List<ServiceBundle> serviceBundleList = new ArrayList<>();
@@ -85,8 +87,20 @@ public class PublicServiceManager extends AbstractPublicResourceManager<ServiceB
         updateServiceIdsToPublic(serviceBundle);
 
         serviceBundle.getMetadata().setPublished(true);
-        // create PID and set it as Alternative Identifier
-        commonMethods.createPIDAndCorrespondingAlternativeIdentifier(serviceBundle, "services/");
+        // POST PID
+        String pid = "no_pid";
+        for (AlternativeIdentifier alternativeIdentifier : serviceBundle.getService().getAlternativeIdentifiers()) {
+            if (alternativeIdentifier.getType().equalsIgnoreCase("EOSC PID")) {
+                pid = alternativeIdentifier.getValue();
+                break;
+            }
+        }
+        if (pid.equalsIgnoreCase("no_pid")) {
+            logger.info("Service with id {} does not have a PID registered under its AlternativeIdentifiers.",
+                    serviceBundle.getId());
+        } else {
+            commonMethods.postPID(pid);
+        }
         ServiceBundle ret;
         logger.info(String.format("Service [%s] is being published with id [%s]", lowerLevelResourceId, serviceBundle.getId()));
         ret = super.add(serviceBundle, null);

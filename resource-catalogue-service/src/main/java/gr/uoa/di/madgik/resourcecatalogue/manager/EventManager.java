@@ -1,25 +1,24 @@
 package gr.uoa.di.madgik.resourcecatalogue.manager;
 
-import gr.uoa.di.madgik.resourcecatalogue.domain.Event;
-import gr.uoa.di.madgik.resourcecatalogue.domain.ServiceBundle;
-import gr.uoa.di.madgik.resourcecatalogue.utils.AuthenticationInfo;
-import gr.uoa.di.madgik.resourcecatalogue.service.EventService;
-import gr.uoa.di.madgik.resourcecatalogue.service.ServiceBundleService;
 import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import gr.uoa.di.madgik.registry.domain.Paging;
 import gr.uoa.di.madgik.registry.domain.Resource;
 import gr.uoa.di.madgik.registry.exception.ResourceNotFoundException;
 import gr.uoa.di.madgik.registry.service.ParserService;
 import gr.uoa.di.madgik.registry.service.SearchService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import gr.uoa.di.madgik.resourcecatalogue.domain.Event;
+import gr.uoa.di.madgik.resourcecatalogue.service.EventService;
+import gr.uoa.di.madgik.resourcecatalogue.service.ServiceBundleService;
+import gr.uoa.di.madgik.resourcecatalogue.utils.AuthenticationInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,13 +30,13 @@ import static gr.uoa.di.madgik.resourcecatalogue.config.Properties.Cache.CACHE_S
 @Component
 public class EventManager extends ResourceManager<Event> implements EventService {
 
-    private static final Logger logger = LogManager.getLogger(EventManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(EventManager.class);
     private final ParserService parserService;
-    private final ServiceBundleService<ServiceBundle> serviceBundleService;
+    private final ServiceBundleService serviceBundleService;
 
     @Autowired
     public EventManager(ParserService parserService,
-                        @Lazy ServiceBundleService<ServiceBundle> serviceBundleService) {
+                        @Lazy ServiceBundleService serviceBundleService) {
         super(Event.class);
         this.parserService = parserService;
         this.serviceBundleService = serviceBundleService;

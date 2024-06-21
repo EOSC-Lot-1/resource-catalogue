@@ -2,13 +2,12 @@ package gr.uoa.di.madgik.resourcecatalogue.manager;
 
 import gr.uoa.di.madgik.registry.domain.*;
 import gr.uoa.di.madgik.registry.domain.index.IndexField;
-import gr.uoa.di.madgik.registry.service.AbstractGenericService;
 import gr.uoa.di.madgik.registry.service.ParserService;
 import gr.uoa.di.madgik.registry.service.SearchService;
 import gr.uoa.di.madgik.registry.service.ServiceException;
 import gr.uoa.di.madgik.resourcecatalogue.config.Properties.Cache;
 import gr.uoa.di.madgik.resourcecatalogue.domain.*;
-import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceException;
+import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceAlreadyExistsException;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceNotFoundException;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ValidationException;
 import gr.uoa.di.madgik.resourcecatalogue.service.*;
@@ -17,13 +16,12 @@ import gr.uoa.di.madgik.resourcecatalogue.utils.FacetLabelService;
 import gr.uoa.di.madgik.resourcecatalogue.utils.ProviderResourcesCommonMethods;
 import gr.uoa.di.madgik.resourcecatalogue.utils.TextUtils;
 import gr.uoa.di.madgik.resourcecatalogue.validators.FieldValidator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.Validator;
@@ -38,9 +36,9 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
-public abstract class AbstractServiceBundleManager<T extends ServiceBundle> extends AbstractGenericService<T> implements ServiceBundleService<T> {
+public abstract class AbstractServiceBundleManager<T extends ServiceBundle> extends ResourceManager<T> implements ServiceBundleService<T> {
 
-    private static final Logger logger = LogManager.getLogger(AbstractServiceBundleManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractServiceBundleManager.class);
 
     public AbstractServiceBundleManager(Class<T> typeParameterClass) {
         super(typeParameterClass);
@@ -49,26 +47,20 @@ public abstract class AbstractServiceBundleManager<T extends ServiceBundle> exte
     @Autowired
     private VocabularyService vocabularyService;
     @Autowired
-    private ProviderService<ProviderBundle, Authentication> providerService;
-    @Autowired
     private FacetLabelService facetLabelService;
     @Autowired
     @Qualifier("serviceSync")
     private SynchronizerService<Service> synchronizerService;
     @Autowired
-    private AnalyticsService analyticsService;
-    @Autowired
     private SearchService searchService;
-    @Autowired
-    private IdCreator idCreator;
     private List<String> browseBy;
     private Map<String, String> labels;
     @Autowired
     private SecurityService securityService;
     @Autowired
     private FieldValidator fieldValidator;
-    @Value("${project.catalogue.name}")
-    private String catalogueName;
+    @Value("${catalogue.id}")
+    private String catalogueId;
 
     @Autowired
     @Qualifier("serviceValidator")
@@ -139,7 +131,7 @@ public abstract class AbstractServiceBundleManager<T extends ServiceBundle> exte
     public T get(String id) {
         T resource = null;
         try {
-            resource = get(id, catalogueName);
+            resource = get(id, catalogueId);
         } catch (ResourceNotFoundException e) {
             resource = checkIdExistenceInOtherCatalogues(id);
             if (resource == null) {
@@ -168,16 +160,13 @@ public abstract class AbstractServiceBundleManager<T extends ServiceBundle> exte
     @Override
     @CacheEvict(cacheNames = {Cache.CACHE_VISITS, Cache.CACHE_PROVIDERS, Cache.CACHE_FEATURED}, allEntries = true)
     public T add(T serviceBundle, Authentication auth) {
-        logger.trace("User '{}' is attempting to add a new Resource: {}", auth, serviceBundle);
-        if (serviceBundle.getService().getId() == null) {
-            serviceBundle.getService().setId(idCreator.createServiceId(serviceBundle));
-        }
+        logger.trace("Attempting to add a new Resource: {}", serviceBundle);
         // if Resource version is empty set it null
         if ("".equals(serviceBundle.getService().getVersion())) {
             serviceBundle.getService().setVersion(null);
         }
         if (exists(serviceBundle)) {
-            throw new ResourceException("Resource already exists!", HttpStatus.CONFLICT);
+            throw new ResourceAlreadyExistsException();
         }
 
         prettifyServiceTextFields(serviceBundle, ",");
@@ -197,7 +186,7 @@ public abstract class AbstractServiceBundleManager<T extends ServiceBundle> exte
     @Override
     @CacheEvict(cacheNames = {Cache.CACHE_VISITS, Cache.CACHE_PROVIDERS, Cache.CACHE_FEATURED}, allEntries = true)
     public T update(T serviceBundle, Authentication auth) {
-        logger.trace("User '{}' is attempting to update the Resource: {}", auth, serviceBundle);
+        logger.trace("Attempting to update the Resource: {}", serviceBundle);
         // if Resource version is empty set it null
         if ("".equals(serviceBundle.getService().getVersion())) {
             serviceBundle.getService().setVersion(null);
@@ -231,7 +220,7 @@ public abstract class AbstractServiceBundleManager<T extends ServiceBundle> exte
     }
 
     @Override
-    public boolean validate(ServiceBundle serviceBundle) {
+    public T validate(T serviceBundle) {
         Service service = serviceBundle.getService();
         //If we want to reject bad vocab ids instead of silently accept, here's where we do it
         logger.debug("Validating Resource with id: {}", service.getId());
@@ -243,7 +232,7 @@ public abstract class AbstractServiceBundleManager<T extends ServiceBundle> exte
         }
         serviceValidator.validate(serviceBundle, null);
 
-        return true;
+        return serviceBundle;
     }
 
     @Override
@@ -286,7 +275,7 @@ public abstract class AbstractServiceBundleManager<T extends ServiceBundle> exte
                 .map(id ->
                 {
                     try {
-                        return get(id, catalogueName);
+                        return get(id, catalogueId);
                     } catch (ServiceException | ResourceNotFoundException e) {
                         return null;
                     }
@@ -304,12 +293,6 @@ public abstract class AbstractServiceBundleManager<T extends ServiceBundle> exte
         return resource != null;
     }
 
-    String serialize(T serviceBundle) {
-        String serialized;
-        serialized = parserPool.serialize(serviceBundle, ParserService.ParserServiceTypes.fromString(resourceType.getPayloadType()));
-        return serialized;
-    }
-
     public T deserialize(Resource resource) {
         if (resource == null) {
             logger.warn("attempt to deserialize null resource");
@@ -318,8 +301,9 @@ public abstract class AbstractServiceBundleManager<T extends ServiceBundle> exte
         return parserPool.deserialize(resource, typeParameterClass);
     }
 
-    private boolean exists(T serviceBundle) {
-        return getResource(serviceBundle.getService().getId(), serviceBundle.getService().getCatalogueId()) != null;
+    public boolean exists(T serviceBundle) {
+        return serviceBundle.getId() != null &&
+                getResource(serviceBundle.getService().getId(), serviceBundle.getService().getCatalogueId()) != null;
     }
 
     public Resource getResource(String id, String catalogueId) {
@@ -372,7 +356,7 @@ public abstract class AbstractServiceBundleManager<T extends ServiceBundle> exte
     public Bundle<?> getResourceTemplate(String providerId, Authentication auth) {
         FacetFilter ff = new FacetFilter();
         ff.addFilter("resource_organisation", providerId);
-        ff.addFilter("catalogue_id", catalogueName);
+        ff.addFilter("catalogue_id", catalogueId);
         List<T> allProviderResources = getAll(ff, auth).getResults();
         for (T resourceBundle : allProviderResources) {
             if (resourceBundle.getStatus().equals(vocabularyService.get("pending resource").getId())) {
@@ -579,7 +563,7 @@ public abstract class AbstractServiceBundleManager<T extends ServiceBundle> exte
     public List<T> getInactiveResources(String providerId) {
         FacetFilter ff = new FacetFilter();
         ff.addFilter("resource_organisation", providerId);
-        ff.addFilter("catalogue_id", catalogueName);
+        ff.addFilter("catalogue_id", catalogueId);
         ff.addFilter("active", false);
         ff.setFrom(0);
         ff.setQuantity(maxQuantity);

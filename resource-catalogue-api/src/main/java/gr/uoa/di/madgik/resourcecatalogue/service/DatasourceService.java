@@ -4,9 +4,7 @@ import gr.uoa.di.madgik.registry.domain.Paging;
 import gr.uoa.di.madgik.resourcecatalogue.domain.DatasourceBundle;
 import org.springframework.security.core.Authentication;
 
-import java.util.List;
-
-public interface DatasourceService extends ResourceService<DatasourceBundle, Authentication> {
+public interface DatasourceService extends ResourceService<DatasourceBundle> {
 
     /**
      * Get the Datasource sub-profile of the specific Service of the specific Catalogue
@@ -36,7 +34,7 @@ public interface DatasourceService extends ResourceService<DatasourceBundle, Aut
      * @param auth   Authentication
      * @return {@link DatasourceBundle}
      */
-    DatasourceBundle verifyDatasource(String id, String status, Boolean active, Authentication auth);
+    DatasourceBundle verify(String id, String status, Boolean active, Authentication auth);
 
     /**
      * Update the specific DatasourceBundle
@@ -64,12 +62,4 @@ public interface DatasourceService extends ResourceService<DatasourceBundle, Aut
      * @return {@link Paging}&lt;{@link DatasourceBundle}&gt;
      */
     Paging<DatasourceBundle> getResourceBundles(String catalogueId, String serviceId, Authentication auth);
-
-    /**
-     * Add a list of DatasourceBundles on the Resource Catalogue
-     *
-     * @param datasourceList List of DatasourceBundles
-     * @param auth           Authentication
-     */
-    void addBulk(List<DatasourceBundle> datasourceList, Authentication auth);
 }

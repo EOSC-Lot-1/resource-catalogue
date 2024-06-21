@@ -1,10 +1,9 @@
 package gr.uoa.di.madgik.resourcecatalogue.controllers.registry;
 
+import gr.uoa.di.madgik.registry.exception.ResourceNotFoundException;
 import gr.uoa.di.madgik.resourcecatalogue.domain.Vocabulary;
 import gr.uoa.di.madgik.resourcecatalogue.dto.VocabularyTree;
 import gr.uoa.di.madgik.resourcecatalogue.service.VocabularyService;
-import gr.uoa.di.madgik.registry.exception.ResourceNotFoundException;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,14 +17,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("vocabulary")
 @Tag(name = "vocabulary")
-public class VocabularyController extends ResourceController<Vocabulary, Authentication> {
+public class VocabularyController extends ResourceController<Vocabulary> {
 
     private static final Logger logger = LogManager.getLogger(VocabularyController.class);
     private final VocabularyService vocabularyService;
@@ -115,14 +116,14 @@ public class VocabularyController extends ResourceController<Vocabulary, Authent
 
     @PutMapping(path = "/updateBulk", produces = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void updateBulk(@RequestBody List<Vocabulary> vocabularies, @Parameter(hidden = true) Authentication auth) {
+    public void updateBulk(@RequestBody List<Vocabulary> vocabularies, @Parameter(hidden = true) Authentication auth) throws ResourceNotFoundException {
         vocabularyService.updateBulk(vocabularies, auth);
     }
 
     @DeleteMapping(path = "/deleteBulk", produces = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteBulk(@Parameter(hidden = true) Authentication auth) {
-        vocabularyService.deleteBulk(auth);
+        vocabularyService.deleteAll(auth);
     }
 
     @DeleteMapping(path = "/deleteByType/{type}", produces = {MediaType.APPLICATION_JSON_VALUE})

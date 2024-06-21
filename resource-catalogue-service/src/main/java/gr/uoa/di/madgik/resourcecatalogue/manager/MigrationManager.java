@@ -1,16 +1,14 @@
 package gr.uoa.di.madgik.resourcecatalogue.manager;
 
-import gr.uoa.di.madgik.resourcecatalogue.domain.*;
+import gr.uoa.di.madgik.registry.domain.FacetFilter;
+import gr.uoa.di.madgik.registry.domain.Resource;
+import gr.uoa.di.madgik.registry.service.ResourceService;
 import gr.uoa.di.madgik.resourcecatalogue.domain.*;
 import gr.uoa.di.madgik.resourcecatalogue.service.MigrationService;
 import gr.uoa.di.madgik.resourcecatalogue.service.SecurityService;
 import gr.uoa.di.madgik.resourcecatalogue.utils.JmsService;
-import gr.uoa.di.madgik.registry.domain.FacetFilter;
-import gr.uoa.di.madgik.registry.domain.Resource;
-import gr.uoa.di.madgik.registry.service.ResourceService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -20,7 +18,7 @@ import java.util.List;
 @Service
 public class MigrationManager implements MigrationService {
 
-    private static final Logger logger = LogManager.getLogger(MigrationManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(MigrationManager.class);
 
     private final ServiceBundleManager serviceBundleManager;
     private final PublicServiceManager publicServiceManager;
@@ -37,12 +35,11 @@ public class MigrationManager implements MigrationService {
     private final JmsService jmsService;
     private final SecurityService securityService;
 
-    @Value("${project.catalogue.name}")
-    private String catalogueName;
+    @Value("${catalogue.id}")
+    private String catalogueId;
     @Value("${elastic.index.max_result_window:10000}")
     private int maxQuantity;
 
-    @Autowired
     public MigrationManager(ServiceBundleManager serviceBundleManager, PublicServiceManager publicServiceManager,
                             TrainingResourceManager trainingResourceManager, DatasourceManager datasourceManager,
                             InteroperabilityRecordManager interoperabilityRecordManager,
@@ -221,7 +218,7 @@ public class MigrationManager implements MigrationService {
                 resource.setPayload(trainingResourceManager.serialize(trainingResourceBundle));
                 resourceService.updateResource(resource);
                 // update Public Training Resource
-                TrainingResourceBundle updatedTrainingResourceBundle = trainingResourceManager.get(newResourceId, catalogueName);
+                TrainingResourceBundle updatedTrainingResourceBundle = trainingResourceManager.get(newResourceId, catalogueId);
                 publicTrainingResourceManager.update(updatedTrainingResourceBundle, securityService.getAdminAccess());
             }
         }

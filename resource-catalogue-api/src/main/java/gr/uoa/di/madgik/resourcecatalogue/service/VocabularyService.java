@@ -8,7 +8,7 @@ import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
 
-public interface VocabularyService extends ResourceService<Vocabulary, Authentication> {
+public interface VocabularyService extends ResourceService<Vocabulary> {
 
     /**
      * Retrieves Vocabulary based on id or throws exception if not found.
@@ -57,25 +57,9 @@ public interface VocabularyService extends ResourceService<Vocabulary, Authentic
     Map<String, Vocabulary> getVocabulariesMap();
 
     /**
-     * Adds an aggregation of Vocabularies
-     *
-     * @param vocabularies List of Vocabularies to be added
-     * @param auth         Authentication
-     */
-    void addBulk(List<Vocabulary> vocabularies, Authentication auth);
-
-    /**
-     * Updates an aggregation of Vocabularies
-     *
-     * @param vocabularies List of Vocabularies to be updated
-     * @param auth         Authentication
-     */
-    void updateBulk(List<Vocabulary> vocabularies, Authentication auth);
-
-    /**
      * Deletes all Vocabularies.
      */
-    void deleteBulk(Authentication auth);
+    void deleteAll(Authentication auth);
 
     /**
      * Returns a Tree of parents and children for a specific Vocabulary Type

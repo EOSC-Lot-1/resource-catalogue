@@ -1,19 +1,18 @@
 package gr.uoa.di.madgik.resourcecatalogue.manager;
 
-import gr.uoa.di.madgik.registry.service.SearchService;
-import gr.uoa.di.madgik.resourcecatalogue.domain.*;
-import gr.uoa.di.madgik.resourcecatalogue.exception.ValidationException;
-import gr.uoa.di.madgik.resourcecatalogue.service.RegistrationMailService;
-import gr.uoa.di.madgik.resourcecatalogue.service.*;
 import gr.uoa.di.madgik.registry.domain.Browsing;
 import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import gr.uoa.di.madgik.registry.domain.Paging;
 import gr.uoa.di.madgik.registry.domain.Resource;
+import gr.uoa.di.madgik.registry.service.SearchService;
+import gr.uoa.di.madgik.resourcecatalogue.domain.*;
+import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceAlreadyExistsException;
+import gr.uoa.di.madgik.resourcecatalogue.exception.ValidationException;
+import gr.uoa.di.madgik.resourcecatalogue.service.*;
 import gr.uoa.di.madgik.resourcecatalogue.utils.FacetLabelService;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.mitre.openid.connect.model.OIDCAuthenticationToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -26,13 +25,13 @@ import java.util.stream.Collectors;
 
 
 @Component
-public class VocabularyCurationManager extends ResourceManager<VocabularyCuration> implements VocabularyCurationService<VocabularyCuration, Authentication> {
+public class VocabularyCurationManager extends ResourceManager<VocabularyCuration> implements VocabularyCurationService {
 
-    private static final Logger logger = LogManager.getLogger(VocabularyCurationManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(VocabularyCurationManager.class);
     private final RegistrationMailService registrationMailService;
-    private final ProviderService<ProviderBundle, Authentication> providerService;
+    private final ProviderService providerService;
     private final ServiceBundleService<ServiceBundle> serviceBundleService;
-    private final TrainingResourceService<TrainingResourceBundle> trainingResourceService;
+    private final TrainingResourceService trainingResourceService;
 
     @Autowired
     private VocabularyService vocabularyService;
@@ -47,16 +46,15 @@ public class VocabularyCurationManager extends ResourceManager<VocabularyCuratio
     @Autowired
     private SearchService searchService;
 
-    @Value("${project.catalogue.name}")
-    private String catalogueName;
+    @Value("${catalogue.id}")
+    private String catalogueId;
+    private final IdCreator idCreator;
 
-
-    @Autowired
     public VocabularyCurationManager(@Lazy RegistrationMailService registrationMailService, ProviderService providerService,
                                      ServiceBundleService<ServiceBundle> serviceBundleService,
-                                     TrainingResourceService<TrainingResourceBundle> trainingResourceService,
+                                     TrainingResourceService trainingResourceService,
                                      AbstractServiceBundleManager<ServiceBundle> abstractServiceBundleManager,
-                                     GenericManager genericManager) {
+                                     GenericManager genericManager, IdCreator idCreator) {
         super(VocabularyCuration.class);
         this.registrationMailService = registrationMailService;
         this.providerService = providerService;
@@ -64,6 +62,7 @@ public class VocabularyCurationManager extends ResourceManager<VocabularyCuratio
         this.trainingResourceService = trainingResourceService;
         this.abstractServiceBundleManager = abstractServiceBundleManager;
         this.genericManager = genericManager;
+        this.idCreator = idCreator;
     }
 
     @Override
@@ -73,11 +72,8 @@ public class VocabularyCurationManager extends ResourceManager<VocabularyCuratio
 
     @Override
     public VocabularyCuration add(VocabularyCuration vocabularyCuration, String resourceType, Authentication auth) {
-        if ((vocabularyCuration.getId() == null) || vocabularyCuration.getId().equals("")) {
-            vocabularyCuration.setId(UUID.randomUUID().toString());
-        } else {
-            throw new ValidationException("You must not provide a VocabularyCuration id");
-        }
+        User user = User.of(auth);
+        vocabularyCuration.setId(idCreator.generate(getResourceType()));
         // set status, dateOfRequest, userId
         vocabularyCuration.setStatus(VocabularyCuration.Status.PENDING.getKey());
         vocabularyCuration.setRejectionReason(null);
@@ -85,14 +81,14 @@ public class VocabularyCurationManager extends ResourceManager<VocabularyCuratio
         vocabularyCuration.setResolutionUser(null);
         for (VocabularyEntryRequest vocEntryRequest : vocabularyCuration.getVocabularyEntryRequests()) {
             vocEntryRequest.setDateOfRequest(DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH));
-            vocEntryRequest.setUserId(((OIDCAuthenticationToken) auth).getUserInfo().getEmail());
+            vocEntryRequest.setUserId(user.getEmail());
         }
         // if vocabularyCuration doesn't exist
         validate(vocabularyCuration, resourceType, auth);
         if (vocabularyCuration.getVocabularyEntryRequests().size() == 1) {
             super.add(vocabularyCuration, auth);
             logger.info("Adding Vocabulary Curation: {}", vocabularyCuration);
-            registrationMailService.sendVocabularyCurationEmails(vocabularyCuration, ((OIDCAuthenticationToken) auth).getUserInfo().getName());
+            registrationMailService.sendVocabularyCurationEmails(vocabularyCuration, user.getName());
             // if vocabularyCuration already exists in "pending"
         } else {
             update(vocabularyCuration, auth);
@@ -117,7 +113,7 @@ public class VocabularyCurationManager extends ResourceManager<VocabularyCuratio
             allVocsIds.add(vocabulary.getName());
         }
         if (allVocsIds.contains(vocabularyCuration.getEntryValueName())) {
-            throw new ValidationException("Vocabulary with name " + vocabularyCuration.getEntryValueName() + " already exists.");
+            throw new ResourceAlreadyExistsException("Vocabulary with name " + vocabularyCuration.getEntryValueName() + " already exists.");
         }
 
         // check if vocabularyCuration already exists in "pending"
@@ -202,18 +198,18 @@ public class VocabularyCurationManager extends ResourceManager<VocabularyCuratio
         }
 
         // validate if providerId/resourceId exists
-        ProviderBundle providerBundle = providerService.get(catalogueName, vocabularyCuration.getVocabularyEntryRequests().get(0).getProviderId(), auth);
+        ProviderBundle providerBundle = providerService.get(catalogueId, vocabularyCuration.getVocabularyEntryRequests().get(0).getProviderId(), auth);
         switch (resourceType) {
             case "provider":
                 break;
             case "service":
-                ServiceBundle serviceBundle = serviceBundleService.get(vocabularyCuration.getVocabularyEntryRequests().get(0).getResourceId(), catalogueName);
+                ServiceBundle serviceBundle = serviceBundleService.get(vocabularyCuration.getVocabularyEntryRequests().get(0).getResourceId(), catalogueId);
                 if (!serviceBundle.getService().getResourceOrganisation().equals(providerBundle.getId())) {
                     throw new ValidationException(String.format("Provider with id [%s] does not have a Service with id [%s] registered.", providerBundle.getId(), serviceBundle.getId()));
                 }
                 break;
             case "training_resource":
-                TrainingResourceBundle trainingResourceBundle = trainingResourceService.get(vocabularyCuration.getVocabularyEntryRequests().get(0).getResourceId(), catalogueName);
+                TrainingResourceBundle trainingResourceBundle = trainingResourceService.get(vocabularyCuration.getVocabularyEntryRequests().get(0).getResourceId(), catalogueId);
                 if (!trainingResourceBundle.getTrainingResource().getResourceOrganisation().equals(providerBundle.getId())) {
                     throw new ValidationException(String.format("Provider with id [%s] does not have a Training Resource with id [%s] registered.", providerBundle.getId(), trainingResourceBundle.getId()));
                 }
