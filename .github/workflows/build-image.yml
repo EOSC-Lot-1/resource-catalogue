@@ -6,7 +6,7 @@ on:
     branches:
     #- 'version/5'
     tags:
-    - '5.*'
+    - 'v5.*'
   
 permissions:
   actions: read
@@ -24,7 +24,7 @@ jobs:
       github.ref_type == 'tag'
     steps:
     - run: >-
-        echo "app_version=$(echo ${{ github.ref_name }} | grep -Po '^[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
+        echo "app_version=$(echo ${{ github.ref_name }} | grep -Po '^v[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
     - run: >-
         echo "app_version=${{ env.app_version }}"
     - uses: actions/checkout@v3
