@@ -1,0 +1,128 @@
+# vim: set syntax=jproperties:
+
+##########################
+## Mandatory Properties ##
+##########################
+
+fqdn=eosc.catalogue.localhost
+platform.root=http://${fqdn}/
+registry.host=http://${fqdn}:8090/resource-catalogue-service
+swagger.url=${platform.root}
+
+server.port=8090
+server.servlet.context-path=/resource-catalogue-service
+
+jdbc.url=jdbc:postgresql://postgres:5432/catalogue
+jdbc.username=catalogue
+jdbc.password=coViL+cYMO8E
+
+elasticsearch.url=
+elasticsearch.port=
+elasticsearch.cluster=
+
+jms.host=tcp://${fqdn}:61616
+jms.prefix=<local>
+
+oidc.issuer=https://accounts.google.com
+oidc.authorization=https://accounts.google.com/o/oauth2/v2/auth
+oidc.token=https://oauth2.googleapis.com/token
+oidc.userinfo=https://openidconnect.googleapis.com/v1/userinfo
+oidc.revocation=https://oauth2.googleapis.com/revoke
+oidc.logout=https://oauth2.googleapis.com/logout
+oidc.jwk=https://www.googleapis.com/oauth2/v3/certs
+oidc.clientId=123.apps.googleusercontent.com
+oidc.clientSecret=s3cret
+#oidc.scopes=openid,profile,email
+
+
+## Project Properties ##
+project.admins=devops-eosc@athenarc.gr
+project.admins.epot=devops-eosc@athenarc.gr
+project.debug=true
+project.name=EOSC Resource Catalogue
+project.catalogue.name=eosc
+project.registration.email=noreply@open-science-cloud.ec.europa.eu
+project.helpdesk.email=support@open-science-cloud.ec.europa.eu
+project.helpdesk.cc=
+project.monitoring.email=devops-eosc@athenarc.gr
+project.version=5
+
+## Mail Properties ##
+mail.smtp.auth=false
+mail.smtp.host=
+mail.smtp.port=
+mail.smtp.protocol=
+mail.smtp.ssl.enable=false
+mail.smtp.from=
+mail.smtp.user=
+mail.smtp.password=
+emails.send=false
+emails.send.admin.notifications=false
+emails.send.provider.notifications=false
+
+
+#########################
+## Optional Properties ##
+#########################
+
+## Login Properties ##
+session.expiration.hours=
+webapp.homepage=http://${fqdn}:8090/resource-catalogue-service/swagger-ui.html
+webapp.oidc.login.redirectUris=http://${fqdn}:8090/resource-catalogue-service/openid_connect_login
+
+## Argo GRNET Monitoring Status ##
+argo.grnet.monitoring.service.types=
+argo.grnet.monitoring.availability=
+argo.grnet.monitoring.status=
+argo.grnet.monitoring.token=
+
+## InternalToPublicConsistency ##
+resource.consistency.enable=true
+resource.consistency.email=
+resource.consistency.cc=
+
+## Sync ##
+sync.enable=false
+sync.host=
+sync.token.filepath=
+
+## Matomo Properties ##
+matomoHost=
+matomoToken=
+matomoSiteId=
+matomoAuthorizationHeader=
+apitracking.matomo.site=
+apitracking.matomo.host=
+
+## Auditing interval (in months) ##
+auditing.interval=
+
+## Openaire Datasources Manager ##
+openaire.dsm.api=
+openaire.ds.metrics=
+openaire.ds.metrics.validated=
+
+## PIDS ##
+pid.username=
+pid.key=
+pid.auth=
+pid.prefix=
+pid.api=
+marketplace.url=
+
+spring.main.allow-bean-definition-overriding=true
+spring.main.allow-circular-references=true
+
+## Springdoc Properties ##
+springdoc.group-configs[0].group=catalogue
+springdoc.group-configs[0].display-name=Resource Catalogue
+springdoc.group-configs[0].packages-to-scan=gr.uoa.di.madgik.resourcecatalogue
+springdoc.group-configs[1].group=registry
+springdoc.group-configs[1].display-name=Registry
+springdoc.group-configs[1].packages-to-scan=gr.uoa.di.madgik.registry
+
+springdoc.swagger-ui.docExpansion=none
+springdoc.swagger-ui.operationsSorter=method
+springdoc.swagger-ui.tagsSorter=alpha
+springdoc.swagger-ui.syntaxHighlight.theme=obsidian
+springdoc.swagger-ui.syntaxHighlight.activated=false

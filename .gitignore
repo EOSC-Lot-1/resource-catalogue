@@ -37,8 +37,8 @@ hs_err_pid*
 .env
 .envrc
 
-config/*
-secrets/*
-setup/*
+/config/*.properties
+/secrets/*
+/setup/*
 
-docker-compose.yaml
+/docker-compose.yaml

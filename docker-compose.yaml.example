@@ -28,6 +28,8 @@ services:
       {}
     networks:
     - network1
+    ports:
+    - '8090:8090'
   
   postgres:
     image: postgres:15-alpine

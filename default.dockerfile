@@ -22,5 +22,5 @@ COPY --from=maven-build --chown=spring:spring /app/resource-catalogue-service/ta
 EXPOSE 8080
 
 USER 1000
-CMD [ "java", "-jar", "/app/resource-catalogue-service.jar", \
-  "--spring.main.allow-bean-definition-overriding=true" ]
+CMD [ "java", "-jar", "/app/resource-catalogue-service.jar" ]
+
