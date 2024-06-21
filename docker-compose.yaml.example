@@ -4,6 +4,7 @@ version: '3.6'
 
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   network1:
@@ -24,12 +25,37 @@ services:
       source: ./config/application.properties
       target: /app/application.properties
       read_only: true
+    #- type: bind
+    #  source: ./config/log4j2.xml
+    #  target: /app/log4j2.xml
+    #  read_only: true
+    - type: bind
+      # configtree
+      source: ./config.d/
+      target: /app/config/
+      read_only: true
+    - type: bind
+      source: ./logs
+      target: /app/logs
     environment:
       {}
     networks:
     - network1
     ports:
-    - '8090:8090'
+    - '8080:8080'
+
+  redis:
+    image: redis:6.2.14-alpine3.20
+    volumes:
+    - type: volume
+      source: redis_data
+      target: /data
+    environment:
+      REDIS_ARGS: >-
+        --save 60 1
+        --requirepass ${REDIS_PASSWORD}
+    networks:
+    - network1
   
   postgres:
     image: postgres:15-alpine

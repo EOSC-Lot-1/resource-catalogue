@@ -2,13 +2,19 @@
 **/*.iml
 
 .env
+.env.example
+.envrc
 
 docker-compose.yaml
+docker-compose.yaml.example
 
 Dockerfile
 *.dockerfile
 
 #.git/**
+.github/**
 
 secrets
-config/application.properties
+config
+config.d
+logs
