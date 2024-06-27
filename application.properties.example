@@ -136,13 +136,14 @@ resource.consistency.enable=false
 resource.consistency.email=
 resource.consistency.cc=
 
-
 ## PIDS ##
-pid.username=
-pid.key=
-pid.auth=
+pid.test=true
+#pid.username=
+#pid.login=
+#pid.key=
+#pid.auth=
 pid.prefix=
-pid.api=
+pid.api=https://pid.example.net/api/handles/21.T11963/
 marketplace.url=
 
 ## Resource Prefixes ##

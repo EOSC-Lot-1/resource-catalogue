@@ -5,8 +5,11 @@
 .env.example
 .envrc
 
+application.properties.example
+
 docker-compose.yaml
 docker-compose.yaml.example
+docker-bake.hcl
 
 Dockerfile
 *.dockerfile
