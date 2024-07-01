@@ -114,6 +114,16 @@ public abstract class AbstractPublicResourceManager<T extends Identifiable> exte
                         trainingResourceBundle.getTrainingResource().getCatalogueId(),
                         allCatalogueIds));
     }
+    
+    protected void updateToolIdsToPublic(ToolBundle toolBundle) {
+        List<String> allCatalogueIds = getAllCatalogueIds();
+        // Resource Organisation
+        toolBundle.getTool().setResourceOrganisation(
+                String.format("%s",
+                        toolBundle.getTool().getResourceOrganisation()));
+
+       
+    }
 
     protected void updateResourceInteroperabilityRecordIdsToPublic(ResourceInteroperabilityRecordBundle resourceInteroperabilityRecordBundle) {
         List<String> allCatalogueIds = getAllCatalogueIds();

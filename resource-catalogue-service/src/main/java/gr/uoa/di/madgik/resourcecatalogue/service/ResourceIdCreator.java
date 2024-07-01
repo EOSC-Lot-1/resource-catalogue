@@ -58,7 +58,7 @@ public class ResourceIdCreator implements IdCreator {
         return switch (resourceType) {
             // PID related
             case "service", "draft_service" -> servicesPrefix;
-            case "tool" -> toolsPrefix;
+            case "tool", "draft_tool" -> toolsPrefix;
             case "training_resource", "draft_training_resource" -> trainingsPrefix;
             case "provider", "draft_provider" -> providersPrefix;
             case "interoperability_record", "draft_interoperability_record" -> guidelinesPrefix;
