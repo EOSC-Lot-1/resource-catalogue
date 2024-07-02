@@ -64,7 +64,7 @@ public class ServiceCrudController extends ResourceCrudController<ServiceBundle>
     public ResponseEntity<Paging<ServiceBundle>> getAll(@Parameter(hidden = true) @RequestParam Map<String, Object> allRequestParams,
                                                         @Parameter(hidden = true) Authentication auth) {
         FacetFilter ff = FacetFilterUtils.createFacetFilter(allRequestParams);
-        ff.setResourceType("services");
+        ff.setResourceType("service");
         return new ResponseEntity<>(genericResourceService.getResults(ff), HttpStatus.OK);
     }
 
