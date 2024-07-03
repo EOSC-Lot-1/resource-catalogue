@@ -55,9 +55,9 @@ public class Provider implements Identifiable {
     /**
      * A Y/N question to define whether the Provider is a Legal Entity or not.
      */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation
+    @XmlElement()
+    @Schema()
+    @FieldValidation(nullable = true)
     private boolean legalEntity;
 
     /**
@@ -171,10 +171,10 @@ public class Provider implements Identifiable {
     /**
      * List of the Provider's public contacts info.
      */
-    @XmlElementWrapper(required = true, name = "publicContacts")
+    @XmlElementWrapper(name = "publicContacts")
     @XmlElement(name = "publicContact")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation
+    @Schema()
+    @FieldValidation(nullable = true)
     private List<ProviderPublicContact> publicContacts;
 
 
