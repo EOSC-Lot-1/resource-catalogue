@@ -64,7 +64,7 @@ public class AnalyticsService implements Analytics {
      *
      * @return
      */
-    @Scheduled(fixedDelay = (5 * 60 * 1000))
+    //@Scheduled(fixedDelay = (5 * 60 * 1000))
     public void updateVisitsScheduler() {
         Map<String, Integer> visits = getServiceVisits();
         Cache cache = cacheManager.getCache(CACHE_VISITS);
