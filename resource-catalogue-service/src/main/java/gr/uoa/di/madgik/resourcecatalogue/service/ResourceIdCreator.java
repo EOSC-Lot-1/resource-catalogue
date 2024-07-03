@@ -23,8 +23,8 @@ public class ResourceIdCreator implements IdCreator {
     private String providersPrefix;
     @Value("${prefix.guidelines}")
     private String guidelinesPrefix;
-    @Value("${prefix.catalogues}")
-    private String cataloguesPrefix;
+//    @Value("${prefix.catalogues}")
+//    private String cataloguesPrefix;
     @Value("${prefix.configurationTemplates}")
     private String configurationTemplatesPrefix;
     @Value("${prefix.configurationTemplateInstances}")
@@ -58,12 +58,12 @@ public class ResourceIdCreator implements IdCreator {
         return switch (resourceType) {
             // PID related
             case "service", "draft_service" -> servicesPrefix;
-            case "tool" -> toolsPrefix;
+            case "tool", "draft_tool" -> toolsPrefix;
             case "training_resource", "draft_training_resource" -> trainingsPrefix;
             case "provider", "draft_provider" -> providersPrefix;
             case "interoperability_record", "draft_interoperability_record" -> guidelinesPrefix;
             // non PID related
-            case "catalogue" -> cataloguesPrefix;
+//            case "catalogue" -> cataloguesPrefix; //TODO: what we do with catalogue IDs
             case "configuration_template" -> configurationTemplatesPrefix;
             case "configuration_template_instance" -> configurationTemplateInstancesPrefix;
             case "datasource" -> datasourcesPrefix;

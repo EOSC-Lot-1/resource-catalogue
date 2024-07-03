@@ -228,11 +228,27 @@
       "type": "java.lang.String"
     },
     {
+      "defaultValue": "false",
+      "label": null,
+      "multivalued": false,
+      "name": "draft",
+      "path": "$.draft",
+      "type": "java.lang.Boolean"
+    },
+    {
       "label": null,
       "multivalued": false,
       "name": "audit_state",
       "path": "$.auditState",
       "type": "java.lang.String"
+    },
+    {
+      "defaultValue": "false",
+      "label": null,
+      "multivalued": false,
+      "name": "legacy",
+      "path": "$.legacy",
+      "type": "java.lang.Boolean"
     }
   ],
   "indexMapperClass": "gr.uoa.di.madgik.registry.index.DefaultIndexMapper",
