@@ -55,6 +55,7 @@ elasticsearch.cluster=
 
 ## Redis Properties ##
 spring.redis.host=redis
+spring.data.redis.database=0
 #spring.redis.port=
 #spring.redis.password=${REDIS_PASSWORD}
 
