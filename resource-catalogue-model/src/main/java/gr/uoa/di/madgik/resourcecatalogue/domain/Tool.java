@@ -136,6 +136,14 @@ public class Tool implements Identifiable {
 //    private String accessRights;
 
     /**
+     * Version of the Resource that is in force.
+     */
+    @XmlElement
+    @Schema
+    @FieldValidation(nullable = true)
+    private String version;
+    
+    /**
      * The version date for the most recently published or broadcast resource.
      */
     @XmlElement(required = true)
@@ -210,19 +218,11 @@ public class Tool implements Identifiable {
     @Schema
     @FieldValidation(nullable = true)
     private String duration;
-
-
-    // Geographical and Language Availability Information
-    /**
-     * The language in which the resource was originally published or made available.
-     */
-    @XmlElementWrapper(name = "languages", required = true)
-    @XmlElement(name = "language")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation(containsId = true, idClass = Vocabulary.class)
-    @VocabularyValidation(type = Vocabulary.Type.LANGUAGE)
-    private List<String> languages;
-
+    
+    @XmlElement
+    @Schema
+    @FieldValidation(nullable = true)
+    private Boolean deprecated;
 
     // Classification Information
     /**
@@ -268,7 +268,7 @@ public class Tool implements Identifiable {
     @XmlElement
     @Schema
     @FieldValidation(nullable = true)
-    private String githubPage;
+    private URL githubPage;
     
     // Attribution Information
     /**
@@ -306,22 +306,24 @@ public class Tool implements Identifiable {
     @XmlElement(required = true)
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
-    private ServiceMainContact contact;
+    private ToolMainContact contact;
 
 
 
     public Tool() {
     }
 
-    public Tool(String id, String name, String resourceOrganisation, List<String> resourceProviders, List<String> authors, URL url, String urlType, List<String> eoscRelatedServices, List<AlternativeIdentifier> alternativeIdentifiers, String description, List<String> keywords, String license, Date versionDate, List<String> targetGroups, List<String> learningResourceTypes, List<String> learningOutcomes, String expertiseLevel, List<String> contentResourceTypes, List<String> qualifications, String duration, List<ServiceProviderDomain> scientificDomains, ServiceMainContact contact) {
+    public Tool(String id, String name, String resourceOrganisation, List<String> relatedResources, List<String> resourceProviders, List<String> authors, String description, List<String> keywords, String license, Date versionDate, String version, List<String> targetGroups, List<String> learningResourceTypes, List<String> learningOutcomes, String expertiseLevel, List<String> contentResourceTypes, List<String> qualifications, String duration, Boolean deprecated, List<ServiceProviderDomain> scientificDomains, URL helpdeskPage, String path, String trl, URL githubPage, List<String> fundingBody, List<String> fundingPrograms, List<String> grantProjectNames, ToolMainContact contact) {
         this.id = id;
         this.name = name;
         this.resourceOrganisation = resourceOrganisation;
         this.resourceProviders = resourceProviders;
+        this.relatedResources = relatedResources;
         this.authors = authors;
         this.description = description;
         this.keywords = keywords;
         this.license = license;
+        this.version = version;
         this.versionDate = versionDate;
         this.targetGroups = targetGroups;
         this.learningResourceTypes = learningResourceTypes;
@@ -330,7 +332,15 @@ public class Tool implements Identifiable {
         this.contentResourceTypes = contentResourceTypes;
         this.qualifications = qualifications;
         this.duration = duration;
+        this.deprecated = deprecated;
         this.scientificDomains = scientificDomains;
+        this.helpdeskPage = helpdeskPage;
+        this.path = path;
+        this.trl = trl;
+        this.githubPage = githubPage;
+        this.fundingBody = fundingBody;
+        this.fundingPrograms = fundingPrograms;
+        this.grantProjectNames = grantProjectNames;
         this.contact = contact;
     }
 
@@ -344,7 +354,7 @@ public class Tool implements Identifiable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, resourceOrganisation, resourceProviders, authors, description, keywords, license, versionDate, targetGroups, learningResourceTypes, learningOutcomes, expertiseLevel, contentResourceTypes, qualifications, duration, languages, scientificDomains, contact);
+        return Objects.hash(id, name, resourceOrganisation, resourceProviders, authors, description, keywords, license, versionDate, targetGroups, learningResourceTypes, learningOutcomes, expertiseLevel, contentResourceTypes, qualifications, duration, scientificDomains, contact);
     }
 
     @Override
@@ -358,6 +368,7 @@ public class Tool implements Identifiable {
                 ", description='" + description + '\'' +
                 ", keywords=" + keywords +
                 ", license='" + license + '\'' +
+                ", version=" + version +
                 ", versionDate=" + versionDate +
                 ", targetGroups=" + targetGroups +
                 ", learningResourceTypes=" + learningResourceTypes +
@@ -365,7 +376,15 @@ public class Tool implements Identifiable {
                 ", expertiseLevel='" + expertiseLevel + '\'' +
                 ", contentResourceTypes=" + contentResourceTypes +
                 ", qualifications=" + qualifications +
+                ", duration=" + duration +
+                ", deprecated=" + deprecated +
                 ", scientificDomains=" + scientificDomains +
+                ", path=" + path +
+                ", trl=" + trl +
+                ", githubPage=" + githubPage +
+                ", fundingBody=" + fundingBody +
+                ", fundingPrograms=" + fundingPrograms +
+                ", grantProjectNames=" + grantProjectNames +
                 ", contact=" + contact +
                 '}';
     }
@@ -500,11 +519,11 @@ public class Tool implements Identifiable {
         this.scientificDomains = scientificDomains;
     }
 
-    public ServiceMainContact getContact() {
+    public ToolMainContact getContact() {
         return contact;
     }
 
-    public void setContact(ServiceMainContact contact) {
+    public void setContact(ToolMainContact contact) {
         this.contact = contact;
     }
 }
