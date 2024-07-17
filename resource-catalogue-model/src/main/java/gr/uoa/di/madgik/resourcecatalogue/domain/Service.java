@@ -57,7 +57,7 @@ public class Service implements Identifiable {
      */
     @XmlElementWrapper(name = "resourceProviders")
     @XmlElement(name = "resourceProvider")
-    @Schema($vocabulary = "Vocabulary")
+    @Schema
     @FieldValidation(nullable = true, containsId = true, idClass = Provider.class)
     private List<String> resourceProviders;
 
@@ -216,9 +216,9 @@ public class Service implements Identifiable {
     /**
      * The tier of a service in the EOSC EU Node.
      */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation
+    @XmlElement
+    @Schema
+    @FieldValidation(nullable = true)
     @ClassTierValidation
     private ServiceClassTier classTier;
 
