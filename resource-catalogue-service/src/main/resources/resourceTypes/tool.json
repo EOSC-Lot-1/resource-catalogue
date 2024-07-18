@@ -192,6 +192,14 @@
 	      	"name": "status",
 	      	"path": "$.status",
 	      	"type": "java.lang.String"
+	    },
+	    {
+	      	"defaultValue": "false",
+	      	"label": "Deprecated",
+	      	"multivalued": false,
+	      	"name": "deprecated",
+	      	"path": "$.deprecated",
+	      	"type": "java.lang.Boolean"
 	    }
     ],
     "indexMapperClass": "gr.uoa.di.madgik.registry.index.DefaultIndexMapper",

@@ -2,7 +2,10 @@ package gr.uoa.di.madgik.resourcecatalogue.domain;
 
 import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -17,7 +20,11 @@ public class ServiceBundle extends Bundle<Service> {
     @XmlElement
     @FieldValidation(nullable = true)
     private ResourceExtras resourceExtras;
-
+    
+    @XmlElementWrapper(name = "sites")
+    @XmlElement(name = "sites")
+    private List<Site> sites;
+    
     @XmlElement
     private String auditState;
 
@@ -76,6 +83,14 @@ public class ServiceBundle extends Bundle<Service> {
 
     public void setAuditState(String auditState) {
         this.auditState = auditState;
+    }
+    
+    public List<Site> getSites() {
+        return sites;
+    }
+
+    public void setSites( List<Site>  sites) {
+        this.sites = sites;
     }
 
     @Override
