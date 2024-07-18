@@ -56,6 +56,15 @@ CREATE DATABASE db WITH OWNER <user>;
 
 - - -
 
+###### Restore database
+
+1. Prepare a POST request for "resource-catalogue-url/restore"
+
+2. Add as a body a zip 'datafile' containing a folder for each of the resources to restore
+
+- - -
+
+
 ###### Application Properties Example
 
 ```properties
