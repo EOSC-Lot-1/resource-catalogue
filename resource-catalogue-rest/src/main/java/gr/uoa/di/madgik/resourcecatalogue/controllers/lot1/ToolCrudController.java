@@ -1,7 +1,6 @@
 package gr.uoa.di.madgik.resourcecatalogue.controllers.lot1;
 
 import gr.uoa.di.madgik.resourcecatalogue.domain.ToolBundle;
-import gr.uoa.di.madgik.resourcecatalogue.service.DraftResourceService;
 import gr.uoa.di.madgik.resourcecatalogue.service.ToolService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,28 +26,15 @@ public class ToolCrudController extends ResourceCrudController<ToolBundle> {
 
     private static final Logger logger = LogManager.getLogger(ToolCrudController.class.getName());
     private final ToolService toolService;
-    private final DraftResourceService<ToolBundle> draftToolService;
 
-    ToolCrudController(ToolService toolService,
-                                   DraftResourceService<ToolBundle> draftToolService) {
+    ToolCrudController(ToolService toolService) {
         super(toolService);
         this.toolService = toolService;
-        this.draftToolService = draftToolService;
     }
 
     @PostMapping(path = "/bulk")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void addBulk(@RequestBody List<ToolBundle> bundles, @Parameter(hidden = true) Authentication auth) {
         toolService.addBulk(bundles, auth);
-    }
-
-    @Override
-    @PostMapping()
-    public ResponseEntity<ToolBundle> add(@RequestBody ToolBundle toolBundle,
-                                                      @Parameter(hidden = true) Authentication auth) {
-        if (toolBundle.isDraft()) {
-            return new ResponseEntity<>(draftToolService.save(toolBundle), HttpStatus.CREATED);
-        }
-        return super.add(toolBundle, auth);
     }
 }

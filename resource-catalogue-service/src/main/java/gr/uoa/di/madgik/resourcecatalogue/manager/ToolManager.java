@@ -605,21 +605,6 @@ public class ToolManager extends ResourceManager<ToolBundle> implements ToolServ
         return deserialize(resource);
     }
 
-    // Needed for FieldValidation
-    @Override
-    public ToolBundle get(String id) {
-        ToolBundle resource = null;
-        try {
-            resource = get(id, catalogueId);
-        } catch (ResourceNotFoundException e) {
-            resource = checkIdExistenceInOtherCatalogues(id);
-            if (resource == null) {
-                throw e;
-            }
-        }
-        return resource;
-    }
-
     private ToolBundle checkIdExistenceInOtherCatalogues(String id) {
         FacetFilter ff = new FacetFilter();
         ff.setQuantity(maxQuantity);
