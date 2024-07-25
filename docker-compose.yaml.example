@@ -4,47 +4,78 @@ version: '3.6'
 
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   network1:
-    ipam:
-      driver: default
-      config:
-        - subnet: 10.0.25.0/24
+    name: eosc_dev_services_local
+    external: true
+    #ipam:
+    #  driver: default
+    #  config:
+    #    - subnet: 10.0.25.0/24
 
 services:
 
   catalogue:
     image: docker-registry.eosc.athenarc.gr/resource-catalogue:${APP_VERSION}
-    build:
-      context: .
-      dockerfile: default.dockerfile
     volumes:
     - type: bind
       source: ./config/application.properties
       target: /app/application.properties
       read_only: true
+    #- type: bind
+    #  source: ./config/log4j2.xml
+    #  target: /app/log4j2.xml
+    #  read_only: true
+    - type: bind
+      # configtree
+      source: ./config.d/
+      target: /app/config/
+      read_only: true
+    - type: bind
+      source: ./logs
+      target: /app/logs
     environment:
-      {}
+      SPRING_PROFILES_ACTIVE: crud,no-auth
+      DB_HOST:
+      DB_NAME:
+      DB_USERNAME:
+    networks:
+    - network1
+    ports:
+    - '8080:8080'
+
+  redis:
+    image: redis:6.2.14-alpine3.20
+    volumes:
+    - type: volume
+      source: redis_data
+      target: /data
+    environment:
+      REDIS_ARGS: >-
+        --save 60 1
+        --requirepass ${REDIS_PASSWORD}
     networks:
     - network1
   
-  postgres:
+  create_database:
     image: postgres:15-alpine
     volumes:
-    - type: volume
-      source: postgres_data
-      target: /var/lib/postgresql/data
     - type: bind
-      source: ./setup/postgres/init-scripts/
-      target: /docker-entrypoint-initdb.d/
-      read_only: true
-    - type: bind
-      source: ./secrets/postgres/
-      target: /secrets
+      source: ./setup/postgres/init-scripts/02-create-catalogue-database.sh
+      target: /opt/create-database.sh
       read_only: true
     environment:
-      POSTGRES_PASSWORD_FILE: /secrets/password
+      PGHOST: ${DB_HOST}
+      PGUSER: postgres
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      DB_HOST:
+      DB_NAME:
+      DB_USERNAME:
+    command:
+    - sh
+    - /opt/create-database.sh
     networks:
     - network1
 

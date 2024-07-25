@@ -1,11 +1,18 @@
+# vim: set syntax=jproperties:
+
+project.name=resource-catalogue-service
+project.version=5.0
+
 server.port=8080
 server.servlet.context-path=/resource-catalogue
 
 spring.main.allow-bean-definition-overriding=true
 spring.main.allow-circular-references=true
 
+#logging.config = file:./log4j2.xml 
 logging.level.root=INFO
 
+#spring.config.import = configtree:./config/
 
 ## Springdoc Properties ##
 springdoc.group-configs[0].group=catalogue
@@ -33,34 +40,37 @@ springdoc.swagger-ui.path=/swagger-ui.html
 ##########################
 ## Mandatory Properties ##
 ##########################
-fqdn=localhost
+
+fqdn=catalogue.eosc.localhost
 platform.root=http://${fqdn}/
 registry.host=http://${fqdn}:8080/resource-catalogue
 
+jdbc.url=jdbc:postgresql://postgres:5432/catalogue
+jdbc.username=catalogue
+#jdbc.password=${POSTGRES_PASSWORD}
 
-## DB Properties ##
-jdbc.url=
-jdbc.username=
-jdbc.password=
-
+elasticsearch.url=
+elasticsearch.port=
+elasticsearch.cluster=
 
 ## Redis Properties ##
-spring.redis.host=
-spring.redis.port=
-spring.redis.password=
+spring.redis.host=redis
+spring.data.redis.database=0
+#spring.redis.port=
+#spring.redis.password=${REDIS_PASSWORD}
 
 ## Spring Security Configuration ##
-spring.security.oauth2.client.registration.google.client-id=
+spring.security.oauth2.client.registration.google.client-id=catalogue.eosc.localhost
 spring.security.oauth2.client.registration.google.client-secret=
 spring.security.oauth2.client.registration.google.scope=openid,email,profile
-spring.security.oauth2.client.registration.google.redirect-uri=http://localhost:8080/resource-catalogue/openid_connect_login
+spring.security.oauth2.client.registration.google.redirect-uri=http://${fqdn}:8080/resource-catalogue/openid_connect_login
 
-aai.baseUrl=
-spring.security.oauth2.client.registration.eosc.client-id=
+aai.baseUrl=https://proxy.testing.eosc-federation.eu
+spring.security.oauth2.client.registration.eosc.client-id=catalogue.eosc.localhost
 spring.security.oauth2.client.registration.eosc.client-name=
 spring.security.oauth2.client.registration.eosc.client-secret=
 spring.security.oauth2.client.registration.eosc.scope=openid,email,profile
-spring.security.oauth2.client.registration.eosc.redirect-uri=http://localhost:8080/resource-catalogue/openid_connect_login
+spring.security.oauth2.client.registration.eosc.redirect-uri=http://${fqdn}:8080/resource-catalogue/openid_connect_login
 spring.security.oauth2.client.provider.eosc.issuer-uri=${aai.baseUrl}
 spring.security.oauth2.resourceserver.jwt.issuer-uri=${aai.baseUrl}
 
@@ -70,25 +80,25 @@ spring.security.oauth2.resourceserver.jwt.issuer-uri=${aai.baseUrl}
 #########################
 
 ## Catalogue Properties
-catalogue.admins=
+catalogue.admins=devops-eosc@athenarc.gr
 catalogue.onboarding-team=
 catalogue.homepage=http://localhost:3000
 catalogue.login-redirect=http://localhost:3000
 catalogue.logout-redirect=http://localhost:3000
 
 catalogue.debug=false
-catalogue.version=
+catalogue.version=5
 
 catalogue.id=
-catalogue.name=
+catalogue.name=eosc
 
 catalogue.email-properties.emails-enabled=false
 catalogue.email-properties.admin-notifications=false
 catalogue.email-properties.provider-notifications=false
-catalogue.email-properties.registration-emails.to=
-catalogue.email-properties.helpdesk-emails.to=
+catalogue.email-properties.registration-emails.to=noreply@open-science-cloud.ec.europa.eu
+catalogue.email-properties.helpdesk-emails.to=support@open-science-cloud.ec.europa.eu
 catalogue.email-properties.helpdesk-emails.cc=
-catalogue.email-properties.monitoring-emails.to=
+catalogue.email-properties.monitoring-emails.to=devops-eosc@athenarc.gr
 
 ## Mail Properties ##
 catalogue.mailer.host=
@@ -127,13 +137,14 @@ resource.consistency.enable=false
 resource.consistency.email=
 resource.consistency.cc=
 
-
-## PIDS BETA ##
-pid.username=
-pid.key=
-pid.auth=
+## PIDS ##
+pid.test=true
+#pid.username=
+#pid.login=
+#pid.key=
+#pid.auth=
 pid.prefix=
-pid.api=
+pid.api=https://pid.example.net/api/handles/21.T11963/
 marketplace.url=
 
 ## Resource Prefixes ##
