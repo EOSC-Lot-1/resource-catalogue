@@ -31,7 +31,7 @@ springdoc.swagger-ui.tryItOutEnabled=true
 spring.jpa.open-in-view=false
 
 ## Profiles ##
-spring.profiles.active=crud
+spring.profiles.active=crud,no-auth
 
 springdoc.api-docs.path=/api-docs
 springdoc.swagger-ui.path=/swagger-ui.html
