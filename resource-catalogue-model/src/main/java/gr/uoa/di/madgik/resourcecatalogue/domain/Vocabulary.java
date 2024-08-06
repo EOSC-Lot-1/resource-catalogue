@@ -90,6 +90,9 @@ public class Vocabulary implements Identifiable {
         DS_JURISDICTION("Jurisdiction"),
         DS_CLASSIFICATION("Classification"),
         DS_COAR_ACCESS_RIGHTS_1_0("COAR access rights 1.0"),
+        // Tool
+        TOOL_VULNERABILITIES("Tool vulnerabilities"),
+        TOOL_SECURITY_STATUS("Tool security status"),
         // Training Resource
         TR_URL_TYPE("Training Resource url type"),
         TR_ACCESS_RIGHT("Training Resource access right"),

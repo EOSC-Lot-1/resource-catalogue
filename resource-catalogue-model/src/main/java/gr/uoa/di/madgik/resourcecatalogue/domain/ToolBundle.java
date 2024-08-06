@@ -1,18 +1,22 @@
 package gr.uoa.di.madgik.resourcecatalogue.domain;
 
+import java.util.Objects;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import java.util.Objects;
 
 //@Document
 @XmlType
 @XmlRootElement(namespace = "http://einfracentral.eu")
 public class ToolBundle extends Bundle<Tool> {
-
+	
     @XmlElement
     private String status;
-
+    
+    @XmlElement
+    private ToolSecurity security;
+    
     public ToolBundle() {
         // No arg constructor
     }
@@ -53,11 +57,19 @@ public class ToolBundle extends Bundle<Tool> {
     public void setStatus(String status) {
         this.status = status;
     }
+    public ToolSecurity getSecurity() {
+        return security;
+    }
+
+    public void setSecurity(ToolSecurity security) {
+        this.security = security;
+    }
 
     @Override
     public String toString() {
         return "ToolBundle{" +
                 "status='" + status + '\'' +
+                "security='" + security + '\'' +
                 '}';
     }
 
@@ -72,7 +84,7 @@ public class ToolBundle extends Bundle<Tool> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), status);
+        return Objects.hash(super.hashCode(), status, security);
     }
 }
 
