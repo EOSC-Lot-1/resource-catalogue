@@ -862,13 +862,6 @@ public class ToolManager extends ResourceManager<ToolBundle> implements ToolServ
         // update ResourceOrganisation
         toolBundle.getTool().setResourceOrganisation(newProviderId);
 
-        // update ResourceProviders
-        List<String> resourceProviders = toolBundle.getTool().getResourceProviders();
-        if (resourceProviders.contains(oldProvider.getId())) {
-            resourceProviders.remove(oldProvider.getId());
-            resourceProviders.add(newProviderId);
-        }
-
         // add Resource, delete the old one
         add(toolBundle, auth);
         publicToolManager.delete(get(resourceId, catalogueId)); // FIXME: ProviderManagementAspect's deletePublicDatasource is not triggered

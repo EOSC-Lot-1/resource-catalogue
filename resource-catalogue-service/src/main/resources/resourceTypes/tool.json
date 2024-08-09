@@ -17,7 +17,7 @@
         },
         {
             "label": "Author",
-            "multivalued": true,
+            "multivalued": false,
             "name": "author",
             "path": "$.tool.author",
             "type": "java.lang.String"
@@ -65,33 +65,19 @@
 	      	"type": "java.lang.String"
 	    },
         {
-            "label": "Trl",
-            "multivalued": false,
-            "name": "trl",
-            "path": "$.tool.trl",
-            "type": "java.lang.String"
-        },
-        {
-            "label": "Path",
-            "multivalued": false,
-            "name": "path",
-            "path": "$.tool.path",
-            "type": "java.lang.String"
-        },
-        {
             "label": "Helpdesk Page",
             "multivalued": false,
             "name": "hepldesk_page",
             "path": "$.tool.helpdeskPage",
             "type": "java.lang.String"
         },
-        {
-            "label": "Language",
-            "multivalued": true,
-            "name": "languages",
-            "path": "$.tool.languages[*]",
-            "type": "java.lang.String"
-        },
+	    {
+	      	"label": null,
+	      	"multivalued": false,
+	      	"name": "versionDate",
+	      	"path": "$.tool.versionDate",
+	      	"type": "java.util.Date"
+	    },
 	    {
 	      	"label": null,
 	      	"multivalued": false,
@@ -126,13 +112,6 @@
 	      	"name": "published",
 	      	"path": "$.metadata.published",
 	      	"type": "java.lang.Boolean"
-	    },
-	    {
-	      	"label": null,
-	      	"multivalued": false,
-	     	"name": "originalId",
-	      	"path": "$.identifiers.originalId",
-	      	"type": "java.lang.String"
 	    },
 	    {
 	      	"label": null,
@@ -200,6 +179,13 @@
 	      	"name": "deprecated",
 	      	"path": "$.deprecated",
 	      	"type": "java.lang.Boolean"
+	    },
+	    {
+	      	"label": null,
+	      	"multivalued": false,
+	      	"name": "lastCheck",
+	      	"path": "$.security.lastCheck",
+	      	"type": "java.util.Date"
 	    }
     ],
     "indexMapperClass": "gr.uoa.di.madgik.registry.index.DefaultIndexMapper",

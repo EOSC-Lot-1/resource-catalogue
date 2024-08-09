@@ -1,5 +1,6 @@
 package gr.uoa.di.madgik.resourcecatalogue.domain;
 
+import gr.uoa.di.madgik.resourcecatalogue.annotation.EmailValidation;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.GeoLocationVocValidation;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
@@ -34,33 +35,13 @@ public class Tool implements Identifiable {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
     private String name;
-
-    /**
-     * The name(s) of (all) the Provider(s) that manage or deliver the Resource in federated scenarios.
-     */
-    @XmlElementWrapper(name = "resourceProviders")
-    @XmlElement(name = "resourceProvider")
-    @Schema
-    @FieldValidation(nullable = true, containsId = true, idClass = Provider.class)
-    private List<String> resourceProviders;
     
     /**
      * The name of the organisation that manages or delivers the resource, or that coordinates the Resource delivery in a federated scenario.
      */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation(containsId = true, idClass = Provider.class)
+    @XmlElement()
+    @Schema
     private String resourceOrganisation;
-
-    /**
-     * The name of entity(ies) authoring the resource.
-     */
-    @XmlElementWrapper(name = "authors", required = true)
-    @XmlElement(name = "author")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation
-    private List<String> authors;
-    
     
     /**
      * List of other Resources that are commonly used with this Resource.
@@ -70,35 +51,6 @@ public class Tool implements Identifiable {
     @Schema
     @FieldValidation(nullable = true, containsId = true, containsResourceId = true)
     private List<String> relatedResources;
-
-//    /**
-//     * The URL that resolves to the learning resource or to a "landing page" for the resource that contains important
-//     * contextual information including the direct resolvable link to the resource, if applicable.
-//     */
-//    @XmlElement(required = true)
-//    @Schema(example = "https://example.com", required = true)
-//    @FieldValidation
-//    private URL url;
-//
-//    /**
-//     * The designation of identifier scheme used for the resource URL. It represents the type of the URL of the resource,
-//     * that is the used scheme (e.g., Web Address URL, DOI, ARK, etc.).
-//     */
-//    @XmlElement
-//    @Schema
-//    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
-//    @VocabularyValidation(type = Vocabulary.Type.TR_URL_TYPE)
-//    private String urlType;
-
-    /**
-     * The name(s) of (all) the Provider(s) that manage or deliver the Resource in federated scenarios.
-     
-    @XmlElementWrapper(name = "eoscRelatedServices")
-    @XmlElement(name = "eoscRelatedService")
-    @Schema
-    @FieldValidation(nullable = true, containsId = true, containsResourceId = true)
-    private List<String> eoscRelatedServices;
-     */
 
     // Detailed & Access Information
     /**
@@ -112,10 +64,10 @@ public class Tool implements Identifiable {
     /**
      * The keyword(s) or tag(s) used to describe the resource.
      */
-    @XmlElementWrapper(name = "keywords")
+    @XmlElementWrapper(name = "keywords", required = true)
     @XmlElement(name = "keyword")
-    @Schema
-    @FieldValidation(nullable = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @FieldValidation()
     private List<String> keywords;
 
     /**
@@ -123,26 +75,10 @@ public class Tool implements Identifiable {
      */
     @XmlElement(required = true)
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation
+    @FieldValidation(containsId = true, idClass = Vocabulary.class)
+    @VocabularyValidation(type = Vocabulary.Type.TOOL_LICENSE)
     private String license;
 
-//    /**
-//     * The access status of a resource (open, restricted, paid).
-//     */
-//    @XmlElement(required = true)
-//    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-//    @FieldValidation(containsId = true, idClass = Vocabulary.class)
-//    @VocabularyValidation(type = Vocabulary.Type.TR_ACCESS_RIGHT)
-//    private String accessRights;
-
-    /**
-     * Version of the Resource that is in force.
-     */
-    @XmlElement
-    @Schema
-    @FieldValidation(nullable = true)
-    private String version;
-    
     /**
      * The version date for the most recently published or broadcast resource.
      */
@@ -154,70 +90,33 @@ public class Tool implements Identifiable {
 
     // Learning Information
     /**
+     * The target infrastructure of the TOSCA template
+     */
+    @XmlElementWrapper(name = "targetInfrastructure", required = true)
+    @XmlElement(name = "targetInfrastructure")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @FieldValidation(containsId = true, idClass = Vocabulary.class)
+    @VocabularyValidation(type = Vocabulary.Type.TOOL_TARGET_INFRASTRUCTURE)
+    private List<String> targetInfrastructure;
+
+
+    // Learning Information
+    /**
      * The principal users(s) for which the learning resource was designed.
      */
-    @XmlElementWrapper(name = "targetGroups", required = true)
+    @XmlElementWrapper(name = "targetGroups")
     @XmlElement(name = "targetGroup")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation(containsId = true, idClass = Vocabulary.class)
+    @Schema
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.TARGET_USER)
     private List<String> targetGroups;
-
+    
     /**
-     * The predominant type or kind that characterizes the learning resource.
+     * The first and last name of the user that is uploading the TOSCA template.
      */
-    @XmlElementWrapper(name = "learningResourceTypes")
-    @XmlElement(name = "learningResourceType")
-    @Schema
-    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
-    @VocabularyValidation(type = Vocabulary.Type.TR_DCMI_TYPE)
-    private List<String> learningResourceTypes;
-
-    /**
-     * The descriptions of what knowledge, skills or abilities students should acquire on completion of the resource.
-     */
-    @XmlElementWrapper(name = "learningOutcomes", required = true)
-    @XmlElement(name = "learningOutcome")
+    @XmlElement(name = "author")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation
-    private List<String> learningOutcomes;
-
-    /**
-     * Target skill level in the topic being taught.
-     */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation(containsId = true, idClass = Vocabulary.class)
-    @VocabularyValidation(type = Vocabulary.Type.TR_EXPERTISE_LEVEL)
-    private String expertiseLevel;
-
-    /**
-     * The predominant content type of the learning resource (video, game, diagram, slides, etc.).
-     */
-    @XmlElementWrapper(name = "contentResourceTypes")
-    @XmlElement(name = "contentResourceType")
-    @Schema
-    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
-    @VocabularyValidation(type = Vocabulary.Type.TR_CONTENT_RESOURCE_TYPE)
-    private List<String> contentResourceTypes;
-
-    /**
-     * Identification of certification, accreditation or badge obtained with course or learning resource.
-     */
-    @XmlElementWrapper(name = "qualifications")
-    @XmlElement(name = "qualification")
-    @Schema
-    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
-    @VocabularyValidation(type = Vocabulary.Type.TR_QUALIFICATION)
-    private List<String> qualifications;
-
-    /**
-     * Approximate or typical time it takes to work with or through the learning resource for the typical intended target audience.
-     */
-    @XmlElement
-    @Schema
-    @FieldValidation(nullable = true)
-    private String duration;
+    private String author;
     
     @XmlElement
     @Schema
@@ -228,10 +127,10 @@ public class Tool implements Identifiable {
     /**
      * The branch of science, scientific discipline that is related to the Resource.
      */
-    @XmlElementWrapper(name = "scientificDomains", required = true)
+    @XmlElementWrapper(name = "scientificDomain")
     @XmlElement(name = "scientificDomain")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation
+    @Schema
+    @FieldValidation(nullable = true)
     private List<ServiceProviderDomain> scientificDomains;
 
     // Management Information
@@ -245,103 +144,49 @@ public class Tool implements Identifiable {
     
     
     /**
-     * The URL to the location of the actual tool.
+     * The minimum credits estimation required to deploy this tool on the EOSC EU Node
      */
     @XmlElement
     @Schema
     @FieldValidation(nullable = true)
-    private String path;
+    private String creditCost;
     
-    // TRL 
-    /**
-     * The Technology Readiness Level of the Resource (to be further updated in the context of the EOSC).
-     */
-    @XmlElement
-    @Schema
-    @FieldValidation(nullable = true)
-    private String trl;
+//    /**
+//     * The URL to the location of the actual tool.
+//     */
+//    @XmlElement
+//    @Schema
+//    @FieldValidation(nullable = true)
+//    private String path;
     
-    // Github page 
+ 
     /**
-     * The Github repository to find more information about this Resource.
+     * Email of the Resource's main contact person/manager.
      */
-    @XmlElement
-    @Schema
-    @FieldValidation(nullable = true)
-    private URL githubPage;
-    
-    // Attribution Information
-    /**
-     * Name of the funding body that supported the development and/or operation of the Resource.
-     */
-    @XmlElementWrapper(name = "fundingBody")
-    @Schema
-    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
-    @VocabularyValidation(type = Vocabulary.Type.FUNDING_BODY)
-    private List<String> fundingBody;
-
-    /**
-     * Name of the funding program that supported the development and/or operation of the Resource.
-     */
-    @XmlElementWrapper(name = "fundingPrograms")
-    @XmlElement(name = "fundingProgram")
-    @Schema
-    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
-    @VocabularyValidation(type = Vocabulary.Type.FUNDING_PROGRAM)
-    private List<String> fundingPrograms;
-
-    /**
-     * Name of the project that supported the development and/or operation of the Resource.
-     */
-    @XmlElementWrapper(name = "grantProjectNames")
-    @XmlElement(name = "grantProjectName")
-    @Schema
-    @FieldValidation(nullable = true)
-    private List<String> grantProjectNames;
-    
-    // Contact Information
-    /**
-     * Tool's Main Contact Owner info.
-     */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation
-    private ToolMainContact contact;
-
-
+    @XmlElement()
+    @Schema()
+    @EmailValidation(nullable = true)
+    private String email;
 
     public Tool() {
     }
 
-    public Tool(String id, String name, String resourceOrganisation, List<String> relatedResources, List<String> resourceProviders, List<String> authors, String description, List<String> keywords, String license, Date versionDate, String version, List<String> targetGroups, List<String> learningResourceTypes, List<String> learningOutcomes, String expertiseLevel, List<String> contentResourceTypes, List<String> qualifications, String duration, Boolean deprecated, List<ServiceProviderDomain> scientificDomains, URL helpdeskPage, String path, String trl, URL githubPage, List<String> fundingBody, List<String> fundingPrograms, List<String> grantProjectNames, ToolMainContact contact) {
+    public Tool(String id, String name, String resourceOrganisation, List<String> relatedResources, List<String> resourceProviders, String author, String description, List<String> keywords, String license, Date versionDate, List<String> targetGroups, List<String> learningResourceTypes, List<String> learningOutcomes, String expertiseLevel, List<String> contentResourceTypes, List<String> qualifications, String duration, Boolean deprecated, List<ServiceProviderDomain> scientificDomains, URL helpdeskPage, String path, String creditCost, String email) {
         this.id = id;
         this.name = name;
         this.resourceOrganisation = resourceOrganisation;
-        this.resourceProviders = resourceProviders;
         this.relatedResources = relatedResources;
-        this.authors = authors;
+        this.author = author;
         this.description = description;
         this.keywords = keywords;
         this.license = license;
-        this.version = version;
         this.versionDate = versionDate;
-        this.targetGroups = targetGroups;
-        this.learningResourceTypes = learningResourceTypes;
-        this.learningOutcomes = learningOutcomes;
-        this.expertiseLevel = expertiseLevel;
-        this.contentResourceTypes = contentResourceTypes;
-        this.qualifications = qualifications;
-        this.duration = duration;
         this.deprecated = deprecated;
         this.scientificDomains = scientificDomains;
         this.helpdeskPage = helpdeskPage;
-        this.path = path;
-        this.trl = trl;
-        this.githubPage = githubPage;
-        this.fundingBody = fundingBody;
-        this.fundingPrograms = fundingPrograms;
-        this.grantProjectNames = grantProjectNames;
-        this.contact = contact;
+        this.creditCost = creditCost;
+        //this.path = path;
+        this.email = email;
     }
 
     @Override
@@ -349,12 +194,12 @@ public class Tool implements Identifiable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tool that = (Tool) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(resourceOrganisation, that.resourceOrganisation) && Objects.equals(resourceProviders, that.resourceProviders) && Objects.equals(authors, that.authors) && Objects.equals(description, that.description) && Objects.equals(keywords, that.keywords) && Objects.equals(license, that.license) && Objects.equals(versionDate, that.versionDate) && Objects.equals(targetGroups, that.targetGroups) && Objects.equals(learningResourceTypes, that.learningResourceTypes) && Objects.equals(learningOutcomes, that.learningOutcomes) && Objects.equals(expertiseLevel, that.expertiseLevel) && Objects.equals(contentResourceTypes, that.contentResourceTypes) && Objects.equals(qualifications, that.qualifications) && Objects.equals(duration, that.duration) && Objects.equals(scientificDomains, that.scientificDomains) && Objects.equals(contact, that.contact);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(resourceOrganisation, that.resourceOrganisation) && Objects.equals(description, that.description) && Objects.equals(keywords, that.keywords) && Objects.equals(license, that.license) && Objects.equals(versionDate, that.versionDate) && Objects.equals(scientificDomains, that.scientificDomains) && Objects.equals(email, that.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, resourceOrganisation, resourceProviders, authors, description, keywords, license, versionDate, targetGroups, learningResourceTypes, learningOutcomes, expertiseLevel, contentResourceTypes, qualifications, duration, scientificDomains, contact);
+        return Objects.hash(id, name, resourceOrganisation, description, keywords, license, versionDate, targetInfrastructure , scientificDomains, email);
     }
 
     @Override
@@ -363,29 +208,15 @@ public class Tool implements Identifiable {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", resourceOrganisation='" + resourceOrganisation + '\'' +
-                ", resourceProviders=" + resourceProviders +
-                ", authors=" + authors +
+                ", author=" + author +
                 ", description='" + description + '\'' +
                 ", keywords=" + keywords +
                 ", license='" + license + '\'' +
-                ", version=" + version +
                 ", versionDate=" + versionDate +
-                ", targetGroups=" + targetGroups +
-                ", learningResourceTypes=" + learningResourceTypes +
-                ", learningOutcomes=" + learningOutcomes +
-                ", expertiseLevel='" + expertiseLevel + '\'' +
-                ", contentResourceTypes=" + contentResourceTypes +
-                ", qualifications=" + qualifications +
-                ", duration=" + duration +
+                ", targetInfrastructure=" + targetInfrastructure +
                 ", deprecated=" + deprecated +
                 ", scientificDomains=" + scientificDomains +
-                ", path=" + path +
-                ", trl=" + trl +
-                ", githubPage=" + githubPage +
-                ", fundingBody=" + fundingBody +
-                ", fundingPrograms=" + fundingPrograms +
-                ", grantProjectNames=" + grantProjectNames +
-                ", contact=" + contact +
+                ", email=" + email +
                 '}';
     }
 
@@ -414,21 +245,21 @@ public class Tool implements Identifiable {
     public void setResourceOrganisation(String resourceOrganisation) {
         this.resourceOrganisation = resourceOrganisation;
     }
-
-    public List<String> getResourceProviders() {
-        return resourceProviders;
+    
+    public List<String> getRelatedResources() {
+        return relatedResources;
     }
 
-    public void setResourceProviders(List<String> resourceProviders) {
-        this.resourceProviders = resourceProviders;
+    public void setRelatedResources(List<String> relatedResources) {
+        this.relatedResources = relatedResources;
     }
 
-    public List<String> getAuthors() {
-        return authors;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setAuthors(List<String> authors) {
-        this.authors = authors;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getDescription() {
@@ -463,6 +294,16 @@ public class Tool implements Identifiable {
         this.versionDate = versionDate;
     }
 
+
+    public List<String> getTargetInfrastructure() {
+        return targetInfrastructure;
+    }
+
+    public void setTargetInfrastructure(List<String> targetInfrastructure) {
+        this.targetInfrastructure = targetInfrastructure;
+    }
+    
+
     public List<String> getTargetGroups() {
         return targetGroups;
     }
@@ -471,44 +312,12 @@ public class Tool implements Identifiable {
         this.targetGroups = targetGroups;
     }
 
-    public List<String> getLearningResourceTypes() {
-        return learningResourceTypes;
+    public Boolean getDeprecated() {
+        return deprecated;
     }
 
-    public void setLearningResourceTypes(List<String> learningResourceTypes) {
-        this.learningResourceTypes = learningResourceTypes;
-    }
-
-    public List<String> getLearningOutcomes() {
-        return learningOutcomes;
-    }
-
-    public void setLearningOutcomes(List<String> learningOutcomes) {
-        this.learningOutcomes = learningOutcomes;
-    }
-
-    public String getExpertiseLevel() {
-        return expertiseLevel;
-    }
-
-    public void setExpertiseLevel(String expertiseLevel) {
-        this.expertiseLevel = expertiseLevel;
-    }
-
-    public List<String> getContentResourceTypes() {
-        return contentResourceTypes;
-    }
-
-    public void setContentResourceTypes(List<String> contentResourceTypes) {
-        this.contentResourceTypes = contentResourceTypes;
-    }
-
-    public List<String> getQualifications() {
-        return qualifications;
-    }
-
-    public void setQualifications(List<String> qualifications) {
-        this.qualifications = qualifications;
+    public void setDeprecated(Boolean deprecated) {
+        this.deprecated = deprecated;
     }
 
     public List<ServiceProviderDomain> getScientificDomains() {
@@ -518,12 +327,36 @@ public class Tool implements Identifiable {
     public void setScientificDomains(List<ServiceProviderDomain> scientificDomains) {
         this.scientificDomains = scientificDomains;
     }
-
-    public ToolMainContact getContact() {
-        return contact;
+    
+    public URL getHelpdeskPage() {
+        return helpdeskPage;
     }
 
-    public void setContact(ToolMainContact contact) {
-        this.contact = contact;
+    public void setHelpdeskPage(URL helpdeskPage) {
+        this.helpdeskPage = helpdeskPage;
+    }
+
+    public String getCreditCost() {
+        return creditCost;
+    }
+
+    public void setCreditCostl(String creditCost) {
+        this.creditCost = creditCost;
+    }
+    
+//    public String getPath() {
+//        return path;
+//    }
+//
+//    public void setPath(String path) {
+//        this.path = path;
+//    }
+    
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

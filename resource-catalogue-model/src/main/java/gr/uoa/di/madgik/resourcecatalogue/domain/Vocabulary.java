@@ -93,6 +93,8 @@ public class Vocabulary implements Identifiable {
         // Tool
         TOOL_VULNERABILITIES("Tool vulnerabilities"),
         TOOL_SECURITY_STATUS("Tool security status"),
+        TOOL_LICENSE("Tool license"),
+        TOOL_TARGET_INFRASTRUCTURE("Tool target infrastructure"),
         // Training Resource
         TR_URL_TYPE("Training Resource url type"),
         TR_ACCESS_RIGHT("Training Resource access right"),
