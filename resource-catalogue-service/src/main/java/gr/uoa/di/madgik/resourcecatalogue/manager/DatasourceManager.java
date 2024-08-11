@@ -181,7 +181,7 @@ public class DatasourceManager extends ResourceManager<DatasourceBundle> impleme
         String catalogueId = datasourceBundle.getDatasource().getCatalogueId();
 
         DatasourceBundle existingDatasource = get(serviceId, catalogueId);
-        if (existingDatasource != null && existingDatasource.getId() != datasourceBundle.getId(){
+        if (existingDatasource != null && existingDatasource.getId() !=  datasourceBundle.getId()){
             throw new ValidationException(String.format("Service [%s] of the Catalogue [%s] has already a Datasource " +
                     "registered, with id: [%s]", serviceId, catalogueId, existingDatasource.getId()));
         }
