@@ -340,7 +340,7 @@ public class Tool implements Identifiable {
         return creditCost;
     }
 
-    public void setCreditCostl(String creditCost) {
+    public void setCreditCost(String creditCost) {
         this.creditCost = creditCost;
     }
     
