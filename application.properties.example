@@ -100,6 +100,14 @@ catalogue.email-properties.helpdesk-emails.to=support@open-science-cloud.ec.euro
 catalogue.email-properties.helpdesk-emails.cc=
 catalogue.email-properties.monitoring-emails.to=devops-eosc@athenarc.gr
 
+## Database connections ##
+
+jdbc.hikari.connectionTimeout=30000
+jdbc.hikari.idleTimeout=120000
+jdbc.hikari.maximumPoolSize=20
+jdbc.hikari.maxLifetime=1800000
+jdbc.hikari.minimumIdle=5
+
 ## Mail Properties ##
 catalogue.mailer.host=
 catalogue.mailer.from=
