@@ -74,6 +74,20 @@ spring.security.oauth2.client.registration.eosc.redirect-uri=http://${fqdn}:8080
 spring.security.oauth2.client.provider.eosc.issuer-uri=${aai.baseUrl}
 spring.security.oauth2.resourceserver.jwt.issuer-uri=${aai.baseUrl}
 
+#
+# RabbitMQ
+#
+
+spring.rabbitmq.host=
+spring.rabbitmq.port=
+spring.rabbitmq.username=
+spring.rabbitmq.password=
+
+spring.rabbitmq.listener.simple.default-requeue-rejected=false
+spring.rabbitmq.listener.simple.missing-queues-fatal=true
+
+eosc.amqp.exchange.transactions.name=resource-catalogue-transaction-requests
+eosc.amqp.exchange.transactions.routing-key=
 
 #########################
 ## Optional Properties ##
