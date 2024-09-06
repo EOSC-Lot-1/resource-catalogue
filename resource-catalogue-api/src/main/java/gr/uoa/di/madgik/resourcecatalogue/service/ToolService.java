@@ -199,6 +199,14 @@ public interface ToolService extends ResourceService<ToolBundle>, BundleOperatio
      * @return {@link ToolBundle}
      */
     ToolBundle getOrElseReturnNull(String id, String catalogueId);
+    
+    /**
+     * Get a list of Tools by date-status
+     *
+     * @param id Tool ID
+     * @return {@link ToolBundle}
+     */
+    List <ToolBundle> getToolsByDateStatus(String date, String status, List <ToolBundle> tools);
 
     /**
      * Create a Public Tool

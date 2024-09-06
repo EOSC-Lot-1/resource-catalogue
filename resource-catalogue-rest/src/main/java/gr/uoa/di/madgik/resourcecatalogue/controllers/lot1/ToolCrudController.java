@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import gr.uoa.di.madgik.resourcecatalogue.annotations.Browse;
 import gr.uoa.di.madgik.resourcecatalogue.domain.ToolBundle;
+import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceNotFoundException;
 import gr.uoa.di.madgik.resourcecatalogue.service.ToolService;
 import gr.uoa.di.madgik.resourcecatalogue.utils.FacetFilterUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,7 +49,6 @@ public class ToolCrudController extends ResourceCrudController<ToolBundle> {
     }
     
     @Operation(summary = "Get tools by status/date")
-    @Browse
     @GetMapping(path = "security-evaluations", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<ToolBundle>> getToolsAccordingToDate(@Parameter(hidden = true) @RequestParam Map<String, Object> allRequestParams,
                                                @Parameter(description = "Before date (format yyyy-MM-dd)", example = "2023-01-01") 
@@ -58,6 +58,9 @@ public class ToolCrudController extends ResourceCrudController<ToolBundle> {
         FacetFilter ff = FacetFilterUtils.createFacetFilter(allRequestParams);
         List<ToolBundle> tools = toolService.getAll(ff).getResults();
         List<ToolBundle> filteredTools = toolService.getToolsByDateStatus(date, status, tools); // Use the return value
+        if (filteredTools.isEmpty()) {
+        	throw new ResourceNotFoundException("No tools found");
+        }
         return new ResponseEntity<>(filteredTools, HttpStatus.OK);
     }
 }
