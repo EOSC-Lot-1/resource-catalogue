@@ -52,7 +52,7 @@ public class ToolCrudController extends ResourceCrudController<ToolBundle> {
     @GetMapping(path = "security-evaluations", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<ToolBundle>> getToolsAccordingToDate(@Parameter(hidden = true) @RequestParam Map<String, Object> allRequestParams,
                                                @Parameter(description = "Before date (format yyyy-MM-dd)", example = "2023-01-01") 
-                                               @RequestParam String date) {
+                                               @RequestParam(required = false) String date) {
     	String status = (String) allRequestParams.get("status");
     	allRequestParams.remove("date");
         FacetFilter ff = FacetFilterUtils.createFacetFilter(allRequestParams);
