@@ -53,7 +53,7 @@ public class ServiceCrudController extends ResourceCrudController<ServiceBundle>
     
     ServiceCrudController(ServiceBundleService<ServiceBundle> serviceBundleService,RabbitTemplate rabbitTemplate,
     		ObjectMapper objectMapper, 
-    		@Value("${eosc.amqp.exchange.transactions.name:credit-management-service-transaction-requests}")
+    		@Value("${eosc.amqp.exchange.transactions.name:workflows}")
     		String              transactionExchange,
     		@Value("${eosc.amqp.exchange.transactions.routing-key:}")
     		String              transactionRoutingKey) {

@@ -57,7 +57,7 @@ public class DatasourceCrudController extends ResourceCrudController<DatasourceB
                                     OpenAIREDatasourceService openAIREDatasourceService,
                                     RabbitTemplate rabbitTemplate,
                             		ObjectMapper objectMapper, 
-                            		@Value("${eosc.amqp.exchange.transactions.name:credit-management-service-transaction-requests}")
+                            		@Value("${eosc.amqp.exchange.transactions.name:workflows}")
                             		String              transactionExchange,
                             		@Value("${eosc.amqp.exchange.transactions.routing-key:}")
                             		String              transactionRoutingKey) {
