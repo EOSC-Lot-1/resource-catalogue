@@ -71,7 +71,7 @@ public class ResourceInteroperabilityRecordCrudController extends ResourceCrudCo
     public void publish(@RequestParam("id") @Parameter(allowReserved = true) String id, @Parameter(hidden = true) Authentication auth) throws ResourceNotFoundException, IOException, TimeoutException {
     	List<ProcessInstanceRequestVariableDto> variables = new ArrayList<ProcessInstanceRequestVariableDto>();
     	variables.add(new ProcessInstanceRequestVariableDto("pid", id, EnumVariableType.STRING));
-    	ProcessInstanceRequestDto instanceRequest = new ProcessInstanceRequestDto(null, null, "interoperability-record-publish", variables);
+    	ProcessInstanceRequestDto instanceRequest = new ProcessInstanceRequestDto(null, null, "resource-interoperability-record-publish", variables);
         this.sendMessage(instanceRequest);
     }
     
