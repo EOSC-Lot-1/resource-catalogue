@@ -55,9 +55,9 @@ public class Provider implements Identifiable {
     /**
      * A Y/N question to define whether the Provider is a Legal Entity or not.
      */
-    @XmlElement()
-    @Schema()
-    @FieldValidation(nullable = true)
+    @XmlElement(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @FieldValidation()
     private boolean legalEntity;
 
     /**
@@ -106,7 +106,7 @@ public class Provider implements Identifiable {
      */
     @XmlElement()
     @Schema(example = "https://example.com")
-    @FieldValidation
+    @FieldValidation(nullable = true)
     private URL logo;
 
     /**
@@ -163,8 +163,8 @@ public class Provider implements Identifiable {
     /**
      * Provider's main contact info.
      */
-    @XmlElement()
-    @Schema()
+    @XmlElement(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
     private ProviderMainContact mainContact;
 

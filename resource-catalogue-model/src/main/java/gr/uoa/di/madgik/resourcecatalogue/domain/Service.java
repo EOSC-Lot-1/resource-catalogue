@@ -49,7 +49,7 @@ public class Service implements Identifiable {
      */
     @XmlElement()
     @Schema
-    @FieldValidation(containsId = true, idClass = Provider.class)
+    @FieldValidation(nullable = true, containsId = true, idClass = Provider.class)
     private String resourceOrganisation;
 
     /**
@@ -230,7 +230,7 @@ public class Service implements Identifiable {
     @XmlElementWrapper(name = "geographicalAvailabilities")
     @XmlElement(name = "geographicalAvailability")
     @Schema()
-    @FieldValidation(containsId = true, idClass = Vocabulary.class)
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @GeoLocationVocValidation(region = Vocabulary.Type.REGION, country = Vocabulary.Type.COUNTRY)
     private List<String> geographicalAvailabilities;
 
@@ -240,7 +240,7 @@ public class Service implements Identifiable {
     @XmlElementWrapper(name = "languageAvailabilities", required = true)
     @XmlElement(name = "languageAvailability")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation(containsId = true, idClass = Vocabulary.class)
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.LANGUAGE)
     private List<String> languageAvailabilities;
 
@@ -272,7 +272,7 @@ public class Service implements Identifiable {
     @XmlElementWrapper(name = "publicContacts")
     @XmlElement(name = "publicContact")
     @Schema
-    @FieldValidation
+    @FieldValidation(nullable = true)
     private List<ServicePublicContact> publicContacts;
 
     /**
@@ -451,9 +451,9 @@ public class Service implements Identifiable {
     /**
      * Webpage describing the rules, Resource conditions and usage policy which one must agree to abide by in order to use the Resource.
      */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "https://example.com")
-    @FieldValidation
+    @XmlElement()
+    @Schema(example = "https://example.com")
+    @FieldValidation(nullable = true)
     private URL termsOfUse;
 
     /**
@@ -461,7 +461,7 @@ public class Service implements Identifiable {
      */
     @XmlElement()
     @Schema( example = "https://example.com")
-    @FieldValidation
+    @FieldValidation(nullable = true)
     private URL privacyPolicy;
 
     /**
