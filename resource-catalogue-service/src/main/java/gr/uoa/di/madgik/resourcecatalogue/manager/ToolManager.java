@@ -857,7 +857,8 @@ public class ToolManager extends ResourceManager<ToolBundle> implements ToolServ
         if (status == null) {
         	// get all pending and approved tools before timestamp
             for (ToolBundle toolBundle : tools) {
-                if ("rejected".equals(toolBundle.getStatus())|| (toolBundle.getSecurity().getLastCheck()!= null
+                if ("rejected".equals(toolBundle.getStatus())|| (toolBundle.getSecurity()!= null 
+                		&& toolBundle.getSecurity().getLastCheck()!= null
                 		&& Long.parseLong(toolBundle.getSecurity().getLastCheck()) > timestamp)) {
                     continue;
                 }
@@ -866,7 +867,8 @@ public class ToolManager extends ResourceManager<ToolBundle> implements ToolServ
         } else {
             // get status specified tools before timestamp
             for (ToolBundle toolBundle : tools) {
-                if (!status.equals(toolBundle.getStatus()) || (toolBundle.getSecurity().getLastCheck()!= null 
+                if (!status.equals(toolBundle.getStatus()) || (toolBundle.getSecurity()!= null 
+                		&& toolBundle.getSecurity().getLastCheck()!= null 
                 		&& Long.parseLong(toolBundle.getSecurity().getLastCheck()) > timestamp)) {
                     continue;
                 }

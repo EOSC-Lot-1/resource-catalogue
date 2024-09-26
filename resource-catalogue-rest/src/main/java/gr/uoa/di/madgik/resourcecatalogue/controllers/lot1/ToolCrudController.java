@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import gr.uoa.di.madgik.registry.domain.FacetFilter;
-import gr.uoa.di.madgik.resourcecatalogue.annotations.Browse;
+import gr.uoa.di.madgik.registry.domain.Paging;
 import gr.uoa.di.madgik.resourcecatalogue.domain.ToolBundle;
 import gr.uoa.di.madgik.resourcecatalogue.exception.ResourceNotFoundException;
 import gr.uoa.di.madgik.resourcecatalogue.service.ToolService;
@@ -50,17 +50,19 @@ public class ToolCrudController extends ResourceCrudController<ToolBundle> {
     
     @Operation(summary = "Get tools by status/date")
     @GetMapping(path = "security-evaluations", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<List<ToolBundle>> getToolsAccordingToDate(@Parameter(hidden = true) @RequestParam Map<String, Object> allRequestParams,
+    public ResponseEntity<Paging<ToolBundle>> getToolsAccordingToDate(@Parameter(hidden = true) @RequestParam Map<String, Object> allRequestParams,
                                                @Parameter(description = "Before date (format yyyy-MM-dd)", example = "2023-01-01") 
                                                @RequestParam(required = false) String date) {
     	String status = (String) allRequestParams.get("status");
     	allRequestParams.remove("date");
         FacetFilter ff = FacetFilterUtils.createFacetFilter(allRequestParams);
-        List<ToolBundle> tools = toolService.getAll(ff).getResults();
+        Paging<ToolBundle> toolsPaging = toolService.getAll(ff);
+        List<ToolBundle> tools = toolsPaging.getResults();
         List<ToolBundle> filteredTools = toolService.getToolsByDateStatus(date, status, tools); // Use the return value
         if (filteredTools.isEmpty()) {
         	throw new ResourceNotFoundException("No tools found");
         }
-        return new ResponseEntity<>(filteredTools, HttpStatus.OK);
+        toolsPaging.setResults(filteredTools);
+        return new ResponseEntity<>(toolsPaging, HttpStatus.OK);
     }
 }
