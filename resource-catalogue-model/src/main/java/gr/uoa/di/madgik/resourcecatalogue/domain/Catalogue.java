@@ -94,7 +94,7 @@ public class Catalogue implements Identifiable {
     private URL validationProcess;
 
     /**
-     * In terms of sustainability, what is the expected life of the catalogue
+     * In terms of sustainability, what is the expected life of the Catalogue.
      */
     @XmlElement(required = true)
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
@@ -128,7 +128,7 @@ public class Catalogue implements Identifiable {
     private URL logo;
 
     /**
-     * Link to video, slideshow, photos, screenshots with details of the Provider.
+     * Link to video, slideshow, photos, screenshots with details of the Catalogue.
      */
     @XmlElementWrapper(name = "multimedia")
     @XmlElement(name = "multimedia")
@@ -171,17 +171,17 @@ public class Catalogue implements Identifiable {
     /**
      * Catalogue's main contact info.
      */
-    @XmlElement
-    @Schema
+    @XmlElement(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
     private ProviderMainContact mainContact;
 
     /**
      * List of the Catalogue's public contacts info.
      */
-    @XmlElementWrapper(name = "publicContacts")
+    @XmlElementWrapper(name = "publicContacts", required = true)
     @XmlElement(name = "publicContact")
-    @Schema
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
     private List<ProviderPublicContact> publicContacts;
 
@@ -217,7 +217,7 @@ public class Catalogue implements Identifiable {
     private List<String> networks;
 
 
-    // Extra needed fields
+    // Authentication
     @XmlElementWrapper(name = "users", required = true)
     @XmlElement(name = "user")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
