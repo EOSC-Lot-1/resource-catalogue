@@ -1762,7 +1762,7 @@ For embedded providers (2) - legal status of the hosting legal entity. It is als
         </xs:annotation>
       </xs:element>
             
-      <xs:element name="logo" type="xs:anyURI">
+      <xs:element minOccurs="0" name="logo" type="xs:anyURI">
         <xs:annotation>
           <xs:documentation><![CDATA[Link to the logo/visual identity of the Provider.]]></xs:documentation>
         </xs:annotation>
@@ -1964,7 +1964,7 @@ For embedded providers (2) - legal status of the hosting legal entity. It is als
               
       </xs:element>
             
-      <xs:element name="website" type="xs:anyURI">
+      <xs:element minOccurs="0" name="website" type="xs:anyURI">
         <xs:annotation>
           <xs:documentation><![CDATA[Website with information about the Provider.]]></xs:documentation>
         </xs:annotation>
@@ -2285,7 +2285,7 @@ c) list of customers, communities, users, etc. using the Resource.]]></xs:docume
               
       </xs:element>
             
-      <xs:element name="geographicalAvailabilities">
+      <xs:element minOccurs="0" name="geographicalAvailabilities">
         <xs:annotation>
           <xs:documentation><![CDATA[Locations where the Resource is offered.]]></xs:documentation>
         </xs:annotation>
@@ -2319,7 +2319,7 @@ c) list of customers, communities, users, etc. using the Resource.]]></xs:docume
               
       </xs:element>
             
-      <xs:element name="helpdeskEmail" type="xs:string">
+      <xs:element minOccurs="0" name="helpdeskEmail" type="xs:string">
         <xs:annotation>
           <xs:documentation><![CDATA[The email to ask more information from the Provider about this Resource.]]></xs:documentation>
         </xs:annotation>
@@ -2472,7 +2472,7 @@ infrastructures.]]></xs:documentation>
         </xs:annotation>
       </xs:element>
             
-      <xs:element name="privacyPolicy" type="xs:anyURI">
+      <xs:element minOccurs="0" name="privacyPolicy" type="xs:anyURI">
         <xs:annotation>
           <xs:documentation><![CDATA[Link to the privacy policy applicable to the Resource.]]></xs:documentation>
         </xs:annotation>
@@ -2569,7 +2569,7 @@ infrastructures.]]></xs:documentation>
         </xs:annotation>
       </xs:element>
             
-      <xs:element name="resourceOrganisation" type="xs:string">
+      <xs:element minOccurs="0" name="resourceOrganisation" type="xs:string">
         <xs:annotation>
           <xs:documentation><![CDATA[The name (or abbreviation) of the organisation that manages or delivers the resource, or that coordinates resource delivery in a federated scenario.]]></xs:documentation>
         </xs:annotation>
@@ -2609,7 +2609,7 @@ infrastructures.]]></xs:documentation>
               
       </xs:element>
             
-      <xs:element name="securityContactEmail" type="xs:string">
+      <xs:element minOccurs="0" name="securityContactEmail" type="xs:string">
         <xs:annotation>
           <xs:documentation><![CDATA[The email to contact the Provider for critical security issues about this Resource.]]></xs:documentation>
         </xs:annotation>
@@ -2695,7 +2695,7 @@ infrastructures.]]></xs:documentation>
               
       </xs:element>
             
-      <xs:element name="termsOfUse" type="xs:anyURI">
+      <xs:element minOccurs="0" name="termsOfUse" type="xs:anyURI">
         <xs:annotation>
           <xs:documentation><![CDATA[Webpage describing the rules, Resource conditions and usage policy which one must agree to abide by in order to use the Resource.]]></xs:documentation>
         </xs:annotation>

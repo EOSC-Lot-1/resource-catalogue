@@ -98,7 +98,8 @@ public class PublicToolManager extends AbstractPublicResourceManager<ToolBundle>
             logger.info("Tool with id {} does not have a PID registered under its AlternativeIdentifiers.",
                     toolBundle.getId());
         } else {
-            commonMethods.postPID(pid);
+        	logger.info("PID POST disabled");
+            //commonMethods.postPID(pid);
         }
         ToolBundle ret;
         logger.info(String.format("Tool [%s] is being published with id [%s]", lowerLevelResourceId, toolBundle.getId()));

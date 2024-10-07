@@ -20,11 +20,7 @@ public class ServiceBundle extends Bundle<Service> {
     @XmlElement
     @FieldValidation(nullable = true)
     private ResourceExtras resourceExtras;
-    
-    @XmlElementWrapper(name = "sites")
-    @XmlElement(name = "sites")
-    private List<Site> sites;
-    
+
     @XmlElement
     private String auditState;
 
@@ -83,14 +79,6 @@ public class ServiceBundle extends Bundle<Service> {
 
     public void setAuditState(String auditState) {
         this.auditState = auditState;
-    }
-    
-    public List<Site> getSites() {
-        return sites;
-    }
-
-    public void setSites( List<Site>  sites) {
-        this.sites = sites;
     }
 
     @Override

@@ -277,6 +277,8 @@
             
       <xs:enumeration value="MARKETPLACE_LOCATION"/>
             
+      <xs:enumeration value="ENDPOINT_TYPE"/>
+            
       <xs:enumeration value="CATALOGUE_STATE"/>
             
       <xs:enumeration value="PROVIDER_STATE"/>
@@ -298,6 +300,14 @@
       <xs:enumeration value="DS_CLASSIFICATION"/>
             
       <xs:enumeration value="DS_COAR_ACCESS_RIGHTS_1_0"/>
+            
+      <xs:enumeration value="TOOL_VULNERABILITIES"/>
+            
+      <xs:enumeration value="TOOL_SECURITY_STATUS"/>
+            
+      <xs:enumeration value="TOOL_LICENSE"/>
+            
+      <xs:enumeration value="TOOL_TARGET_INFRASTRUCTURE"/>
             
       <xs:enumeration value="TR_URL_TYPE"/>
             

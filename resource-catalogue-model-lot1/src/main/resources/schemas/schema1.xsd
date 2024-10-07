@@ -115,6 +115,8 @@
     
   <xs:element name="toolMainContact" type="tns:toolMainContact"/>
     
+  <xs:element name="toolSecurity" type="tns:toolSecurity"/>
+    
   <xs:element name="trainingResource" type="tns:trainingResource"/>
     
   <xs:element name="trainingResourceBundle" type="tns:trainingResourceBundle"/>
@@ -1792,13 +1794,13 @@ For embedded providers (2) - legal status of the hosting legal entity. It is als
         </xs:annotation>
       </xs:element>
             
-      <xs:element name="logo" type="xs:anyURI">
+      <xs:element minOccurs="0" name="logo" type="xs:anyURI">
         <xs:annotation>
           <xs:documentation><![CDATA[Link to the logo/visual identity of the Provider.]]></xs:documentation>
         </xs:annotation>
       </xs:element>
             
-      <xs:element minOccurs="0" name="mainContact" type="tns:providerMainContact">
+      <xs:element name="mainContact" type="tns:providerMainContact">
         <xs:annotation>
           <xs:documentation><![CDATA[Provider's main contact info.]]></xs:documentation>
         </xs:annotation>
@@ -1994,7 +1996,7 @@ For embedded providers (2) - legal status of the hosting legal entity. It is als
               
       </xs:element>
             
-      <xs:element name="website" type="xs:anyURI">
+      <xs:element minOccurs="0" name="website" type="xs:anyURI">
         <xs:annotation>
           <xs:documentation><![CDATA[Website with information about the Provider.]]></xs:documentation>
         </xs:annotation>
@@ -2321,7 +2323,7 @@ c) list of customers, communities, users, etc. using the Resource.]]></xs:docume
               
       </xs:element>
             
-      <xs:element name="geographicalAvailabilities">
+      <xs:element minOccurs="0" name="geographicalAvailabilities">
         <xs:annotation>
           <xs:documentation><![CDATA[Locations where the Resource is offered.]]></xs:documentation>
         </xs:annotation>
@@ -2355,7 +2357,7 @@ c) list of customers, communities, users, etc. using the Resource.]]></xs:docume
               
       </xs:element>
             
-      <xs:element name="helpdeskEmail" type="xs:string">
+      <xs:element minOccurs="0" name="helpdeskEmail" type="xs:string">
         <xs:annotation>
           <xs:documentation><![CDATA[The email to ask more information from the Provider about this Resource.]]></xs:documentation>
         </xs:annotation>
@@ -2508,7 +2510,7 @@ infrastructures.]]></xs:documentation>
         </xs:annotation>
       </xs:element>
             
-      <xs:element name="privacyPolicy" type="xs:anyURI">
+      <xs:element minOccurs="0" name="privacyPolicy" type="xs:anyURI">
         <xs:annotation>
           <xs:documentation><![CDATA[Link to the privacy policy applicable to the Resource.]]></xs:documentation>
         </xs:annotation>
@@ -2605,7 +2607,7 @@ infrastructures.]]></xs:documentation>
         </xs:annotation>
       </xs:element>
             
-      <xs:element name="resourceOrganisation" type="xs:string">
+      <xs:element minOccurs="0" name="resourceOrganisation" type="xs:string">
         <xs:annotation>
           <xs:documentation><![CDATA[The name (or abbreviation) of the organisation that manages or delivers the resource, or that coordinates resource delivery in a federated scenario.]]></xs:documentation>
         </xs:annotation>
@@ -2645,7 +2647,7 @@ infrastructures.]]></xs:documentation>
               
       </xs:element>
             
-      <xs:element name="securityContactEmail" type="xs:string">
+      <xs:element minOccurs="0" name="securityContactEmail" type="xs:string">
         <xs:annotation>
           <xs:documentation><![CDATA[The email to contact the Provider for critical security issues about this Resource.]]></xs:documentation>
         </xs:annotation>
@@ -2731,7 +2733,7 @@ infrastructures.]]></xs:documentation>
               
       </xs:element>
             
-      <xs:element name="termsOfUse" type="xs:anyURI">
+      <xs:element minOccurs="0" name="termsOfUse" type="xs:anyURI">
         <xs:annotation>
           <xs:documentation><![CDATA[Webpage describing the rules, Resource conditions and usage policy which one must agree to abide by in order to use the Resource.]]></xs:documentation>
         </xs:annotation>
@@ -3001,127 +3003,30 @@ infrastructures.]]></xs:documentation>
         
     <xs:sequence>
             
-      <xs:element name="authors">
+      <xs:element minOccurs="0" name="author" type="xs:string">
         <xs:annotation>
-          <xs:documentation><![CDATA[The name of entity(ies) authoring the resource.]]></xs:documentation>
-        </xs:annotation>
-                
-        <xs:complexType>
-                    
-          <xs:sequence>
-                        
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="author" type="xs:string"/>
-                      
-          </xs:sequence>
-                  
-        </xs:complexType>
-              
-      </xs:element>
-            
-      <xs:element name="contact" type="tns:toolMainContact">
-        <xs:annotation>
-          <xs:documentation><![CDATA[Tool's Main Contact Owner info.]]></xs:documentation>
+          <xs:documentation><![CDATA[The first and last name of the user that is uploading the TOSCA template.]]></xs:documentation>
         </xs:annotation>
       </xs:element>
             
-      <xs:element minOccurs="0" name="contentResourceTypes">
+      <xs:element minOccurs="0" name="creditCost" type="xs:string">
         <xs:annotation>
-          <xs:documentation><![CDATA[The predominant content type of the learning resource (video, game, diagram, slides, etc.).]]></xs:documentation>
+          <xs:documentation><![CDATA[The minimum credits estimation required to deploy this tool on the EOSC EU Node]]></xs:documentation>
         </xs:annotation>
-                
-        <xs:complexType>
-                    
-          <xs:sequence>
-                        
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="contentResourceType" type="xs:string"/>
-                      
-          </xs:sequence>
-                  
-        </xs:complexType>
-              
       </xs:element>
             
       <xs:element minOccurs="0" name="deprecated" type="xs:boolean"/>
             
       <xs:element minOccurs="0" name="description" type="xs:string">
         <xs:annotation>
-          <xs:documentation><![CDATA[A brief synopsis about or description of the tool.
-
-(FieldValidation(nullable): = true, containsId = true, containsResourceId = true)
-private List<String> eoscRelatedServices;
-(Schema): 
-(XmlElement(name): = "eoscRelatedService")
-(XmlElementWrapper(name): = "eoscRelatedServices")]]></xs:documentation>
+          <xs:documentation><![CDATA[A brief synopsis about or description of the tool.]]></xs:documentation>
         </xs:annotation>
       </xs:element>
             
-      <xs:element minOccurs="0" name="duration" type="xs:string">
+      <xs:element minOccurs="0" name="email" type="xs:string">
         <xs:annotation>
-          <xs:documentation><![CDATA[Approximate or typical time it takes to work with or through the learning resource for the typical intended target audience.]]></xs:documentation>
+          <xs:documentation><![CDATA[Email of the Resource's main contact person/manager.]]></xs:documentation>
         </xs:annotation>
-      </xs:element>
-            
-      <xs:element name="expertiseLevel" type="xs:string">
-        <xs:annotation>
-          <xs:documentation><![CDATA[Target skill level in the topic being taught.]]></xs:documentation>
-        </xs:annotation>
-      </xs:element>
-            
-      <xs:element minOccurs="0" name="fundingBody">
-        <xs:annotation>
-          <xs:documentation><![CDATA[Name of the funding body that supported the development and/or operation of the Resource.]]></xs:documentation>
-        </xs:annotation>
-                
-        <xs:complexType>
-                    
-          <xs:sequence>
-                        
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="fundingBody" nillable="true" type="xs:string"/>
-                      
-          </xs:sequence>
-                  
-        </xs:complexType>
-              
-      </xs:element>
-            
-      <xs:element minOccurs="0" name="fundingPrograms">
-        <xs:annotation>
-          <xs:documentation><![CDATA[Name of the funding program that supported the development and/or operation of the Resource.]]></xs:documentation>
-        </xs:annotation>
-                
-        <xs:complexType>
-                    
-          <xs:sequence>
-                        
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="fundingProgram" type="xs:string"/>
-                      
-          </xs:sequence>
-                  
-        </xs:complexType>
-              
-      </xs:element>
-            
-      <xs:element minOccurs="0" name="githubPage" type="xs:anyURI">
-        <xs:annotation>
-          <xs:documentation><![CDATA[The Github repository to find more information about this Resource.]]></xs:documentation>
-        </xs:annotation>
-      </xs:element>
-            
-      <xs:element minOccurs="0" name="grantProjectNames">
-        <xs:annotation>
-          <xs:documentation><![CDATA[Name of the project that supported the development and/or operation of the Resource.]]></xs:documentation>
-        </xs:annotation>
-                
-        <xs:complexType>
-                    
-          <xs:sequence>
-                        
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="grantProjectName" type="xs:string"/>
-                      
-          </xs:sequence>
-                  
-        </xs:complexType>
-              
       </xs:element>
             
       <xs:element minOccurs="0" name="helpdeskPage" type="xs:anyURI">
@@ -3136,7 +3041,7 @@ private List<String> eoscRelatedServices;
         </xs:annotation>
       </xs:element>
             
-      <xs:element minOccurs="0" name="keywords">
+      <xs:element name="keywords">
         <xs:annotation>
           <xs:documentation><![CDATA[The keyword(s) or tag(s) used to describe the resource.]]></xs:documentation>
         </xs:annotation>
@@ -3146,40 +3051,6 @@ private List<String> eoscRelatedServices;
           <xs:sequence>
                         
             <xs:element maxOccurs="unbounded" minOccurs="0" name="keyword" type="xs:string"/>
-                      
-          </xs:sequence>
-                  
-        </xs:complexType>
-              
-      </xs:element>
-            
-      <xs:element name="learningOutcomes">
-        <xs:annotation>
-          <xs:documentation><![CDATA[The descriptions of what knowledge, skills or abilities students should acquire on completion of the resource.]]></xs:documentation>
-        </xs:annotation>
-                
-        <xs:complexType>
-                    
-          <xs:sequence>
-                        
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="learningOutcome" type="xs:string"/>
-                      
-          </xs:sequence>
-                  
-        </xs:complexType>
-              
-      </xs:element>
-            
-      <xs:element minOccurs="0" name="learningResourceTypes">
-        <xs:annotation>
-          <xs:documentation><![CDATA[The predominant type or kind that characterizes the learning resource.]]></xs:documentation>
-        </xs:annotation>
-                
-        <xs:complexType>
-                    
-          <xs:sequence>
-                        
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="learningResourceType" type="xs:string"/>
                       
           </xs:sequence>
                   
@@ -3199,29 +3070,6 @@ private List<String> eoscRelatedServices;
         </xs:annotation>
       </xs:element>
             
-      <xs:element minOccurs="0" name="path" type="xs:string">
-        <xs:annotation>
-          <xs:documentation><![CDATA[The URL to the location of the actual tool.]]></xs:documentation>
-        </xs:annotation>
-      </xs:element>
-            
-      <xs:element minOccurs="0" name="qualifications">
-        <xs:annotation>
-          <xs:documentation><![CDATA[Identification of certification, accreditation or badge obtained with course or learning resource.]]></xs:documentation>
-        </xs:annotation>
-                
-        <xs:complexType>
-                    
-          <xs:sequence>
-                        
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="qualification" type="xs:string"/>
-                      
-          </xs:sequence>
-                  
-        </xs:complexType>
-              
-      </xs:element>
-            
       <xs:element minOccurs="0" name="relatedResources">
         <xs:annotation>
           <xs:documentation><![CDATA[List of other Resources that are commonly used with this Resource.]]></xs:documentation>
@@ -3239,30 +3087,13 @@ private List<String> eoscRelatedServices;
               
       </xs:element>
             
-      <xs:element name="resourceOrganisation" type="xs:string">
+      <xs:element minOccurs="0" name="resourceOrganisation" type="xs:string">
         <xs:annotation>
           <xs:documentation><![CDATA[The name of the organisation that manages or delivers the resource, or that coordinates the Resource delivery in a federated scenario.]]></xs:documentation>
         </xs:annotation>
       </xs:element>
             
-      <xs:element minOccurs="0" name="resourceProviders">
-        <xs:annotation>
-          <xs:documentation><![CDATA[The name(s) of (all) the Provider(s) that manage or deliver the Resource in federated scenarios.]]></xs:documentation>
-        </xs:annotation>
-                
-        <xs:complexType>
-                    
-          <xs:sequence>
-                        
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="resourceProvider" type="xs:string"/>
-                      
-          </xs:sequence>
-                  
-        </xs:complexType>
-              
-      </xs:element>
-            
-      <xs:element name="scientificDomains">
+      <xs:element minOccurs="0" name="scientificDomain">
         <xs:annotation>
           <xs:documentation><![CDATA[The branch of science, scientific discipline that is related to the Resource.]]></xs:documentation>
         </xs:annotation>
@@ -3279,7 +3110,7 @@ private List<String> eoscRelatedServices;
               
       </xs:element>
             
-      <xs:element name="targetGroups">
+      <xs:element minOccurs="0" name="targetGroups">
         <xs:annotation>
           <xs:documentation><![CDATA[The principal users(s) for which the learning resource was designed.]]></xs:documentation>
         </xs:annotation>
@@ -3296,16 +3127,21 @@ private List<String> eoscRelatedServices;
               
       </xs:element>
             
-      <xs:element minOccurs="0" name="trl" type="xs:string">
+      <xs:element name="targetInfrastructure">
         <xs:annotation>
-          <xs:documentation><![CDATA[The Technology Readiness Level of the Resource (to be further updated in the context of the EOSC).]]></xs:documentation>
+          <xs:documentation><![CDATA[The target infrastructure of the TOSCA template]]></xs:documentation>
         </xs:annotation>
-      </xs:element>
-            
-      <xs:element minOccurs="0" name="version" type="xs:string">
-        <xs:annotation>
-          <xs:documentation><![CDATA[Version of the Resource that is in force.]]></xs:documentation>
-        </xs:annotation>
+                
+        <xs:complexType>
+                    
+          <xs:sequence>
+                        
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="targetInfrastructure" type="xs:string"/>
+                      
+          </xs:sequence>
+                  
+        </xs:complexType>
+              
       </xs:element>
             
       <xs:element name="versionDate" type="xs:dateTime">
@@ -3313,6 +3149,44 @@ private List<String> eoscRelatedServices;
           <xs:documentation><![CDATA[The version date for the most recently published or broadcast resource.]]></xs:documentation>
         </xs:annotation>
       </xs:element>
+          
+    </xs:sequence>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="toolBundle">
+        
+    <xs:complexContent>
+            
+      <xs:extension base="tns:bundle">
+                
+        <xs:sequence>
+                    
+          <xs:element minOccurs="0" name="security" type="tns:toolSecurity"/>
+                    
+          <xs:element minOccurs="0" name="status" type="xs:string"/>
+                    
+          <xs:element minOccurs="0" ref="tns:tool"/>
+                  
+        </xs:sequence>
+              
+      </xs:extension>
+          
+    </xs:complexContent>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="toolSecurity">
+        
+    <xs:sequence>
+            
+      <xs:element minOccurs="0" name="lastCheck" type="xs:string"/>
+            
+      <xs:element minOccurs="0" name="reportUrl" type="xs:anyURI"/>
+            
+      <xs:element minOccurs="0" name="status" type="xs:string"/>
+            
+      <xs:element minOccurs="0" name="vulnerabilities" type="xs:string"/>
           
     </xs:sequence>
       
@@ -3359,26 +3233,6 @@ private List<String> eoscRelatedServices;
       </xs:element>
           
     </xs:sequence>
-      
-  </xs:complexType>
-    
-  <xs:complexType name="toolBundle">
-        
-    <xs:complexContent>
-            
-      <xs:extension base="tns:bundle">
-                
-        <xs:sequence>
-                    
-          <xs:element minOccurs="0" name="status" type="xs:string"/>
-                    
-          <xs:element minOccurs="0" ref="tns:tool"/>
-                  
-        </xs:sequence>
-              
-      </xs:extension>
-          
-    </xs:complexContent>
       
   </xs:complexType>
     

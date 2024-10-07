@@ -1,7 +1,5 @@
 package gr.uoa.di.madgik.resourcecatalogue.manager;
 
-import static gr.uoa.di.madgik.resourcecatalogue.config.Properties.Cache.CACHE_FEATURED;
-import static gr.uoa.di.madgik.resourcecatalogue.config.Properties.Cache.CACHE_PROVIDERS;
 import static gr.uoa.di.madgik.resourcecatalogue.utils.VocabularyValidationUtils.validateScientificDomains;
 import static java.util.stream.Collectors.toList;
 
@@ -27,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -152,17 +149,10 @@ public class ToolManager extends ResourceManager<ToolBundle> implements ToolServ
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EPOT') or @securityService.providerCanAddResources(#auth, #toolBundle.payload)")
-    @CacheEvict(cacheNames = {CACHE_PROVIDERS, CACHE_FEATURED}, allEntries = true)
     public ToolBundle add(ToolBundle toolBundle, Authentication auth) {
         
         commonMethods.checkRelatedResourceIDsConsistency(toolBundle);
         toolBundle.setId(idCreator.generate(getResourceType()));
-
-        // register and ensure Resource Catalogue's PID uniqueness
-        commonMethods.createPIDAndCorrespondingAlternativeIdentifier(toolBundle, getResourceType());
-        //toolBundle.getTool().setAlternativeIdentifiers(
-        //        commonMethods.ensureResourceCataloguePidUniqueness(toolBundle.getId(),
-        //                toolBundle.getTool().getAlternativeIdentifiers()));
 
         ProviderBundle providerBundle = providerService.get(toolBundle.getTool().getResourceOrganisation(), auth);
         if (providerBundle == null) {
@@ -342,7 +332,6 @@ public class ToolManager extends ResourceManager<ToolBundle> implements ToolServ
         synchronizerService.syncDelete(toolBundle.getTool());
     }
 
-    @CacheEvict(cacheNames = {CACHE_PROVIDERS, CACHE_FEATURED}, allEntries = true)
     public ToolBundle verify(String id, String status, Boolean active, Authentication auth) {
         Vocabulary statusVocabulary = vocabularyService.getOrElseThrow(status);
         if (!statusVocabulary.getType().equals("Resource state")) {
@@ -949,7 +938,6 @@ public class ToolManager extends ResourceManager<ToolBundle> implements ToolServ
     }
 
     @Override
-    @CacheEvict(cacheNames = {CACHE_PROVIDERS, CACHE_FEATURED}, allEntries = true)
     public ToolBundle suspend(String toolId, boolean suspend, Authentication auth) {
         ToolBundle toolBundle = get(toolId);
         commonMethods.suspensionValidation(toolBundle,
