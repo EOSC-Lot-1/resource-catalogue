@@ -127,10 +127,10 @@ public class Tool implements Identifiable {
     /**
      * The branch of science, scientific discipline that is related to the Resource.
      */
-    @XmlElementWrapper(name = "scientificDomain")
+    @XmlElementWrapper(name = "scientificDomain", required = true)
     @XmlElement(name = "scientificDomain")
-    @Schema
-    @FieldValidation(nullable = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @FieldValidation()
     private List<ServiceProviderDomain> scientificDomains;
 
     // Management Information
