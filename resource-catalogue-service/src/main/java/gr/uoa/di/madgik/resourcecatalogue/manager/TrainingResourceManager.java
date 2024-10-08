@@ -125,6 +125,7 @@ public class TrainingResourceManager extends ResourceManager<TrainingResourceBun
         commonMethods.determineResourceAndCreateAlternativeIdentifierForPID(trainingResourceBundle, getResourceType());
         trainingResourceBundle.getTrainingResource().setAlternativeIdentifiers(
                 commonMethods.ensureResourceCataloguePidUniqueness(trainingResourceBundle.getId(),
+                        trainingResourceBundle.getTrainingResource().getCatalogueId(),
                         trainingResourceBundle.getTrainingResource().getAlternativeIdentifiers()));
 
         ProviderBundle providerBundle = providerService.get(trainingResourceBundle.getTrainingResource().getResourceOrganisation(), auth);
@@ -218,6 +219,7 @@ public class TrainingResourceManager extends ResourceManager<TrainingResourceBun
         } else {
             ret.getTrainingResource().setAlternativeIdentifiers(
                     commonMethods.ensureResourceCataloguePidUniqueness(ret.getId(),
+                            ret.getTrainingResource().getCatalogueId(),
                             ret.getTrainingResource().getAlternativeIdentifiers()));
         }
 
@@ -662,7 +664,7 @@ public class TrainingResourceManager extends ResourceManager<TrainingResourceBun
         TrainingResourceBundle trainingResourceBundle;
         try {
             trainingResourceBundle = get(id);
-        } catch (ResourceNotFoundException e) {
+        } catch (ResourceException | ResourceNotFoundException e) {
             return null;
         }
         return trainingResourceBundle;
@@ -673,7 +675,7 @@ public class TrainingResourceManager extends ResourceManager<TrainingResourceBun
         TrainingResourceBundle trainingResourceBundle;
         try {
             trainingResourceBundle = get(id, catalogueId);
-        } catch (ResourceNotFoundException e) {
+        } catch (ResourceException | ResourceNotFoundException e) {
             return null;
         }
         return trainingResourceBundle;

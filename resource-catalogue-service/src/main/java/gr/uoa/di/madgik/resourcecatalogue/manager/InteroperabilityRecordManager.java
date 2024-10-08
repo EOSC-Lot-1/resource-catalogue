@@ -77,6 +77,7 @@ public class InteroperabilityRecordManager extends ResourceManager<Interoperabil
         commonMethods.determineResourceAndCreateAlternativeIdentifierForPID(interoperabilityRecordBundle, getResourceType());
         interoperabilityRecordBundle.getInteroperabilityRecord().setAlternativeIdentifiers(
                 commonMethods.ensureResourceCataloguePidUniqueness(interoperabilityRecordBundle.getId(),
+                        interoperabilityRecordBundle.getInteroperabilityRecord().getCatalogueId(),
                         interoperabilityRecordBundle.getInteroperabilityRecord().getAlternativeIdentifiers()));
 
         ProviderBundle providerBundle = providerService.get(interoperabilityRecordBundle.getInteroperabilityRecord().getCatalogueId(), interoperabilityRecordBundle.getInteroperabilityRecord().getProviderId(), auth);
@@ -143,6 +144,7 @@ public class InteroperabilityRecordManager extends ResourceManager<Interoperabil
         } else {
             ret.getInteroperabilityRecord().setAlternativeIdentifiers(
                     commonMethods.ensureResourceCataloguePidUniqueness(ret.getId(),
+                            ret.getInteroperabilityRecord().getCatalogueId(),
                             ret.getInteroperabilityRecord().getAlternativeIdentifiers()));
         }
 
@@ -316,7 +318,7 @@ public class InteroperabilityRecordManager extends ResourceManager<Interoperabil
         InteroperabilityRecordBundle interoperabilityRecordBundle;
         try {
             interoperabilityRecordBundle = get(id, catalogueId);
-        } catch (ResourceNotFoundException e) {
+        } catch (ResourceException | ResourceNotFoundException e) {
             return null;
         }
         return interoperabilityRecordBundle;
