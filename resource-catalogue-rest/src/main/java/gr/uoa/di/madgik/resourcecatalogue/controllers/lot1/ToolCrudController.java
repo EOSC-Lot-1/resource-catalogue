@@ -54,15 +54,23 @@ public class ToolCrudController extends ResourceCrudController<ToolBundle> {
                                                @Parameter(description = "Before date (format yyyy-MM-dd)", example = "2023-01-01") 
                                                @RequestParam(required = false) String date) {
     	String status = (String) allRequestParams.get("status");
+    	String quantity = (String) allRequestParams.getOrDefault("quantity", "10");
+    	String from = (String) allRequestParams.getOrDefault("from", "0");
     	allRequestParams.remove("date");
-        FacetFilter ff = FacetFilterUtils.createFacetFilter(allRequestParams);
+        FacetFilter ff = new FacetFilter();
+        ff.setQuantity(10000);
         Paging<ToolBundle> toolsPaging = toolService.getAll(ff);
         List<ToolBundle> tools = toolsPaging.getResults();
         List<ToolBundle> filteredTools = toolService.getToolsByDateStatus(date, status, tools); // Use the return value
         if (filteredTools.isEmpty()) {
         	throw new ResourceNotFoundException("No tools found");
         }
-        toolsPaging.setResults(filteredTools);
-        return new ResponseEntity<>(toolsPaging, HttpStatus.OK);
+        int fromInt = Integer.parseInt(from);
+        int toInt = Integer.parseInt(quantity) + Integer.parseInt(from);
+        int sublistIndex = (toInt <= filteredTools.size()) ? toInt: filteredTools.size();
+        Paging<ToolBundle> resultPaging = new Paging<ToolBundle>(filteredTools.size(), 
+        		fromInt, toInt, null, null);
+        resultPaging.setResults(filteredTools.subList(fromInt, sublistIndex));
+        return new ResponseEntity<>(resultPaging, HttpStatus.OK);
     }
 }
