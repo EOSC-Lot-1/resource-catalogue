@@ -62,12 +62,11 @@ public abstract class ResourceManager<T extends Identifiable> extends AbstractGe
     public Resource getResource(String id, String catalogueId) {
         FacetFilter ff = new FacetFilter();
         ff.addFilter("resource_internal_id", id);
-        ff.addFilter("catalogue_id", catalogueId);
+        //ff.addFilter("catalogue_id", catalogueId);
         ff.setResourceType(resourceType.getName());
         return searchService.searchFields(
                 resourceType.getName(),
-                new SearchService.KeyValue("resource_internal_id", id),
-                new SearchService.KeyValue("catalogue_id", catalogueId)
+                new SearchService.KeyValue("resource_internal_id", id)
         );
     }
 
