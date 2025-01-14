@@ -44,6 +44,13 @@ public class Tool implements Identifiable {
     private String resourceOrganisation;
     
     /**
+     * The pid of the provider that manages the resource.
+     */
+    @XmlElement()
+    @Schema
+    private String resourceProvider;
+    
+    /**
      * List of other Resources that are commonly used with this Resource.
      */
     @XmlElementWrapper(name = "relatedResources")
@@ -171,10 +178,11 @@ public class Tool implements Identifiable {
     public Tool() {
     }
 
-    public Tool(String id, String name, String resourceOrganisation, List<String> relatedResources, List<String> resourceProviders, String author, String description, List<String> keywords, String license, Date versionDate, List<String> targetGroups, List<String> learningResourceTypes, List<String> learningOutcomes, String expertiseLevel, List<String> contentResourceTypes, List<String> qualifications, String duration, Boolean deprecated, List<ServiceProviderDomain> scientificDomains, URL helpdeskPage, String path, String creditCost, String email) {
+    public Tool(String id, String name, String resourceOrganisation, String resourceProvider, List<String> relatedResources, List<String> resourceProviders, String author, String description, List<String> keywords, String license, Date versionDate, List<String> targetGroups, List<String> learningResourceTypes, List<String> learningOutcomes, String expertiseLevel, List<String> contentResourceTypes, List<String> qualifications, String duration, Boolean deprecated, List<ServiceProviderDomain> scientificDomains, URL helpdeskPage, String path, String creditCost, String email) {
         this.id = id;
         this.name = name;
         this.resourceOrganisation = resourceOrganisation;
+        this.resourceProvider = resourceProvider;
         this.relatedResources = relatedResources;
         this.author = author;
         this.description = description;
@@ -194,12 +202,12 @@ public class Tool implements Identifiable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tool that = (Tool) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(resourceOrganisation, that.resourceOrganisation) && Objects.equals(description, that.description) && Objects.equals(keywords, that.keywords) && Objects.equals(license, that.license) && Objects.equals(versionDate, that.versionDate) && Objects.equals(scientificDomains, that.scientificDomains) && Objects.equals(email, that.email);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(resourceOrganisation, that.resourceOrganisation) && Objects.equals(resourceProvider, that.resourceProvider) && Objects.equals(description, that.description) && Objects.equals(keywords, that.keywords) && Objects.equals(license, that.license) && Objects.equals(versionDate, that.versionDate) && Objects.equals(scientificDomains, that.scientificDomains) && Objects.equals(email, that.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, resourceOrganisation, description, keywords, license, versionDate, targetInfrastructure , scientificDomains, email);
+        return Objects.hash(id, name, resourceOrganisation, resourceProvider, description, keywords, license, versionDate, targetInfrastructure , scientificDomains, email);
     }
 
     @Override
@@ -208,6 +216,7 @@ public class Tool implements Identifiable {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", resourceOrganisation='" + resourceOrganisation + '\'' +
+                ", resourceProvider='" + resourceProvider + '\'' +
                 ", author=" + author +
                 ", description='" + description + '\'' +
                 ", keywords=" + keywords +
@@ -244,6 +253,14 @@ public class Tool implements Identifiable {
 
     public void setResourceOrganisation(String resourceOrganisation) {
         this.resourceOrganisation = resourceOrganisation;
+    }
+    
+    public String getResourceProvider() {
+        return resourceProvider;
+    }
+
+    public void setResourceProvider(String resourceProvider) {
+        this.resourceProvider = resourceProvider;
     }
     
     public List<String> getRelatedResources() {
