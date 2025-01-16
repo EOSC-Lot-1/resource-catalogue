@@ -78,6 +78,7 @@ public class Vocabulary implements Identifiable {
         SERVICE_CATEGORY("Service category"),
         MARKETPLACE_LOCATION("Marketplace location"),
         ENDPOINT_TYPE("Endpoint type"),
+        INTEGRATION_STATUS("Integration status"),
         // States
         CATALOGUE_STATE("Catalogue state"),
         PROVIDER_STATE("Provider state"),

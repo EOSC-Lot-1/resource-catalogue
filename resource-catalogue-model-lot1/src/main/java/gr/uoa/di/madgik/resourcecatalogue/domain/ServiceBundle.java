@@ -27,6 +27,10 @@ public class ServiceBundle extends Bundle<Service> {
     
     @XmlElement
     private String auditState;
+    
+    @XmlElement
+    @FieldValidation(nullable = true)
+    private OnboardingIntegration onboardingIntegration;
 
     public ServiceBundle() {
         // No arg constructor
@@ -93,11 +97,20 @@ public class ServiceBundle extends Bundle<Service> {
         this.sites = sites;
     }
 
+    public OnboardingIntegration getOnboardingIntegration() {
+        return onboardingIntegration;
+    }
+
+    public void setOnboardingIntegration( OnboardingIntegration  onboardingIntegration) {
+        this.onboardingIntegration = onboardingIntegration;
+    }
+
     @Override
     public String toString() {
         return "ServiceBundle{" +
                 "status='" + status + '\'' +
                 ", resourceExtras=" + resourceExtras +
+                ", onboardingIntegration=" + onboardingIntegration +
                 '}';
     }
 }
