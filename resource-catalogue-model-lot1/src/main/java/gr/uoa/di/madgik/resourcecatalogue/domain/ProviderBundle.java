@@ -4,6 +4,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -12,7 +15,7 @@ import java.util.Objects;
 public class ProviderBundle extends Bundle<Provider> {
 
     @XmlElement
-//    @VocabularyValidation(type = Vocabulary.Type.PROVIDER_STATE)
+    @VocabularyValidation(type = Vocabulary.Type.RESOURCE_STATUS)
     private String status;
 
     @XmlElement

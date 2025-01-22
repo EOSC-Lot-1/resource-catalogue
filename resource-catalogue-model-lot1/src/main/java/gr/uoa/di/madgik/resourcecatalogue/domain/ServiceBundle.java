@@ -1,6 +1,7 @@
 package gr.uoa.di.madgik.resourcecatalogue.domain;
 
 import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
+import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
 
 import java.util.List;
 
@@ -14,7 +15,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(namespace = "http://einfracentral.eu")
 public class ServiceBundle extends Bundle<Service> {
 
-    @XmlElement
+	@XmlElement
+    @VocabularyValidation(type = Vocabulary.Type.RESOURCE_STATUS)
     private String status;
 
     @XmlElement

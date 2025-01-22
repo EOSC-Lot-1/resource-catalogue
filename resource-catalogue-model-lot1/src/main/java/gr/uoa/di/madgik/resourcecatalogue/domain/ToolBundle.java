@@ -6,12 +6,15 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
+
 //@Document
 @XmlType
 @XmlRootElement(namespace = "http://einfracentral.eu")
 public class ToolBundle extends Bundle<Tool> {
 	
-    @XmlElement
+	@XmlElement
+    @VocabularyValidation(type = Vocabulary.Type.RESOURCE_STATUS)
     private String status;
     
     @XmlElement

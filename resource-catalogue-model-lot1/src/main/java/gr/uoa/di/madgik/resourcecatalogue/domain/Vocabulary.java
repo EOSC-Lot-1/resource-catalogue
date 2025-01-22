@@ -117,7 +117,9 @@ public class Vocabulary implements Identifiable {
         IR_EOSC_GUIDELINE_TYPE("Interoperability Record eosc guideline type"),
         // Configuration Template
         CT_PROTOCOL("Configuration Template protocol"),
-        CT_COMPATIBILITY("Configuration Template compatibility");
+        CT_COMPATIBILITY("Configuration Template compatibility"),
+    	// Other
+    	RESOURCE_STATUS("Resource status");
         private final String type;
 
         Type(final String type) {
