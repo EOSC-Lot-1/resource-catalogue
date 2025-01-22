@@ -25,6 +25,12 @@ public class DatasourceBundle extends Bundle<Datasource> {
     @XmlElement
     private boolean softwareRepository;
     
+    @XmlElement()
+    @Schema
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
+    @VocabularyValidation(type = Vocabulary.Type.DS_TYPE)
+    private String datasourceType;
+    
     public DatasourceBundle() {
         // No arg constructor
     }
