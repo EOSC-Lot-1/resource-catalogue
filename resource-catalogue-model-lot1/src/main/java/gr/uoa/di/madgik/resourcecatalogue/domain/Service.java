@@ -25,7 +25,7 @@ public class Service implements Identifiable {
      */
     @XmlElement
     @Schema(example = "(required on PUT only)")
-    @FieldValidation
+    //@FieldValidation
     private String id;
 
     /**

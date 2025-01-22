@@ -25,7 +25,6 @@ public class Provider implements Identifiable {
      */
     @XmlElement(required = true)
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "(required on PUT only)")
-//    @FieldValidation
     private String id;
 
     /**

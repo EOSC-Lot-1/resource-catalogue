@@ -25,7 +25,6 @@ public class Tool implements Identifiable {
      */
     @XmlElement
     @Schema(example = "(required on PUT only)")
-    @FieldValidation
     private String id;
 
     /**

@@ -24,7 +24,6 @@ public class TrainingResource implements Identifiable {
      */
     @XmlElement
     @Schema(example = "(required on PUT only)")
-    @FieldValidation
     private String id;
 
     /**
