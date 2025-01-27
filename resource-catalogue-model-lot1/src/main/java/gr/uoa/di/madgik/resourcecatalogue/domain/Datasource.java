@@ -24,14 +24,14 @@ public class Datasource implements Identifiable {
     @Schema(example = "(required on PUT only)")
     private String id;
 
-    @XmlElement(required = true)
+    @XmlElement()
     @Schema
-    @FieldValidation(containsId = true, idClass = Service.class)
+    @FieldValidation(nullable = true)
     private String serviceId;
 
-    @XmlElement(required = true)
+    @XmlElement()
     @Schema
-    @FieldValidation(containsId = true, idClass = Catalogue.class)
+    @FieldValidation(nullable = true)
     private String catalogueId;
 
 

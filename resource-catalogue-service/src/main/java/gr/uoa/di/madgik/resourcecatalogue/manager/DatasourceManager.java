@@ -187,7 +187,7 @@ public class DatasourceManager extends ResourceManager<DatasourceBundle> impleme
         }
 
         // check if Service exists and if User belongs to Resource's Provider Admins
-        ResourceValidationUtils.checkIfResourceBundleIsActiveAndApprovedAndNotPublic(serviceId, catalogueId, serviceBundleService, "service");
+        //ResourceValidationUtils.checkIfResourceBundleIsActiveAndApprovedAndNotPublic(serviceId, catalogueId, serviceBundleService, "service");
         return super.validate(datasourceBundle);
     }
 
