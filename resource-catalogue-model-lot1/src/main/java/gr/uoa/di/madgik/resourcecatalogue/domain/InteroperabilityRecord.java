@@ -20,16 +20,16 @@ public class InteroperabilityRecord implements Identifiable {
     /**
      * EOSC Interoperability ID (auto-assigned).
      */
-    @XmlElement(required = true)
-    @Schema(required = true, example = "(auto-assigned)")
+    @XmlElement()
+    @Schema(example = "(auto-assigned)")
     private String id;
 
     /**
      * The Catalogue this Interoperability Record is originally registered at.
      */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation(containsId = true, idClass = Catalogue.class)
+    @XmlElement()
+    @Schema()
+    @FieldValidation(nullable = true)
     private String catalogueId;
 
     /**
@@ -134,9 +134,9 @@ public class InteroperabilityRecord implements Identifiable {
     /**
      * Status of the resource.
      */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation(containsId = true, idClass = Vocabulary.class)
+    @XmlElement()
+    @Schema()
+    @FieldValidation(nullable = true)
     @VocabularyValidation(type = Vocabulary.Type.IR_STATUS)
     private String status;
 

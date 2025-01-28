@@ -78,6 +78,8 @@ public class Vocabulary implements Identifiable {
         RELATED_PLATFORM("Related platform"),
         SERVICE_CATEGORY("Service category"),
         MARKETPLACE_LOCATION("Marketplace location"),
+        ENDPOINT_TYPE("Endpoint type"),
+        INTEGRATION_STATUS("Integration status"),
         // States
         CATALOGUE_STATE("Catalogue state"),
         PROVIDER_STATE("Provider state"),
@@ -87,10 +89,16 @@ public class Vocabulary implements Identifiable {
         INTEROPERABILITY_RECORD_STATE("Interoperability Record state"),
         // Datasource
         DS_RESEARCH_ENTITY_TYPE("Research entity type"),
+        DS_TYPE("Datasource type"),
         DS_PERSISTENT_IDENTITY_SCHEME("Persistent identity scheme"),
         DS_JURISDICTION("Jurisdiction"),
         DS_CLASSIFICATION("Classification"),
         DS_COAR_ACCESS_RIGHTS_1_0("COAR access rights 1.0"),
+        // Tool
+        TOOL_VULNERABILITIES("Tool vulnerabilities"),
+        TOOL_SECURITY_STATUS("Tool security status"),
+        TOOL_LICENSE("Tool license"),
+        TOOL_TARGET_INFRASTRUCTURE("Tool target infrastructure"),
         // Training Resource
         TR_URL_TYPE("Training Resource url type"),
         TR_ACCESS_RIGHT("Training Resource access right"),
@@ -111,7 +119,9 @@ public class Vocabulary implements Identifiable {
         IR_EOSC_GUIDELINE_TYPE("Interoperability Record eosc guideline type"),
         // Configuration Template
         CT_PROTOCOL("Configuration Template protocol"),
-        CT_COMPATIBILITY("Configuration Template compatibility");
+        CT_COMPATIBILITY("Configuration Template compatibility"),
+    	// Other
+    	RESOURCE_STATUS("Resource status");
         private final String type;
 
         Type(final String type) {

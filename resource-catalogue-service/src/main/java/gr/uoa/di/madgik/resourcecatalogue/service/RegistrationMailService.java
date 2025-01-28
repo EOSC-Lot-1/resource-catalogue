@@ -736,6 +736,17 @@ public class RegistrationMailService {
         sendMailsFromTemplate("invalidTrainingResourceUpdate.ftl", emailBasicInfo.getRoot(), emailBasicInfo.getSubject(),
                 registrationEmail, "admin");
     }
+    
+    public void notifyPortalAdminsForInvalidToolUpdate(ToolBundle toolBundle) {
+
+        Map<String, Object> root = getRootTemplate();
+        root.put("toolBundle", toolBundle);
+
+        // send email to Admins
+        String subject = String.format("[%s Portal] The Tool [%s] previously marked as [invalid] has been updated", catalogueName, toolBundle.getTool().getName());
+        String userRole = "admin";
+        sendMailsFromTemplate("invalidToolUpdate.ftl", root, subject, registrationEmail, userRole);
+    }
 
     public void sendEmailsForDatasourceExtensionToPortalAdmins(DatasourceBundle datasourceBundle, String action) {
         EmailBasicInfo emailBasicInfo = initializeEmail("serviceExtensionsDatasource.ftl", datasourceBundle,

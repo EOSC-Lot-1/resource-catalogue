@@ -16,7 +16,7 @@ public class PersistentIdentitySystem {
      */
     @XmlElement(required = true)
     @Schema
-    @FieldValidation()
+    @FieldValidation(containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.DS_RESEARCH_ENTITY_TYPE)
     private String persistentIdentityEntityType;
 
@@ -26,7 +26,7 @@ public class PersistentIdentitySystem {
     @XmlElementWrapper(required = true, name = "persistentIdentityEntityTypeSchemes")
     @XmlElement(name = "persistentIdentityEntityType")
     @Schema
-    @FieldValidation()
+    @FieldValidation(containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.DS_PERSISTENT_IDENTITY_SCHEME)
     private List<String> persistentIdentityEntityTypeSchemes;
 

@@ -1,34 +1,36 @@
 package gr.uoa.di.madgik.resourcecatalogue.domain;
 
+import java.util.Objects;
+
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
 import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
 
-import java.util.Objects;
-
+//@Document
 @XmlType
 @XmlRootElement(namespace = "http://einfracentral.eu")
-public class InteroperabilityRecordBundle extends Bundle<InteroperabilityRecord> {
-
+public class ToolBundle extends Bundle<Tool> {
+	
 	@XmlElement
     @VocabularyValidation(type = Vocabulary.Type.RESOURCE_STATUS)
     private String status;
-
+    
     @XmlElement
-    private String auditState;
-
-    public InteroperabilityRecordBundle() {
+    private ToolSecurity security;
+    
+    public ToolBundle() {
+        // No arg constructor
     }
 
-    public InteroperabilityRecordBundle(InteroperabilityRecord interoperabilityRecord) {
-        this.setInteroperabilityRecord(interoperabilityRecord);
+    public ToolBundle(Tool tool) {
+        this.setTool(tool);
         this.setMetadata(null);
     }
 
-    public InteroperabilityRecordBundle(InteroperabilityRecord interoperabilityRecord, Metadata metadata) {
-        this.setInteroperabilityRecord(interoperabilityRecord);
+    public ToolBundle(Tool tool, Metadata metadata) {
+        this.setTool(tool);
         this.setMetadata(metadata);
     }
 
@@ -42,13 +44,13 @@ public class InteroperabilityRecordBundle extends Bundle<InteroperabilityRecord>
         super.setId(id);
     }
 
-    @XmlElement(name = "interoperabilityRecord")
-    public InteroperabilityRecord getInteroperabilityRecord() {
+    @XmlElement(name = "tool")
+    public Tool getTool() {
         return this.getPayload();
     }
 
-    public void setInteroperabilityRecord(InteroperabilityRecord interoperabilityRecord) {
-        this.setPayload(interoperabilityRecord);
+    public void setTool(Tool tool) {
+        this.setPayload(tool);
     }
 
     public String getStatus() {
@@ -58,13 +60,20 @@ public class InteroperabilityRecordBundle extends Bundle<InteroperabilityRecord>
     public void setStatus(String status) {
         this.status = status;
     }
-
-    public String getAuditState() {
-        return auditState;
+    public ToolSecurity getSecurity() {
+        return security;
     }
 
-    public void setAuditState(String auditState) {
-        this.auditState = auditState;
+    public void setSecurity(ToolSecurity security) {
+        this.security = security;
+    }
+
+    @Override
+    public String toString() {
+        return "ToolBundle{" +
+                "status='" + status + '\'' +
+                "security='" + security + '\'' +
+                '}';
     }
 
     @Override
@@ -72,12 +81,15 @@ public class InteroperabilityRecordBundle extends Bundle<InteroperabilityRecord>
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        InteroperabilityRecordBundle that = (InteroperabilityRecordBundle) o;
-        return Objects.equals(status, that.status) && Objects.equals(auditState, that.auditState);
+        ToolBundle that = (ToolBundle) o;
+        return Objects.equals(status, that.status) ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), status, auditState);
+        return Objects.hash(super.hashCode(), status, security);
     }
 }
+
+
+

@@ -1,7 +1,12 @@
 package gr.uoa.di.madgik.resourcecatalogue.domain;
 
 import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
+import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
+
+import java.util.List;
+
 import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
@@ -10,15 +15,24 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlRootElement(namespace = "http://einfracentral.eu")
 public class ServiceBundle extends Bundle<Service> {
 
-    @XmlElement
+	@XmlElement
+    @VocabularyValidation(type = Vocabulary.Type.RESOURCE_STATUS)
     private String status;
 
     @XmlElement
     @FieldValidation(nullable = true)
     private ResourceExtras resourceExtras;
-
+    
+    @XmlElementWrapper(name = "sites")
+    @XmlElement(name = "sites")
+    private List<Site> sites;
+    
     @XmlElement
     private String auditState;
+    
+    @XmlElement
+    @FieldValidation(nullable = true)
+    private OnboardingIntegration onboardingIntegration;
 
     public ServiceBundle() {
         // No arg constructor
@@ -76,12 +90,29 @@ public class ServiceBundle extends Bundle<Service> {
     public void setAuditState(String auditState) {
         this.auditState = auditState;
     }
+    
+    public List<Site> getSites() {
+        return sites;
+    }
+
+    public void setSites( List<Site>  sites) {
+        this.sites = sites;
+    }
+
+    public OnboardingIntegration getOnboardingIntegration() {
+        return onboardingIntegration;
+    }
+
+    public void setOnboardingIntegration( OnboardingIntegration  onboardingIntegration) {
+        this.onboardingIntegration = onboardingIntegration;
+    }
 
     @Override
     public String toString() {
         return "ServiceBundle{" +
                 "status='" + status + '\'' +
                 ", resourceExtras=" + resourceExtras +
+                ", onboardingIntegration=" + onboardingIntegration +
                 '}';
     }
 }

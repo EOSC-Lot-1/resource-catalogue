@@ -9,8 +9,6 @@ target/
 # Log file
 *.log
 
-.*
-
 # Log folders
 **/logs
 **/syncLogs
@@ -37,3 +35,15 @@ hs_err_pid*
 **/*.properties
 **/*.yml
 **/*.yaml
+# properties file
+**/registry.properties
+
+.env
+.envrc
+
+/config
+/config.d
+/secrets
+/setup
+
+/docker-compose.yaml

@@ -25,7 +25,7 @@ public class Service implements Identifiable {
      */
     @XmlElement
     @Schema(example = "(required on PUT only)")
-    @FieldValidation
+    //@FieldValidation
     private String id;
 
     /**
@@ -47,9 +47,9 @@ public class Service implements Identifiable {
     /**
      * The name (or abbreviation) of the organisation that manages or delivers the resource, or that coordinates resource delivery in a federated scenario.
      */
-    @XmlElement(required = true)
+    @XmlElement()
     @Schema
-    @FieldValidation(containsId = true, idClass = Provider.class)
+    @FieldValidation(nullable = true, containsId = true, idClass = Provider.class)
     private String resourceOrganisation;
 
     /**
@@ -227,10 +227,10 @@ public class Service implements Identifiable {
     /**
      * Locations where the Resource is offered.
      */
-    @XmlElementWrapper(name = "geographicalAvailabilities", required = true)
+    @XmlElementWrapper(name = "geographicalAvailabilities")
     @XmlElement(name = "geographicalAvailability")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation(containsId = true, idClass = Vocabulary.class)
+    @Schema()
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @GeoLocationVocValidation(region = Vocabulary.Type.REGION, country = Vocabulary.Type.COUNTRY)
     private List<String> geographicalAvailabilities;
 
@@ -240,7 +240,7 @@ public class Service implements Identifiable {
     @XmlElementWrapper(name = "languageAvailabilities", required = true)
     @XmlElement(name = "languageAvailability")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation(containsId = true, idClass = Vocabulary.class)
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.LANGUAGE)
     private List<String> languageAvailabilities;
 
@@ -272,22 +272,22 @@ public class Service implements Identifiable {
     @XmlElementWrapper(name = "publicContacts")
     @XmlElement(name = "publicContact")
     @Schema
-    @FieldValidation
+    @FieldValidation(nullable = true)
     private List<ServicePublicContact> publicContacts;
 
     /**
      * The email to ask more information from the Provider about this Resource.
      */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @XmlElement()
+    @Schema()
     @EmailValidation
     private String helpdeskEmail;
 
     /**
      * The email to contact the Provider for critical security issues about this Resource.
      */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @XmlElement()
+    @Schema()
     @EmailValidation
     private String securityContactEmail;
 
@@ -451,17 +451,17 @@ public class Service implements Identifiable {
     /**
      * Webpage describing the rules, Resource conditions and usage policy which one must agree to abide by in order to use the Resource.
      */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "https://example.com")
-    @FieldValidation
+    @XmlElement()
+    @Schema(example = "https://example.com")
+    @FieldValidation(nullable = true)
     private URL termsOfUse;
 
     /**
      * Link to the privacy policy applicable to the Resource.
      */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "https://example.com")
-    @FieldValidation
+    @XmlElement()
+    @Schema( example = "https://example.com")
+    @FieldValidation(nullable = true)
     private URL privacyPolicy;
 
     /**
@@ -720,8 +720,8 @@ public class Service implements Identifiable {
          * @return the Enum representation for the given string.
          * @throws IllegalArgumentException if unknown string.
          */
-        public static Field fromString(String s) throws IllegalArgumentException {
-            return Arrays.stream(Field.values())
+        public static Service.Field fromString(String s) throws IllegalArgumentException {
+            return Arrays.stream(Service.Field.values())
                     .filter(v -> v.field.equals(s))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("unknown value: " + s));

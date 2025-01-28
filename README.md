@@ -96,7 +96,16 @@ Special thanks to all contributors, testers and the open-source community for th
 
 ---
 
-##### Secret Properties Example
+###### Restore database
+
+1. Prepare a POST request for "resource-catalogue-url/restore"
+
+2. Add as a body a zip 'datafile' containing a folder for each of the resources to restore
+
+- - -
+
+
+###### Secret Properties Example
 
 ```properties
 TBD

@@ -83,6 +83,15 @@ public abstract class AbstractPublicResourceManager<T extends Identifiable> exte
                         trainingResourceBundle.getTrainingResource().getEoscRelatedServices(),
                         trainingResourceBundle.getTrainingResource().getCatalogueId()));
     }
+    
+    protected void updateToolIdsToPublic(ToolBundle toolBundle) {
+        // Resource Organisation
+        toolBundle.getTool().setResourceOrganisation(
+                String.format("%s",
+                        toolBundle.getTool().getResourceOrganisation()));
+
+       
+    }
 
     protected void updateInteroperabilityRecordIdsToPublic(InteroperabilityRecordBundle interoperabilityRecordBundle) {
         // providerId

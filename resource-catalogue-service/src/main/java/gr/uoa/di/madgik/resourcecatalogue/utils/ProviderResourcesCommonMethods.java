@@ -280,6 +280,17 @@ public class ProviderResourcesCommonMethods {
         }
     }
 
+    public void suspensionValidation(Bundle<?> bundle, String providerId, boolean suspend, Authentication auth) {
+        if (bundle.getMetadata().isPublished()) {
+            throw new ValidationException("You cannot directly suspend a Public resource");
+        }
+  
+        ProviderBundle providerBundle = providerService.get(providerId, auth);
+        if ( providerBundle.isSuspended() && !suspend) {
+                throw new ValidationException("You cannot unsuspend a Resource when its Provider is suspended");
+        }
+    }
+    
     public void auditResource(Bundle<?> bundle, String comment, LoggingInfo.ActionType actionType, Authentication auth) {
         LoggingInfo loggingInfo;
         List<LoggingInfo> loggingInfoList = returnLoggingInfoListAndCreateRegistrationInfoIfEmpty(bundle, auth);

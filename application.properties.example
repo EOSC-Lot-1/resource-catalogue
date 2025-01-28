@@ -1,0 +1,220 @@
+# vim: set syntax=jproperties:
+
+project.name=resource-catalogue-service
+project.version=5.0
+
+server.port=8080
+server.servlet.context-path=/resource-catalogue
+
+spring.main.allow-bean-definition-overriding=true
+spring.main.allow-circular-references=true
+
+#logging.config = file:./log4j2.xml 
+logging.level.root=INFO
+
+#spring.config.import = configtree:./config/
+
+## Springdoc Properties ##
+springdoc.group-configs[0].group=catalogue
+springdoc.group-configs[0].display-name=Resource Catalogue
+springdoc.group-configs[0].packages-to-scan=gr.uoa.di.madgik.resourcecatalogue
+springdoc.group-configs[1].group=registry
+springdoc.group-configs[1].display-name=Registry
+springdoc.group-configs[1].packages-to-scan=gr.uoa.di.madgik.registry
+
+springdoc.swagger-ui.docExpansion=none
+springdoc.swagger-ui.operationsSorter=method
+springdoc.swagger-ui.tagsSorter=alpha
+springdoc.swagger-ui.syntaxHighlight.theme=obsidian
+springdoc.swagger-ui.syntaxHighlight.activated=false
+springdoc.swagger-ui.tryItOutEnabled=true
+spring.jpa.open-in-view=false
+
+## Profiles ##
+spring.profiles.active=crud,no-auth
+
+springdoc.api-docs.path=/api-docs
+springdoc.swagger-ui.path=/swagger-ui.html
+
+
+##########################
+## Mandatory Properties ##
+##########################
+
+fqdn=services-catalogue.eosc.localhost
+platform.root=http://${fqdn}/
+registry.host=http://${fqdn}:8080/resource-catalogue
+
+jdbc.url=jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}
+jdbc.username=${DB_USERNAME}
+#jdbc.password=${DB_PASSWORD}
+
+elasticsearch.url=
+elasticsearch.port=
+elasticsearch.cluster=
+
+## Redis Properties ##
+spring.redis.host=redis
+spring.data.redis.database=0
+#spring.redis.port=
+#spring.redis.password=${REDIS_PASSWORD}
+
+## Spring Security Configuration ##
+spring.security.oauth2.client.registration.google.client-id=catalogue.eosc.localhost
+spring.security.oauth2.client.registration.google.client-secret=
+spring.security.oauth2.client.registration.google.scope=openid,email,profile
+spring.security.oauth2.client.registration.google.redirect-uri=http://${fqdn}:8080/resource-catalogue/openid_connect_login
+
+aai.baseUrl=https://proxy.testing.eosc-federation.eu
+spring.security.oauth2.client.registration.eosc.client-id=catalogue.eosc.localhost
+spring.security.oauth2.client.registration.eosc.client-name=
+spring.security.oauth2.client.registration.eosc.client-secret=
+spring.security.oauth2.client.registration.eosc.scope=openid,email,profile
+spring.security.oauth2.client.registration.eosc.redirect-uri=http://${fqdn}:8080/resource-catalogue/openid_connect_login
+spring.security.oauth2.client.provider.eosc.issuer-uri=${aai.baseUrl}
+spring.security.oauth2.resourceserver.jwt.issuer-uri=${aai.baseUrl}
+
+#
+# RabbitMQ
+#
+
+spring.rabbitmq.host=
+spring.rabbitmq.port=
+spring.rabbitmq.username=
+spring.rabbitmq.password=
+
+spring.rabbitmq.listener.simple.default-requeue-rejected=false
+spring.rabbitmq.listener.simple.missing-queues-fatal=true
+
+eosc.amqp.exchange.transactions.name=workflows
+eosc.amqp.exchange.transactions.routing-key=
+
+#########################
+## Optional Properties ##
+#########################
+
+## Catalogue Properties
+catalogue.admins=devops-eosc@athenarc.gr
+catalogue.onboarding-team=
+catalogue.homepage=http://localhost:3000
+catalogue.login-redirect=http://localhost:3000
+catalogue.logout-redirect=http://localhost:3000
+
+catalogue.debug=false
+catalogue.version=5
+
+catalogue.id=
+catalogue.name=eosc
+
+catalogue.email-properties.emails-enabled=false
+catalogue.email-properties.admin-notifications=false
+catalogue.email-properties.provider-notifications=false
+catalogue.email-properties.registration-emails.to=noreply@open-science-cloud.ec.europa.eu
+catalogue.email-properties.helpdesk-emails.to=support@open-science-cloud.ec.europa.eu
+catalogue.email-properties.helpdesk-emails.cc=
+catalogue.email-properties.monitoring-emails.to=devops-eosc@athenarc.gr
+
+## Database connections ##
+
+jdbc.hikari.connectionTimeout=30000
+jdbc.hikari.idleTimeout=120000
+jdbc.hikari.maximumPoolSize=20
+jdbc.hikari.maxLifetime=1800000
+jdbc.hikari.minimumIdle=5
+
+## Mail Properties ##
+catalogue.mailer.host=
+catalogue.mailer.from=
+catalogue.mailer.username=
+catalogue.mailer.password=
+catalogue.mailer.port=
+catalogue.mailer.protocol=smtp
+catalogue.mailer.auth=true
+catalogue.mailer.ssl=true
+
+## sync ##
+sync.enable=false
+sync.host=
+sync.token.filepath=
+
+## Matomo Properties ##
+matomoHost=
+matomoToken=
+matomoSiteId=
+matomoAuthorizationHeader=
+
+## Openaire Datasources Manager ##
+openaire.dsm.api=https://beta.services.openaire.eu/
+openaire.ds.metrics=
+openaire.ds.metrics.validated=
+
+## Argo GRNET Monitoring Status ##
+argo.grnet.monitoring.service.types=
+argo.grnet.monitoring.availability=
+argo.grnet.monitoring.status=
+argo.grnet.monitoring.token=
+
+## InternalToPublicConsistency ##
+resource.consistency.enable=false
+resource.consistency.email=
+resource.consistency.cc=
+
+## PIDS ##
+#pid.username=
+#pid.login=
+#pid.key=
+#pid.auth=
+pid.prefix=
+pid.api=https://pid.example.net/api/handles/21.T11963/
+
+## Resource Prefixes ##
+pid.test=false
+pid.test.user=
+pid.test.endpoint=
+pid.test.auth=
+marketplace.endpoint=
+marketplace.endpoint.enabled=false
+
+pid.services.base-url=
+pid.services.prefix=21.11161
+pid.services.auth.user=
+pid.services.auth.user.index=
+pid.services.auth.client-key=/path/to/privkey.pem
+pid.services.auth.client-cert=/path/to/cert.pem
+
+pid.tools.base-url=
+pid.tools.prefix=21.11162
+pid.tools.auth.user=
+pid.tools.auth.user.index=
+pid.tools.auth.client-key=
+pid.tools.auth.client-cert=
+
+pid.trainings.base-url=
+pid.trainings.prefix=21.11163
+pid.trainings.auth.user=
+pid.trainings.auth.user.index=
+pid.trainings.auth.client-key=
+pid.trainings.auth.client-cert=
+
+pid.providers.base-url=
+pid.providers.prefix=21.15120
+pid.providers.auth.user=
+pid.providers.auth.user.index=300
+pid.providers.auth.client-key=
+pid.providers.auth.client-cert=
+
+pid.interoperability-frameworks.base-url=
+pid.interoperability-frameworks.prefix=21.15121
+pid.interoperability-frameworks.auth.user=
+pid.interoperability-frameworks.auth.user.index=
+pid.interoperability-frameworks.auth.client-key=
+pid.interoperability-frameworks.auth.client-cert=
+
+## Non PID related prefixes ##
+configuration-templates.prefix=con
+configuration-template-instances.prefix=cti
+datasources.prefix=dat
+helpdesks.prefix=hel
+monitorings.prefix=mon
+resource-interoperability-records.prefix=rir
+vocabulary-curations.prefix=cur

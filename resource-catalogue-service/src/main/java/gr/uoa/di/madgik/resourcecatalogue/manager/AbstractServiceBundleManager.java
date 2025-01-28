@@ -287,8 +287,8 @@ public abstract class AbstractServiceBundleManager<T extends ServiceBundle> exte
     public Resource getResource(String id, String catalogueId) {
         Paging<Resource> resources;
         resources = searchService
-                .cqlQuery(String.format("resource_internal_id = \"%s\"  AND catalogue_id = \"%s\"", id, catalogueId),
-                        getResourceTypeName(), maxQuantity, 0, "modifiedAt", "DESC");
+                .cqlQuery(String.format("resource_internal_id = \"%s\"", id),
+                		getResourceTypeName(), maxQuantity, 0, "modifiedAt", "DESC");
         if (resources.getTotal() > 0) {
             return resources.getResults().get(0);
         }

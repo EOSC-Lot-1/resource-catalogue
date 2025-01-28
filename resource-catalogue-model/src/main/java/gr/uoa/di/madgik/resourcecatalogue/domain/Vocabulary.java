@@ -78,6 +78,7 @@ public class Vocabulary implements Identifiable {
         RELATED_PLATFORM("Related platform"),
         SERVICE_CATEGORY("Service category"),
         MARKETPLACE_LOCATION("Marketplace location"),
+        ENDPOINT_TYPE("Endpoint type"),
         // States
         CATALOGUE_STATE("Catalogue state"),
         PROVIDER_STATE("Provider state"),
@@ -91,6 +92,11 @@ public class Vocabulary implements Identifiable {
         DS_JURISDICTION("Jurisdiction"),
         DS_CLASSIFICATION("Classification"),
         DS_COAR_ACCESS_RIGHTS_1_0("COAR access rights 1.0"),
+        // Tool
+        TOOL_VULNERABILITIES("Tool vulnerabilities"),
+        TOOL_SECURITY_STATUS("Tool security status"),
+        TOOL_LICENSE("Tool license"),
+        TOOL_TARGET_INFRASTRUCTURE("Tool target infrastructure"),
         // Training Resource
         TR_URL_TYPE("Training Resource url type"),
         TR_ACCESS_RIGHT("Training Resource access right"),

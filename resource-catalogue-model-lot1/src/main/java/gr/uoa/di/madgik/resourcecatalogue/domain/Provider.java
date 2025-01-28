@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -25,7 +26,6 @@ public class Provider implements Identifiable {
      */
     @XmlElement(required = true)
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "(required on PUT only)")
-//    @FieldValidation
     private String id;
 
     /**
@@ -47,9 +47,9 @@ public class Provider implements Identifiable {
     /**
      * Website with information about the Provider.
      */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "https://example.com")
-    @FieldValidation
+    @XmlElement()
+    @Schema(example = "https://example.com")
+    @FieldValidation(nullable = true)
     private URL website;
 
     /**
@@ -57,7 +57,7 @@ public class Provider implements Identifiable {
      */
     @XmlElement(required = true)
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation
+    @FieldValidation()
     private boolean legalEntity;
 
     /**
@@ -104,9 +104,9 @@ public class Provider implements Identifiable {
     /**
      * Link to the logo/visual identity of the Provider.
      */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "https://example.com")
-    @FieldValidation
+    @XmlElement()
+    @Schema(example = "https://example.com")
+    @FieldValidation(nullable = true)
     private URL logo;
 
     /**
@@ -163,8 +163,8 @@ public class Provider implements Identifiable {
     /**
      * Provider's main contact info.
      */
-    @XmlElement
-    @Schema
+    @XmlElement(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
     private ProviderMainContact mainContact;
 
@@ -173,8 +173,8 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "publicContacts")
     @XmlElement(name = "publicContact")
-    @Schema
-    @FieldValidation
+    @Schema()
+    @FieldValidation(nullable = true)
     private List<ProviderPublicContact> publicContacts;
 
 
