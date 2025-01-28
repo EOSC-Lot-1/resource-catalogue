@@ -35,15 +35,21 @@ public class ToolSecurity {
 	@XmlElement()
 	@Schema
 	private URL reportUrl;
+	
+	@XmlElement
+	@Schema
+	@FieldValidation(nullable = true)
+	private Boolean reviewed;
 
 	public ToolSecurity() {
 	}
 
-	public ToolSecurity(String status, String vulnerabilities, String lastCheck, URL reportUrl) {
+	public ToolSecurity(String status, String vulnerabilities, String lastCheck, URL reportUrl, Boolean reviewed) {
 		this.status = status;
 		this.vulnerabilities = vulnerabilities;
 		this.lastCheck = lastCheck;
 		this.reportUrl = reportUrl;
+		this.reviewed = reviewed;
 	}
 
 	@Override
@@ -83,6 +89,14 @@ public class ToolSecurity {
 	public void setReportUrl(URL reportUrl) {
 		this.reportUrl = reportUrl;
 	}
+	
+	public Boolean getReviewed() {
+		return reviewed;
+	}
+
+	public void setReviewed(Boolean reviewed) {
+		this.reviewed = reviewed;
+	}
 
 	@Override
 	public boolean equals(Object o) {
@@ -92,11 +106,12 @@ public class ToolSecurity {
 			return false;
 		ToolSecurity that = (ToolSecurity) o;
 		return Objects.equals(status, that.status) && Objects.equals(lastCheck, that.lastCheck)
-				&& Objects.equals(vulnerabilities, that.vulnerabilities) && Objects.equals(reportUrl, that.reportUrl);
+				&& Objects.equals(vulnerabilities, that.vulnerabilities) && Objects.equals(reportUrl, that.reportUrl)
+				&& Objects.equals(reviewed, that.reviewed);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(status, lastCheck, vulnerabilities, reportUrl);
+		return Objects.hash(status, lastCheck, vulnerabilities, reportUrl, reviewed);
 	}
 }
