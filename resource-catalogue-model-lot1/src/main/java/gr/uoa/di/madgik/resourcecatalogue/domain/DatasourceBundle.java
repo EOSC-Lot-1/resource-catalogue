@@ -14,6 +14,7 @@ public class DatasourceBundle extends Bundle<Datasource> {
 
     @XmlElement
     @VocabularyValidation(type = Vocabulary.Type.RESOURCE_STATUS)
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     private String status;
 
     /**

@@ -5,7 +5,7 @@ import java.util.Objects;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-
+import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
 
 //@Document
@@ -15,6 +15,7 @@ public class ToolBundle extends Bundle<Tool> {
 	
 	@XmlElement
     @VocabularyValidation(type = Vocabulary.Type.RESOURCE_STATUS)
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     private String status;
     
     @XmlElement
