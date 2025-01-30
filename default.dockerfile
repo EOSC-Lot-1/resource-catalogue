@@ -1,7 +1,7 @@
 # vim:set syntax=dockerfile:
 
 FROM maven:3.9.6-eclipse-temurin-21 AS maven-build
-ARG profile="default"
+ARG profile="lot1"
 
 RUN mkdir /app/
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY . .
 # replace log4j2 classpath configuration
 RUN cp docker/log4j2.xml resource-catalogue-service/src/main/resources/log4j2.xml
 
-RUN mvn package -B -P ${profile}
+RUN mvn package -B -P ${profile} -DskipTests
 
 
 FROM eclipse-temurin:21-jre-alpine
