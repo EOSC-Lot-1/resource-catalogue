@@ -9,6 +9,7 @@ import gr.uoa.di.madgik.resourcecatalogue.manager.ProviderManager;
 import gr.uoa.di.madgik.resourcecatalogue.service.*;
 import gr.uoa.di.madgik.resourcecatalogue.utils.RestTemplateTrustManager;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
@@ -251,20 +252,12 @@ public class FieldValidator {
     }
 
     public void validateUrl(Field field, URL urlForValidation) {
-        RestTemplate restTemplate = RestTemplateTrustManager.createRestTemplateWithDisabledSSL();
-
         try {
-            if (urlForValidation.toString().contains(" ")) {
-                urlForValidation = new URL(urlForValidation.toString().replaceAll("\\s", "%20"));
+
+            UrlValidator validator = new UrlValidator();
+    		if (!validator.isValid(urlForValidation.toString())) {
+    			throw new ValidationException("Failed to validate URL: " + urlForValidation);
             }
-
-            SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-            requestFactory.setConnectTimeout(5000);
-            requestFactory.setReadTimeout(5000);
-            restTemplate.setRequestFactory(requestFactory);
-
-            restTemplate.headForHeaders(urlForValidation.toURI());
-
         } catch (HttpStatusCodeException e) {
             logger.trace(e.getMessage());
             throw e;
