@@ -19,10 +19,7 @@ permissions:
 jobs:
 
   build_image: 
-    runs-on:
-    - self-hosted
-    - x64
-    - debian-12
+    runs-on: ubuntu-22.04
     if: >-
       github.ref_type == 'tag'
     steps:
