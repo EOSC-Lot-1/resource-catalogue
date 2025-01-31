@@ -16,7 +16,11 @@ public class TrainingResourceBundle extends Bundle<TrainingResource> {
     @VocabularyValidation(type = Vocabulary.Type.RESOURCE_STATUS)
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     private String status;
-
+    
+    @XmlElement()
+    @FieldValidation(nullable = true)
+    private Boolean resubmit;
+    
     @XmlElement
     private String auditState;
 
@@ -59,6 +63,14 @@ public class TrainingResourceBundle extends Bundle<TrainingResource> {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+    
+    public Boolean getResubmit() {
+        return resubmit;
+    }
+
+    public void setResubmit(Boolean resubmit) {
+        this.resubmit = resubmit;
     }
 
     public String getAuditState() {

@@ -22,7 +22,11 @@ public class ProviderBundle extends Bundle<Provider> {
     @XmlElement
 //    @VocabularyValidation(type = Vocabulary.Type.TEMPLATE_STATE)
     private String templateStatus;
-
+    
+    @XmlElement()
+    @FieldValidation(nullable = true)
+    private Boolean resubmit;
+    
     @XmlElement
     private String auditState;
 
@@ -77,6 +81,14 @@ public class ProviderBundle extends Bundle<Provider> {
 
     public void setTemplateStatus(String templateStatus) {
         this.templateStatus = templateStatus;
+    }
+    
+    public Boolean getResubmit() {
+        return resubmit;
+    }
+
+    public void setResubmit(Boolean resubmit) {
+        this.resubmit = resubmit;
     }
 
     public String getAuditState() {

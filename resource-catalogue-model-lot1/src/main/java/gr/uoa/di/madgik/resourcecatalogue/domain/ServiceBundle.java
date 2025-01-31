@@ -28,6 +28,10 @@ public class ServiceBundle extends Bundle<Service> {
     @XmlElement(name = "sites")
     private List<Site> sites;
     
+    @XmlElement()
+    @FieldValidation(nullable = true)
+    private Boolean resubmit;
+    
     @XmlElement
     private String auditState;
     
@@ -82,6 +86,14 @@ public class ServiceBundle extends Bundle<Service> {
 
     public void setResourceExtras(ResourceExtras resourceExtras) {
         this.resourceExtras = resourceExtras;
+    }
+    
+    public Boolean getResubmit() {
+        return resubmit;
+    }
+
+    public void setResubmit(Boolean resubmit) {
+        this.resubmit = resubmit;
     }
 
     public String getAuditState() {
