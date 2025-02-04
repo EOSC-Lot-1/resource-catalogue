@@ -27,6 +27,10 @@ public class DatasourceBundle extends Bundle<Datasource> {
     private boolean softwareRepository;
     
     @XmlElement()
+    @FieldValidation(nullable = true)
+    private Boolean resubmit;
+    
+    @XmlElement()
     @Schema
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.DS_TYPE)
@@ -117,4 +121,13 @@ public class DatasourceBundle extends Bundle<Datasource> {
     public void setSoftwareRepository(boolean softwareRepository) {
         this.softwareRepository = softwareRepository;
     }
+    
+    public Boolean getResubmit() {
+        return resubmit;
+    }
+
+    public void setResubmit(Boolean resubmit) {
+        this.resubmit = resubmit;
+    }
+
 }
