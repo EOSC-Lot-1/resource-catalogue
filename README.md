@@ -6,6 +6,8 @@
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+<a href="https://confluence.egi.eu/display/EOSCBeyond/Software+and+Services+Quality+Assurance+%28SQA%29+guidelines">
+<img src="https://img.shields.io/badge/SQAaaS-Bronze-CD7F32"/></a>
 
 ---
 
@@ -71,7 +73,7 @@ Test results will be displayed in the terminal.
 
 ## Documentation Links
 For extensive and detailed documentation, please refer to
-[Resource Catalogue Documentation](https://github.com/madgeek-arc/resource-catalogue-docs).
+[Resource Catalogue Documentation](https://madgeek-arc.github.io/resource-catalogue-docs/).
 
 ---
 
