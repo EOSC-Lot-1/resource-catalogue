@@ -52,6 +52,9 @@ public abstract class Bundle<T extends Identifiable> implements Identifiable {
 
     @XmlElement
     private LoggingInfo latestUpdateInfo;
+    
+    @XmlElement
+    private String internalComments;
 
     public Bundle() {
     }
@@ -164,6 +167,14 @@ public abstract class Bundle<T extends Identifiable> implements Identifiable {
 
     public void setLatestUpdateInfo(LoggingInfo latestUpdateInfo) {
         this.latestUpdateInfo = latestUpdateInfo;
+    }
+
+    public String getInternalComments() {
+        return internalComments;
+    }
+
+    public void setInternalComments(String internalComments) {
+        this.internalComments = internalComments;
     }
 
     @Override

@@ -37,7 +37,7 @@ public class InteroperabilityRecord implements Identifiable {
      */
     @XmlElement(required = true)
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation(containsId = true, idClass = Provider.class)
+    @FieldValidation
     private String providerId;
 
     /**
