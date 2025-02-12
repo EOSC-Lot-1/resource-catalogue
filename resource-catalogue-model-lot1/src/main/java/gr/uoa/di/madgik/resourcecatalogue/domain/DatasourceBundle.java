@@ -30,6 +30,10 @@ public class DatasourceBundle extends Bundle<Datasource> {
     @FieldValidation(nullable = true)
     private Boolean resubmit;
     
+    @XmlElement
+    @FieldValidation(nullable = true)
+    private OAIPMHInfo oaiPmhInfo;
+    
     @XmlElement()
     @Schema
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
@@ -130,4 +134,11 @@ public class DatasourceBundle extends Bundle<Datasource> {
         this.resubmit = resubmit;
     }
 
+    public OAIPMHInfo getOaiPmhInfo() {
+        return oaiPmhInfo;
+    }
+
+    public void setStatus(OAIPMHInfo oaiPmhInfo) {
+        this.oaiPmhInfo = oaiPmhInfo;
+    }
 }

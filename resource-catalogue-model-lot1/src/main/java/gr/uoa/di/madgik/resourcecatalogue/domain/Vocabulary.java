@@ -121,7 +121,9 @@ public class Vocabulary implements Identifiable {
         CT_PROTOCOL("Configuration Template protocol"),
         CT_COMPATIBILITY("Configuration Template compatibility"),
     	// Other
-    	RESOURCE_STATUS("Resource status");
+    	RESOURCE_STATUS("Resource status"),
+    	DS_OAI_FORMATS("OAI-PMH formats"),
+    	DS_OAI_COMPATIBILITY("OAI-PMH compatibility");
         private final String type;
 
         Type(final String type) {
