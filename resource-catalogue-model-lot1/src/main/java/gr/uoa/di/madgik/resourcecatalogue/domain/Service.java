@@ -31,9 +31,9 @@ public class Service implements Identifiable {
     /**
      * An abbreviation of the Resource Name as assigned by the Provider
      */
-    @XmlElement(required = true)
+    @XmlElement()
     @Schema
-    @FieldValidation
+    @FieldValidation(nullable = true)
     private String abbreviation;
 
     /**
@@ -94,17 +94,17 @@ public class Service implements Identifiable {
     /**
      * Short catch-phrase for marketing and advertising purposes. It will be usually displayed close to the Resource name and should refer to the main value or purpose of the Resource.
      */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation
+    @XmlElement()
+    @Schema()
+    @FieldValidation(nullable = true)
     private String tagline;
 
     /**
      * Link to the logo/visual identity of the Resource. The logo will be visible at the Portal. If there is no specific logo for the Resource the logo of the Provider may be used.
      */
-    @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "https://example.com")
-    @FieldValidation
+    @XmlElement()
+    @Schema()
+    @FieldValidation(nullable = true)
     private URL logo;
 
     /**

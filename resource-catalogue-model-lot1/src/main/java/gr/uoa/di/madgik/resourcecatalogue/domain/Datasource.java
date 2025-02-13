@@ -67,9 +67,9 @@ public class Datasource implements Identifiable {
      * The persistent identifier systems that are used by the Data Source to identify the EntityType it supports
      */
     @XmlElementWrapper(name = "persistentIdentitySystems")
-    @XmlElement(name = "persistentIdentitySystem")
-    @Schema
-    @FieldValidation(nullable = true)
+    @XmlElement(required = true, name = "persistentIdentitySystem")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @FieldValidation()
     private List<PersistentIdentitySystem> persistentIdentitySystems;
 
 
@@ -95,10 +95,10 @@ public class Datasource implements Identifiable {
     /**
      * The types of OpenAIRE entities managed by the data source, based on the vocabulary for this property
      */
-    @XmlElementWrapper(required = true, name = "researchEntityTypes")
+    @XmlElementWrapper( name = "researchEntityTypes")
     @XmlElement(name = "researchEntityType")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation(containsId = true, idClass = Vocabulary.class)
+    @Schema()
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.DS_RESEARCH_ENTITY_TYPE)
     private List<String> researchEntityTypes;
 
