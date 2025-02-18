@@ -21,6 +21,9 @@ public class ToolBundle extends Bundle<Tool> {
     @XmlElement
     private ToolSecurity security;
     
+    @XmlElement
+    private boolean contributorProvided;
+    
     public ToolBundle() {
         // No arg constructor
     }
@@ -61,6 +64,7 @@ public class ToolBundle extends Bundle<Tool> {
     public void setStatus(String status) {
         this.status = status;
     }
+    
     public ToolSecurity getSecurity() {
         return security;
     }
@@ -69,6 +73,13 @@ public class ToolBundle extends Bundle<Tool> {
         this.security = security;
     }
 
+    public Boolean getContributorProvided() {
+        return contributorProvided;
+    }
+
+    public void setContributorProvided(Boolean contributorProvided) {
+        this.contributorProvided = contributorProvided;
+    }
     @Override
     public String toString() {
         return "ToolBundle{" +

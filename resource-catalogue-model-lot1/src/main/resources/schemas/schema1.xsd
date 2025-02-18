@@ -35,6 +35,8 @@
             
       <xs:element minOccurs="0" name="identifiers" type="identifiers"/>
             
+      <xs:element minOccurs="0" name="internalComments" type="xs:string"/>
+            
       <xs:element minOccurs="0" name="latestAuditInfo" type="loggingInfo"/>
             
       <xs:element minOccurs="0" name="latestOnboardingInfo" type="loggingInfo"/>
@@ -652,6 +654,8 @@ Criteria for submitting content to the repository as well as product preparation
             </xs:annotation>
           </xs:element>
                     
+          <xs:element minOccurs="0" name="resubmit" type="xs:boolean"/>
+                    
           <xs:element name="softwareRepository" type="xs:boolean"/>
                     
           <xs:element minOccurs="0" name="status" type="xs:string"/>
@@ -1125,6 +1129,8 @@ versions. The record's primary key for locating it in the EOSC-IF database.]]></
                     
           <xs:element minOccurs="0" name="interoperabilityRecord" type="interoperabilityRecord"/>
                     
+          <xs:element minOccurs="0" name="resubmit" type="xs:boolean"/>
+                    
           <xs:element minOccurs="0" name="status" type="xs:string"/>
                   
         </xs:sequence>
@@ -1194,6 +1200,26 @@ versions. The record's primary key for locating it in the EOSC-IF database.]]></
       </xs:extension>
           
     </xs:complexContent>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="oaipmhInfo">
+        
+    <xs:sequence>
+            
+      <xs:element minOccurs="0" name="baseUrl" type="xs:anyURI"/>
+            
+      <xs:element minOccurs="0" name="compatibility" type="xs:string"/>
+            
+      <xs:element minOccurs="0" name="format" type="xs:string"/>
+            
+      <xs:element minOccurs="0" name="openAIRECompliance" type="xs:boolean"/>
+            
+      <xs:element minOccurs="0" name="protocol" type="xs:string"/>
+            
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="sets" nillable="true" type="xs:string"/>
+          
+    </xs:sequence>
       
   </xs:complexType>
     
@@ -1431,6 +1457,8 @@ For embedded providers (2) - legal status of the hosting legal entity. It is als
           <xs:element minOccurs="0" name="auditState" type="xs:string"/>
                     
           <xs:element minOccurs="0" name="provider" type="provider"/>
+                    
+          <xs:element minOccurs="0" name="resubmit" type="xs:boolean"/>
                     
           <xs:element minOccurs="0" name="status" type="xs:string"/>
                     
@@ -2042,6 +2070,8 @@ infrastructures.]]></xs:documentation>
                     
           <xs:element minOccurs="0" name="resourceExtras" type="resourceExtras"/>
                     
+          <xs:element minOccurs="0" name="resubmit" type="xs:boolean"/>
+                    
           <xs:element minOccurs="0" name="service" type="service"/>
                     
           <xs:element maxOccurs="unbounded" minOccurs="0" name="sites" nillable="true" type="site"/>
@@ -2185,6 +2215,8 @@ infrastructures.]]></xs:documentation>
       <xs:extension base="bundle">
                 
         <xs:sequence>
+                    
+          <xs:element minOccurs="0" name="contributorProvided" type="xs:boolean"/>
                     
           <xs:element minOccurs="0" name="security" type="toolSecurity"/>
                     
@@ -2437,6 +2469,8 @@ that is the used scheme (e.g., Web Address URL, DOI, ARK, etc.).]]></xs:document
         <xs:sequence>
                     
           <xs:element minOccurs="0" name="auditState" type="xs:string"/>
+                    
+          <xs:element minOccurs="0" name="resubmit" type="xs:boolean"/>
                     
           <xs:element minOccurs="0" name="status" type="xs:string"/>
                     
@@ -3019,6 +3053,10 @@ that is the used scheme (e.g., Web Address URL, DOI, ARK, etc.).]]></xs:document
       <xs:enumeration value="CT_COMPATIBILITY"/>
             
       <xs:enumeration value="RESOURCE_STATUS"/>
+            
+      <xs:enumeration value="DS_OAI_FORMATS"/>
+            
+      <xs:enumeration value="DS_OAI_COMPATIBILITY"/>
           
     </xs:restriction>
       

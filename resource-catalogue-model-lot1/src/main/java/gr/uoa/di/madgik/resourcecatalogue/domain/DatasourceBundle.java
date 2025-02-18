@@ -31,6 +31,7 @@ public class DatasourceBundle extends Bundle<Datasource> {
     private Boolean resubmit;
     
     @XmlElement
+    @Schema
     @FieldValidation(nullable = true)
     private OAIPMHInfo oaiPmhInfo;
     

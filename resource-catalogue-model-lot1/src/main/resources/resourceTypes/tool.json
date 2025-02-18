@@ -186,6 +186,14 @@
 	      	"name": "lastCheck",
 	      	"path": "$.security.lastCheck",
 	      	"type": "java.util.Date"
+	    },
+	    {
+	      	"defaultValue": "false",
+	      	"label": null,
+	      	"multivalued": false,
+	      	"name": "contributorProvided",
+	      	"path": "$.contributorProvided",
+	      	"type": "java.lang.Boolean"
 	    }
     ],
     "indexMapperClass": "gr.uoa.di.madgik.registry.index.DefaultIndexMapper",
