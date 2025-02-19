@@ -24,6 +24,10 @@ public class InteroperabilityRecordBundle extends Bundle<InteroperabilityRecord>
     @XmlElement
     private String auditState;
 
+    @XmlElement
+    @FieldValidation(nullable = true)
+	private String resourceOrganisationGroupID;
+
     public InteroperabilityRecordBundle() {
     }
 
@@ -80,6 +84,14 @@ public class InteroperabilityRecordBundle extends Bundle<InteroperabilityRecord>
         this.auditState = auditState;
     }
 
+    public String getResourceOrganisationGroupID() {
+    	return resourceOrganisationGroupID;
+    }
+
+    public void setResourceOrganisationGroupID(String resourceOrganisationGroupID) {
+        this.resourceOrganisationGroupID = resourceOrganisationGroupID;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

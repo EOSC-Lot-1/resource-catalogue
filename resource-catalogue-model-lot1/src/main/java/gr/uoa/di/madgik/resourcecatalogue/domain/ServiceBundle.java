@@ -38,6 +38,10 @@ public class ServiceBundle extends Bundle<Service> {
     @XmlElement
     @FieldValidation(nullable = true)
     private OnboardingIntegration onboardingIntegration;
+    
+    @XmlElement
+    @FieldValidation(nullable = true)
+	private String resourceOrganisationGroupID;
 
     public ServiceBundle() {
         // No arg constructor
@@ -118,6 +122,14 @@ public class ServiceBundle extends Bundle<Service> {
 
     public void setOnboardingIntegration( OnboardingIntegration  onboardingIntegration) {
         this.onboardingIntegration = onboardingIntegration;
+    }
+
+    public String getResourceOrganisationGroupID() {
+    	return resourceOrganisationGroupID;
+    }
+
+    public void setResourceOrganisationGroupID(String resourceOrganisationGroupID) {
+        this.resourceOrganisationGroupID = resourceOrganisationGroupID;
     }
 
     @Override

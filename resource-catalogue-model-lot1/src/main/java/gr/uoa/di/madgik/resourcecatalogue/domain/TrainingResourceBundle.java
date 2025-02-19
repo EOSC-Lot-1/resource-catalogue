@@ -24,6 +24,10 @@ public class TrainingResourceBundle extends Bundle<TrainingResource> {
     @XmlElement
     private String auditState;
 
+    @XmlElement
+    @FieldValidation(nullable = true)
+	private String resourceOrganisationGroupID;
+
     public TrainingResourceBundle() {
         // No arg constructor
     }
@@ -79,6 +83,14 @@ public class TrainingResourceBundle extends Bundle<TrainingResource> {
 
     public void setAuditState(String auditState) {
         this.auditState = auditState;
+    }
+
+    public String getResourceOrganisationGroupID() {
+    	return resourceOrganisationGroupID;
+    }
+
+    public void setResourceOrganisationGroupID(String resourceOrganisationGroupID) {
+        this.resourceOrganisationGroupID = resourceOrganisationGroupID;
     }
 
     @Override

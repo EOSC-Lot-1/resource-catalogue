@@ -40,6 +40,10 @@ public class DatasourceBundle extends Bundle<Datasource> {
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.DS_TYPE)
     private String datasourceType;
+
+    @XmlElement()
+    @FieldValidation(nullable = true)
+	private String resourceOrganisationGroupID;
     
     public DatasourceBundle() {
         // No arg constructor
@@ -139,7 +143,15 @@ public class DatasourceBundle extends Bundle<Datasource> {
         return oaiPmhInfo;
     }
 
-    public void setStatus(OAIPMHInfo oaiPmhInfo) {
+    public void setOaiPmhInfo(OAIPMHInfo oaiPmhInfo) {
         this.oaiPmhInfo = oaiPmhInfo;
+    }
+
+    public String getResourceOrganisationGroupID() {
+    	return resourceOrganisationGroupID;
+    }
+
+    public void setResourceOrganisationGroupID(String resourceOrganisationGroupID) {
+        this.resourceOrganisationGroupID = resourceOrganisationGroupID;
     }
 }

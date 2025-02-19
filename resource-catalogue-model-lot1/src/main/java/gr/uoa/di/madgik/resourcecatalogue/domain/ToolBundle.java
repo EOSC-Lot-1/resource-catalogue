@@ -23,6 +23,10 @@ public class ToolBundle extends Bundle<Tool> {
     
     @XmlElement
     private boolean contributorProvided;
+
+    @XmlElement
+    @FieldValidation(nullable = true)
+	private String resourceOrganisationGroupID;
     
     public ToolBundle() {
         // No arg constructor
@@ -80,6 +84,16 @@ public class ToolBundle extends Bundle<Tool> {
     public void setContributorProvided(Boolean contributorProvided) {
         this.contributorProvided = contributorProvided;
     }
+
+    public String getResourceOrganisationGroupID() {
+    	return resourceOrganisationGroupID;
+    }
+
+    public void setResourceOrganisationGroupID(String resourceOrganisationGroupID) {
+        this.resourceOrganisationGroupID = resourceOrganisationGroupID;
+    }
+    
+    
     @Override
     public String toString() {
         return "ToolBundle{" +

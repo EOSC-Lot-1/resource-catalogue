@@ -6,6 +6,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +30,10 @@ public class ProviderBundle extends Bundle<Provider> {
     
     @XmlElement
     private String auditState;
+    
+    @XmlElement()
+    @FieldValidation(nullable = true)
+    private String resourceOrganisationGroupID;
 
     @XmlElementWrapper(name = "transferContactInformation")
     @XmlElement(name = "transferContactInformation")
@@ -99,6 +104,14 @@ public class ProviderBundle extends Bundle<Provider> {
         this.auditState = auditState;
     }
 
+    public String getResourceOrganisationGroupID() {
+    	return resourceOrganisationGroupID;
+    }
+
+    public void setResourceOrganisationGroupID(String resourceOrganisationGroupID) {
+        this.resourceOrganisationGroupID = resourceOrganisationGroupID;
+    }
+    
     public List<ContactInfoTransfer> getTransferContactInformation() {
         return transferContactInformation;
     }
