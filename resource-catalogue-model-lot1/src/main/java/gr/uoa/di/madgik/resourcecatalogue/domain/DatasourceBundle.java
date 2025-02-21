@@ -146,6 +146,14 @@ public class DatasourceBundle extends Bundle<Datasource> {
     public void setOaiPmhInfo(OAIPMHInfo oaiPmhInfo) {
         this.oaiPmhInfo = oaiPmhInfo;
     }
+    
+    public String getDatasourceType() {
+        return datasourceType;
+    }
+
+    public void setResubmit(String datasourceType) {
+        this.datasourceType = datasourceType;
+    }
 
     public String getResourceOrganisationGroupID() {
     	return resourceOrganisationGroupID;
