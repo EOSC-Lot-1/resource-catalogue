@@ -67,9 +67,9 @@ public class Datasource implements Identifiable {
      * The persistent identifier systems that are used by the Data Source to identify the EntityType it supports
      */
     @XmlElementWrapper(name = "persistentIdentitySystems")
-    @XmlElement(required = true, name = "persistentIdentitySystem")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation()
+    @XmlElement(name = "persistentIdentitySystem")
+    @Schema()
+    @FieldValidation(nullable = true)
     private List<PersistentIdentitySystem> persistentIdentitySystems;
 
 
