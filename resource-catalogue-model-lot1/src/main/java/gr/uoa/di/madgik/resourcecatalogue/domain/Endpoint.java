@@ -5,6 +5,7 @@ import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
@@ -26,6 +27,14 @@ public class Endpoint {
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.ENDPOINT_TYPE)
     private String type;
+    
+
+    @XmlElementWrapper(name = "monitoringServiceTypes")
+    @XmlElement(name = "monitoringServiceType")
+    @Schema
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
+    @VocabularyValidation(type = Vocabulary.Type.MONITORING_SERVICE_TYPE)
+    private List<String> monitoringServiceTypes;
     
     @XmlElement()
     @Schema
@@ -66,6 +75,15 @@ public class Endpoint {
         this.type = type;
     }
 
+
+    public List <String> getMonitoringServiceTypes() {
+        return monitoringServiceTypes;
+    }
+
+    public void setMonitoringServiceTypes(List<String> setMonitoringServiceTypes) {
+        this.monitoringServiceTypes = setMonitoringServiceTypes;
+    }
+    
     public URL getUrl() {
         return url;
     }

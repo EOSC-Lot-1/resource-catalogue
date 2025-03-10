@@ -80,6 +80,7 @@ public class Vocabulary implements Identifiable {
         MARKETPLACE_LOCATION("Marketplace location"),
         ENDPOINT_TYPE("Endpoint type"),
         INTEGRATION_STATUS("Integration status"),
+        MONITORING_SERVICE_TYPE("Monitoring service type"),
         // States
         CATALOGUE_STATE("Catalogue state"),
         PROVIDER_STATE("Provider state"),
@@ -94,6 +95,8 @@ public class Vocabulary implements Identifiable {
         DS_JURISDICTION("Jurisdiction"),
         DS_CLASSIFICATION("Classification"),
         DS_COAR_ACCESS_RIGHTS_1_0("COAR access rights 1.0"),
+    	DS_OAI_FORMATS("OAI-PMH formats"),
+    	DS_OAI_COMPATIBILITY("OAI-PMH compatibility"),
         // Tool
         TOOL_VULNERABILITIES("Tool vulnerabilities"),
         TOOL_SECURITY_STATUS("Tool security status"),
@@ -121,9 +124,7 @@ public class Vocabulary implements Identifiable {
         CT_PROTOCOL("Configuration Template protocol"),
         CT_COMPATIBILITY("Configuration Template compatibility"),
     	// Other
-    	RESOURCE_STATUS("Resource status"),
-    	DS_OAI_FORMATS("OAI-PMH formats"),
-    	DS_OAI_COMPATIBILITY("OAI-PMH compatibility");
+    	RESOURCE_STATUS("Resource status");
         private final String type;
 
         Type(final String type) {
