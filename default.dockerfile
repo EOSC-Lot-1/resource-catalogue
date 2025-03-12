@@ -29,9 +29,10 @@ VOLUME /app/logs
 RUN mkdir config logs && chown spring:spring config logs
 
 COPY --from=maven-build --chown=spring:spring /app/resource-catalogue-service/target/resource-catalogue-service-*.jar /app/resource-catalogue-service.jar
+COPY ./docker-entrypoint.sh /
 
 EXPOSE 8080
 
 USER 1000
-CMD [ "java", "-jar", "/app/resource-catalogue-service.jar", "-Xms256m", "-Xmx1024m" ]
+CMD [ "/docker-entrypoint.sh" ]
 
