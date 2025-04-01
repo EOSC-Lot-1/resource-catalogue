@@ -1,0 +1,20 @@
+[
+   {
+    "id": "ds_oai_compatibility-openaire_2.0",
+    "name": "Openaire 2.0 guidelines",
+    "description": "Openaire 2.0 guidelines",
+    "type": "OAI-PMH compatibility"
+  },
+  {
+    "id": "ds_oai_compatibility-openaire_4.0",
+    "name": "Openaire 4.0 guidelines",
+    "description": "Openaire 4.0 guidelines",
+    "type": "OAI-PMH compatibility"
+  },
+  {
+    "id": "ds_oai_compatibility-not_compatible",
+    "name": "Not compatible",
+    "description": "Not compatible",
+    "type": "OAI-PMH compatibility"
+  }
+]

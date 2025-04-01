@@ -1,0 +1,26 @@
+[
+    {
+        "id": "pending",
+        "name": "Pending",
+        "description": "Pending",
+        "type": "Resource status"
+    },
+    {
+        "id": "approved",
+        "name": "Approved",
+        "description": "Approved",
+        "type": "Resource status"
+    },
+    {
+        "id": "rejected",
+        "name": "Rejected",
+        "description": "Rejected",
+        "type": "Resource status"
+    },
+    {
+        "id": "offboarded",
+        "name": "Offboarded",
+        "description": "Offboarded",
+        "type": "Resource status"
+    }
+]

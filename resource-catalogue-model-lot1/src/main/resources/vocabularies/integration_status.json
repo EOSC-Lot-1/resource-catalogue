@@ -1,0 +1,26 @@
+[
+  {
+    "id": "integration_status-completed",
+    "name": "Completed",
+    "description": "Completed",
+    "type": "Integration status"
+  },
+  {
+    "id": "integration_status-in_progress",
+    "name": "In progress",
+    "description": "In progress",
+    "type": "Integration status"
+  },
+  {
+    "id": "integration_status-not_applicable",
+    "name": "Not applicable",
+    "description": "Not applicable",
+    "type": "Integration status"
+  },
+  {
+    "id": "integration_status-pending",
+    "name": "Pending",
+    "description": "Pending",
+    "type": "Integration status"
+  }
+]

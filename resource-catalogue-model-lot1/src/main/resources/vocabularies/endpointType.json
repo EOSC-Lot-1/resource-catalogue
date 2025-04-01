@@ -1,0 +1,24 @@
+[
+    {
+        "id": "endpoint_type-gui",
+        "name": "GUI",
+        "description": "Graphical user interface",
+        "type": "Endpoint type"
+    },
+    {
+        "id": "endpoint_type-gui_redirect",
+        "name": "GUI redirect",
+        "description": "GUI redirect uri",
+        "type": "Endpoint type"
+    },{
+        "id": "endpoint_type-api",
+        "name": "API",
+        "description": "API",
+        "type": "Endpoint type"
+    },{
+        "id": "endpoint_type-oidc",
+        "name": "OIDC",
+        "description": "OIDC url",
+        "type": "Endpoint type"
+    }
+]

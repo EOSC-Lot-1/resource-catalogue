@@ -1,0 +1,18 @@
+[
+    {
+        "id": "tool_security_status-failure",
+        "name": "Failure",
+        "description": "Failure",
+        "type": "Tool security status"
+    },{
+        "id": "tool_security_status-sec_pass",
+        "name": "Sec-pass",
+        "description": "Sec-pass",
+        "type": "Tool security status"
+    },{
+        "id": "tool_security_status-sec_fail",
+        "name": "Sec-fail",
+        "description": "Sec-fail",
+        "type": "Tool security status"
+    }
+]

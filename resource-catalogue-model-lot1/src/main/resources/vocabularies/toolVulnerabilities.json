@@ -1,0 +1,33 @@
+[
+    {
+        "id": "tool_vulnerabilities-none",
+        "name": "None",
+        "description": "None",
+        "type": "Tool vulnerabilities"
+    },{
+        "id": "tool_vulnerabilities-low",
+        "name": "Low",
+        "description": "Low",
+        "type": "Tool vulnerabilities"
+    },{
+        "id": "tool_vulnerabilities-medium",
+        "name": "Medium",
+        "description": "Medium",
+        "type": "Tool vulnerabilities"
+    },{
+        "id": "tool_vulnerabilities-high",
+        "name": "High",
+        "description": "High",
+        "type": "Tool vulnerabilities"
+    },{
+        "id": "tool_vulnerabilities-critical",
+        "name": "Critical",
+        "description": "Critical",
+        "type": "Tool vulnerabilities"
+    },	{
+        "id": "tool_vulnerabilities-unknown",
+        "name": "Unknown",
+        "description": "Unknown",
+        "type": "Tool vulnerabilities"
+    }
+]

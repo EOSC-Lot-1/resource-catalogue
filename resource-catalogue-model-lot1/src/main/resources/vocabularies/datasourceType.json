@@ -1,0 +1,24 @@
+[
+    {
+        "id": "datasource_type-software_repositories",
+        "name": "Software repositories",
+        "description": "Software repositories",
+        "type": "Datasource type"
+    },
+    {
+        "id": "datasource_type-publications",
+        "name": "Publications",
+        "description": "Publications",
+        "type": "Datasource type"
+    },{
+        "id": "datasource_type-data",
+        "name": "Data",
+        "description": "Data",
+        "type": "Datasource type"
+    },{
+        "id": "datasource_type-all",
+        "name": "All of the above",
+        "description": "All of the above",
+        "type": "Datasource type"
+    }
+]

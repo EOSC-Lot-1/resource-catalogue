@@ -1,0 +1,12 @@
+[{
+  "id": "tool_target_infrastructure-vm",
+  "name": "VM Service",
+  "description": "VM Service",
+  "type": "Tool target infrastructure"
+},
+{
+  "id": "tool_target_infrastructure-container",
+  "name": "Container Service",
+  "description": "Container Service",
+  "type": "Tool target infrastructure"
+}]
