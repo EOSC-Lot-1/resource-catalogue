@@ -1,0 +1,43 @@
+services:
+
+  catalogue:
+    image: ghcr.io/eosc-lot-1/resource-catalogue:532f91f 
+    volumes:
+    - type: bind
+      source: ./config/application.properties
+      target: /app/application.properties
+      read_only: true
+    - type: bind
+      source: ./config.d/
+      target: /app/config/
+      read_only: true
+    - type: bind
+      source: ./secrets/
+      target: /secrets/
+      read_only: true
+    env_file:
+    - catalogue.env
+    environment:
+      _REDIS_PASSWORD:
+      _CATALOGUE_DATABASE_NAME: resource-catalogue
+      _CATALOGUE_DATABASE_PASSWORD:
+    mem_limit: '512m'
+
+  flyway:
+    image: flyway/flyway:9.15
+    command:
+    - migrate
+    volumes:
+    - type: bind
+      source: ./.data/db/migrations/
+      target: /flyway/sql
+      read_only: true
+    environment:
+      FLYWAY_SCHEMAS: public
+      FLYWAY_DEFAULT_SCHEMA: public
+      FLYWAY_TABLE: _schema_version
+      FLYWAY_BASELINE_VERSION: "1_1_0"
+      FLYWAY_BASELINE_ON_MIGRATE: "true"
+      FLYWAY_USER: catalogue
+      FLYWAY_PASSWORD: ${_CATALOGUE_DATABASE_PASSWORD}
+

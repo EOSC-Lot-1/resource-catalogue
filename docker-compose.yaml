@@ -1,0 +1,129 @@
+# vim: set syntax=yaml:
+
+volumes:
+  postgres_data:
+  redis_data:
+
+services:
+  
+  redis:
+    image: redis:6.2.14-alpine3.20
+    volumes:
+    - type: volume
+      source: redis_data
+      target: /data
+    environment:
+      REDIS_ARGS: >-
+        --save 60 1
+        --requirepass ${_REDIS_PASSWORD}
+  
+  postgres:
+    image: postgres:15-alpine
+    volumes:
+    - type: volume
+      source: postgres_data
+      target: /var/lib/postgresql/data
+    - type: bind
+      source: ./.data/db/init
+      target: /docker-entrypoint-initdb.d/
+      read_only: true
+    environment:
+      POSTGRES_PASSWORD:
+      _CATALOGUE_DATABASE_PASSWORD:
+
+  services-catalogue:
+    extends: 
+      file: compose-catalogue.yaml
+      service: catalogue
+    volumes:
+    - type: bind
+      source: ./logs/services-catalogue/
+      target: /app/logs
+    environment:
+      _FQDN: services-catalogue.internal
+      _REDIS_DATABASE: '1'
+      _CATALOGUE_DATABASE_NAME: services-catalogue
+    ports:
+    - '10080:8080'
+  
+  # docker-compose run --rm -T services-catalogue-db-migration
+  services-catalogue-db-migration:
+    extends:
+      file: compose-catalogue.yaml
+      service: flyway
+    environment:
+      FLYWAY_URL: >-
+        jdbc:postgresql://postgres:5432/services-catalogue
+
+  tools-catalogue:
+    extends: 
+      file: compose-catalogue.yaml
+      service: catalogue
+    volumes:
+    - type: bind
+      source: ./logs/tools-catalogue/
+      target: /app/logs
+    environment:
+      _FQDN: tools-catalogue.internal
+      _REDIS_DATABASE: '2'
+      _CATALOGUE_DATABASE_NAME: tools-catalogue
+    ports:
+    - '10081:8080'
+  
+  # docker-compose run --rm -T tools-catalogue-db-migration
+  tools-catalogue-db-migration:
+    extends:
+      file: compose-catalogue.yaml
+      service: flyway
+    environment:
+      FLYWAY_URL: >-
+        jdbc:postgresql://postgres:5432/tools-catalogue
+ 
+  training-catalogue:
+    extends: 
+      file: compose-catalogue.yaml
+      service: catalogue
+    volumes:
+    - type: bind
+      source: ./logs/training-catalogue/
+      target: /app/logs
+    environment:
+      _FQDN: training-catalogue.internal
+      _REDIS_DATABASE: '3'
+      _CATALOGUE_DATABASE_NAME: training-catalogue
+    ports:
+    - '10082:8080'
+  
+  # docker-compose run --rm -T training-catalogue-db-migration
+  training-catalogue-db-migration:
+    extends:
+      file: compose-catalogue.yaml
+      service: flyway
+    environment:
+      FLYWAY_URL: >-
+        jdbc:postgresql://postgres:5432/training-catalogue
+ 
+  ifg-catalogue:
+    extends: 
+      file: compose-catalogue.yaml
+      service: catalogue
+    volumes:
+    - type: bind
+      source: ./logs/ifg-catalogue/
+      target: /app/logs
+    environment:
+      _FQDN: ifg-catalogue.internal
+      _REDIS_DATABASE: '4'
+      _CATALOGUE_DATABASE_NAME: if-registry
+    ports:
+    - '10083:8080'
+  
+  # docker-compose run --rm -T ifg-catalogue-db-migration
+  ifg-catalogue-db-migration:
+    extends:
+      file: compose-catalogue.yaml
+      service: flyway
+    environment:
+      FLYWAY_URL: >-
+        jdbc:postgresql://postgres:5432/if-registry
+
