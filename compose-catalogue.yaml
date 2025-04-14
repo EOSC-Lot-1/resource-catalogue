@@ -8,10 +8,6 @@ services:
       target: /app/application.properties
       read_only: true
     - type: bind
-      source: ./config.d/
-      target: /app/config/
-      read_only: true
-    - type: bind
       source: ./secrets/
       target: /secrets/
       read_only: true
