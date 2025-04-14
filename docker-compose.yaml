@@ -4,6 +4,10 @@ volumes:
   postgres_data:
   postgres_init_scripts:
   redis_data:
+  service_catalogue_logs:
+  tools_catalogue_logs:
+  training_catalogue_logs:
+  ifg_catalogue_logs:
 
 services:
   
@@ -53,8 +57,8 @@ services:
       file: compose-catalogue.yaml
       service: catalogue
     volumes:
-    - type: bind
-      source: ./logs/services-catalogue/
+    - type: volume
+      source: service_catalogue_logs
       target: /app/logs
     environment:
       _FQDN: services-catalogue.internal
@@ -77,8 +81,8 @@ services:
       file: compose-catalogue.yaml
       service: catalogue
     volumes:
-    - type: bind
-      source: ./logs/tools-catalogue/
+    - type: volume
+      source: tools_catalogue_logs
       target: /app/logs
     environment:
       _FQDN: tools-catalogue.internal
@@ -101,8 +105,8 @@ services:
       file: compose-catalogue.yaml
       service: catalogue
     volumes:
-    - type: bind
-      source: ./logs/training-catalogue/
+    - type: volume
+      source: training_catalogue_logs
       target: /app/logs
     environment:
       _FQDN: training-catalogue.internal
@@ -125,8 +129,8 @@ services:
       file: compose-catalogue.yaml
       service: catalogue
     volumes:
-    - type: bind
-      source: ./logs/ifg-catalogue/
+    - type: volume
+      source: ifg_catalogue_logs
       target: /app/logs
     environment:
       _FQDN: ifg-catalogue.internal
