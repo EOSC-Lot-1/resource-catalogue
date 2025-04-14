@@ -4,7 +4,7 @@ services:
     image: ghcr.io/eosc-lot-1/resource-catalogue:${APP_VERSION}
     volumes:
     - type: bind
-      source: ./config/application.properties
+      source: ./application.properties
       target: /app/application.properties
       read_only: true
     - type: bind
