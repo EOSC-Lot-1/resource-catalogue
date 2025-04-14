@@ -2,6 +2,7 @@
 
 volumes:
   postgres_data:
+  postgres_init_scripts:
   redis_data:
 
 services:
@@ -16,15 +17,31 @@ services:
       REDIS_ARGS: >-
         --save 60 1
         --requirepass ${_REDIS_PASSWORD}
-  
+
+  download_postgres_init_scripts:
+    image: curlimages/curl:8.13.0
+    #working_dir: /data
+    entrypoint:
+    - sh
+    - -ue
+    - -c
+    - |-
+      curl -sf $${_POSTGRES_INIT_SCRIPTS_DOWNLOAD_URL} | tar xzv
+    volumes:
+    - type: volume
+      source: postgres_init_scripts
+      target: /home/curl_user
+    environment:
+      _POSTGRES_INIT_SCRIPTS_DOWNLOAD_URL:
+
   postgres:
     image: postgres:15-alpine
     volumes:
     - type: volume
       source: postgres_data
       target: /var/lib/postgresql/data
-    - type: bind
-      source: ./.data/db/init
+    - type: volume
+      source: postgres_init_scripts
       target: /docker-entrypoint-initdb.d/
       read_only: true
     environment:
