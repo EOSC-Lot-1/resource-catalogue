@@ -32,7 +32,6 @@ target/
 hs_err_pid*
 
 **/*.properties
-# properties file
 **/registry.properties
 
 .env
@@ -42,4 +41,6 @@ hs_err_pid*
 /config.d
 /secrets
 /setup
+/data
+/.data
 
