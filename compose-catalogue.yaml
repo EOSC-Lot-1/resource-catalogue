@@ -1,7 +1,7 @@
 services:
 
   catalogue:
-    image: ghcr.io/eosc-lot-1/resource-catalogue:532f91f 
+    image: ghcr.io/eosc-lot-1/resource-catalogue:${APP_VERSION}
     volumes:
     - type: bind
       source: ./config/application.properties
@@ -29,7 +29,7 @@ services:
     - migrate
     volumes:
     - type: bind
-      source: ./.data/db/migrations/
+      source: ./registry/registry-starter-service/src/main/resources/db/migration/
       target: /flyway/sql
       read_only: true
     environment:
