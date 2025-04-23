@@ -75,7 +75,7 @@ public class OnboardingIntegration {
         this.accountIntegration = accountIntegration;
     }
     
-    public String getaaiIntegration() {
+    public String getAaiIntegration() {
     	return aaiIntegration;
     }
 
