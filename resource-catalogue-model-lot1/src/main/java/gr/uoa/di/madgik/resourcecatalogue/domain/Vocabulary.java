@@ -65,6 +65,7 @@ public class Vocabulary implements Identifiable {
         GEOGRAPHIC_LOCATION("Geographic location"),
         REGION("Region"),
         COUNTRY("Country"),
+        COUNTRY_PHONE_CODES("Country phone codes"),
         TRL("Technology readiness level"),
         SCIENTIFIC_DOMAIN("Scientific domain"),
         SCIENTIFIC_SUBDOMAIN("Scientific subdomain"),
