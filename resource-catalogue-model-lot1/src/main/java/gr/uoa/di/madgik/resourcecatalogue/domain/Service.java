@@ -240,7 +240,7 @@ public class Service implements Identifiable {
     @XmlElementWrapper(name = "languageAvailabilities", required = true)
     @XmlElement(name = "languageAvailability")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
+    @FieldValidation(containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.LANGUAGE)
     private List<String> languageAvailabilities;
 

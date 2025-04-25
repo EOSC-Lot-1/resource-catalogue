@@ -102,9 +102,9 @@ public class TrainingResource implements Identifiable {
     /**
      * A brief synopsis about or description of the learning resource.
      */
-    @XmlElement
-    @Schema
-    @FieldValidation(nullable = true)
+    @XmlElement(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @FieldValidation
     private String description;
 
     /**

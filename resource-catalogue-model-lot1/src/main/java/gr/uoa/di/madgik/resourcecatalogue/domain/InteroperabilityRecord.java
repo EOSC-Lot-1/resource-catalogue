@@ -80,10 +80,10 @@ public class InteroperabilityRecord implements Identifiable {
     /**
      * Interoperability Record Resource Type Info
      */
-    @XmlElementWrapper(required = true, name = "resourceTypesInfo")
+    @XmlElementWrapper(name = "resourceTypesInfo")
     @XmlElement(name = "resourceTypeInfo")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation
+    @Schema()
+    @FieldValidation(nullable = true)
     private List<ResourceTypeInfo> resourceTypesInfo;
 
     /**
