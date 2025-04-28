@@ -20,39 +20,51 @@ public abstract class Bundle<T extends Identifiable> implements Identifiable {
     @FieldValidation
     private T payload;
 
+    @Schema(description = "Private")
     @XmlElement(name = "metadata")
     private Metadata metadata;
 
+    @Schema(description = "Private")
     @XmlElement
     private boolean active;
 
+    @Schema(description = "Private")
     @XmlElement
     private boolean suspended;
 
+    @Schema(description = "Private")
     @XmlElement
     private boolean draft;
 
+    @Schema(description = "Private")
     @XmlElement
     private boolean legacy;
 
+    @Schema(description = "Private")
     @XmlElement
     private Identifiers identifiers;
 
+    @Schema(description = "Private")
     @XmlElement
     private MigrationStatus migrationStatus;
 
+    @Schema(description = "Private")
     @XmlElement
     private List<LoggingInfo> loggingInfo;
 
+    @Schema(description = "Private")
     @XmlElement
     private LoggingInfo latestAuditInfo;
 
+    @Schema(description = "Private")
     @XmlElement
     private LoggingInfo latestOnboardingInfo;
 
+    @Schema(description = "Private")
     @XmlElement
     private LoggingInfo latestUpdateInfo;
-    
+
+    @Schema(description = "Private")
     @XmlElement
     private String internalComments;
 

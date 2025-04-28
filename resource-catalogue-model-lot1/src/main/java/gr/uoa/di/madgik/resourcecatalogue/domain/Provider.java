@@ -25,14 +25,14 @@ public class Provider implements Identifiable {
      * A persistent identifier, a unique reference to the Provider in the context of the EOSC Portal.
      */
     @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "(required on PUT only)")
+    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED, example = "(required on PUT only)")
     private String id;
 
     /**
      * An abbreviation of the Provider Name as assigned by the Provider.
      */
     @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
     private String abbreviation;
 
@@ -40,7 +40,7 @@ public class Provider implements Identifiable {
      * Full Name of the Provider/Organisation offering the resource and acting as main contact point.
      */
     @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
     private String name;
 
@@ -48,7 +48,7 @@ public class Provider implements Identifiable {
      * Website with information about the Provider.
      */
     @XmlElement()
-    @Schema(example = "https://example.com")
+    @Schema(description = "Public", example = "https://example.com")
     @FieldValidation(nullable = true)
     private URL website;
 
@@ -56,7 +56,7 @@ public class Provider implements Identifiable {
      * A Y/N question to define whether the Provider is a Legal Entity or not.
      */
     @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation()
     private boolean legalEntity;
 
@@ -65,7 +65,7 @@ public class Provider implements Identifiable {
      * For embedded providers (2) - legal status of the hosting legal entity. It is also possible to select Not a legal entity.
      */
     @XmlElement
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.PROVIDER_LEGAL_STATUS)
     private String legalStatus;
@@ -77,7 +77,7 @@ public class Provider implements Identifiable {
      * If (1) - name of the research infrastructure, If (2) - name of the hosting organisation.
      */
     @XmlElement
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.PROVIDER_HOSTING_LEGAL_ENTITY)
     private String hostingLegalEntity;
@@ -87,7 +87,7 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "alternativeIdentifiers")
     @XmlElement(name = "alternativeIdentifier")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private List<AlternativeIdentifier> alternativeIdentifiers;
 
@@ -97,7 +97,7 @@ public class Provider implements Identifiable {
      * A high-level description of the Provider in fairly non-technical terms, with the vision, mission, objectives, background, experience.
      */
     @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
     private String description;
 
@@ -105,7 +105,7 @@ public class Provider implements Identifiable {
      * Link to the logo/visual identity of the Provider.
      */
     @XmlElement()
-    @Schema(example = "https://example.com")
+    @Schema(description = "Public", example = "https://example.com")
     @FieldValidation(nullable = true)
     private URL logo;
 
@@ -114,7 +114,7 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "multimedia")
     @XmlElement(name = "multimedia")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private List<MultimediaPair> multimedia;
 
@@ -125,7 +125,7 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "scientificDomains")
     @XmlElement(name = "scientificDomain")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private List<ServiceProviderDomain> scientificDomains;
 
@@ -134,7 +134,7 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "tags")
     @XmlElement(name = "tag")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private List<String> tags;
 
@@ -143,7 +143,7 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "structureTypes")
     @XmlElement(name = "structureType")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.PROVIDER_STRUCTURE_TYPE)
     private List<String> structureTypes;
@@ -154,7 +154,7 @@ public class Provider implements Identifiable {
      * Physical location of the Provider or its coordinating centre in the case of distributed, virtual, and mobile Providers.
      */
     @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
     private ProviderLocation location;
 
@@ -164,7 +164,7 @@ public class Provider implements Identifiable {
      * Provider's main contact info.
      */
     @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Private", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
     private ProviderMainContact mainContact;
 
@@ -173,7 +173,7 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "publicContacts")
     @XmlElement(name = "publicContact")
-    @Schema()
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private List<ProviderPublicContact> publicContacts;
 
@@ -183,7 +183,7 @@ public class Provider implements Identifiable {
      * Current status of the Provider life-cycle.
      */
     @XmlElement
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.PROVIDER_LIFE_CYCLE_STATUS)
     private String lifeCycleStatus;
@@ -193,7 +193,7 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "certifications")
     @XmlElement(name = "certification")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private List<String> certifications;
 
@@ -204,7 +204,7 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "participatingCountries")
     @XmlElement(name = "participatingCountry")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.COUNTRY)
     private List<String> participatingCountries;
@@ -223,7 +223,7 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "networks")
     @XmlElement(name = "network")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.PROVIDER_NETWORK)
     private List<String> networks;
@@ -232,7 +232,7 @@ public class Provider implements Identifiable {
      * The Catalogue this Provider is originally registered at.
      */
     @XmlElement
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Catalogue.class)
     private String catalogueId;
 
@@ -243,7 +243,7 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "esfriDomains")
     @XmlElement(name = "esfriDomain")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.PROVIDER_ESFRI_DOMAIN)
     private List<String> esfriDomains;
@@ -253,7 +253,7 @@ public class Provider implements Identifiable {
      * a) is a node of an ESFRI project, b) is an ESFRI project, c) is an ESFRI landmark, d) is not an ESFRI project or landmark.
      */
     @XmlElement
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.PROVIDER_ESFRI_TYPE)
     private String esfriType;
@@ -263,7 +263,7 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "merilScientificDomains")
     @XmlElement(name = "merilScientificDomain")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private List<ProviderMerilDomain> merilScientificDomains;
 
@@ -272,7 +272,7 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "areasOfActivity")
     @XmlElement(name = "areaOfActivity")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.PROVIDER_AREA_OF_ACTIVITY)
     private List<String> areasOfActivity;
@@ -282,7 +282,7 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "societalGrandChallenges")
     @XmlElement(name = "societalGrandChallenge")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.PROVIDER_SOCIETAL_GRAND_CHALLENGE)
     private List<String> societalGrandChallenges;
@@ -292,7 +292,7 @@ public class Provider implements Identifiable {
      */
     @XmlElementWrapper(name = "nationalRoadmaps")
     @XmlElement(name = "nationalRoadmap")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private List<String> nationalRoadmaps;
 
@@ -300,7 +300,7 @@ public class Provider implements Identifiable {
     // Extra needed fields
     @XmlElementWrapper(name = "users", required = true)
     @XmlElement(name = "user")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Private", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
     private List<User> users;
 

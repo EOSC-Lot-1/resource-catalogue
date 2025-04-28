@@ -13,19 +13,19 @@ import java.util.Objects;
 public class ServiceClassTier {
 
     @XmlElement(required = true, defaultValue = "3")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description="Public", requiredMode = Schema.RequiredMode.REQUIRED)
     private int level;
 
     @XmlElement
-    @Schema
+    @Schema(description = "Public")
     private String accessPolicy;
 
     @XmlElement
-    @Schema
+    @Schema(description = "Public")
     private String costModel;
 
     @XmlElement
-    @Schema
+    @Schema(description = "Public")
     private List<String> offerings;
 
     public ServiceClassTier() {

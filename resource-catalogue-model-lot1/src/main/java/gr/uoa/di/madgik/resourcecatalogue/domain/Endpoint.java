@@ -18,12 +18,12 @@ import java.util.Objects;
 public class Endpoint {
 	
     @XmlElement()
-    @Schema
+    @Schema(description = "Public")
     //@FieldValidation()
     private String name;
 
     @XmlElement()
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.ENDPOINT_TYPE)
     private String type;
@@ -31,13 +31,13 @@ public class Endpoint {
 
     @XmlElementWrapper(name = "monitoringServiceTypes")
     @XmlElement(name = "monitoringServiceType")
-    @Schema
+    @Schema(description = "Private")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.MONITORING_SERVICE_TYPE)
     private List<String> monitoringServiceTypes;
     
     @XmlElement()
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private URL url;
 

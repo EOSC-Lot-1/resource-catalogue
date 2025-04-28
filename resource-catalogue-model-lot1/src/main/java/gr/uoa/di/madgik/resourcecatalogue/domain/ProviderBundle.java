@@ -16,27 +16,33 @@ import java.util.Objects;
 public class ProviderBundle extends Bundle<Provider> {
 
     @XmlElement
+    @Schema(description = "Private")
     @VocabularyValidation(type = Vocabulary.Type.RESOURCE_STATUS)
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     private String status;
 
     @XmlElement
+    @Schema(description = "Private")
 //    @VocabularyValidation(type = Vocabulary.Type.TEMPLATE_STATE)
     private String templateStatus;
     
     @XmlElement()
+    @Schema(description = "Private")
     @FieldValidation(nullable = true)
     private Boolean resubmit;
     
     @XmlElement
+    @Schema(description = "Private")
     private String auditState;
     
     @XmlElement()
+    @Schema(description = "Private")
     @FieldValidation(nullable = true)
     private String resourceOrganisationGroupID;
 
     @XmlElementWrapper(name = "transferContactInformation")
     @XmlElement(name = "transferContactInformation")
+    @Schema(description = "Private")
     private List<ContactInfoTransfer> transferContactInformation;
 
     public ProviderBundle() {

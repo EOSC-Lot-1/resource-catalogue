@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class DatasourceBundle extends Bundle<Datasource> {
 
     @XmlElement
+    @Schema(description = "Private")
     @VocabularyValidation(type = Vocabulary.Type.RESOURCE_STATUS)
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     private String status;
@@ -21,27 +22,31 @@ public class DatasourceBundle extends Bundle<Datasource> {
      * Original OpenAIRE ID, if Datasource already exists in the OpenAIRE Catalogue
      */
     @XmlElement
+    @Schema(description = "Public")
     private String originalOpenAIREId;
 
     @XmlElement
+    @Schema(description = "Public")
     private boolean softwareRepository;
     
     @XmlElement()
+    @Schema(description = "Private")
     @FieldValidation(nullable = true)
     private Boolean resubmit;
     
     @XmlElement
-    @Schema
+    @Schema(description = "Private")
     @FieldValidation(nullable = true)
     private OAIPMHInfo oaiPmhInfo;
     
     @XmlElement()
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.DS_TYPE)
     private String datasourceType;
 
     @XmlElement()
+    @Schema(description = "Private")
     @FieldValidation(nullable = true)
 	private String resourceOrganisationGroupID;
     

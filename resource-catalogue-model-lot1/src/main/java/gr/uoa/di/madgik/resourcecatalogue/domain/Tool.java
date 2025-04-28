@@ -23,14 +23,14 @@ public class Tool implements Identifiable {
      * A persistent identifier, a unique reference to the Resource.
      */
     @XmlElement
-    @Schema(example = "(required on PUT only)")
+    @Schema(description = "Public", example = "(required on PUT only)")
     private String id;
 
     /**
      * The human-readable name of the learning resource.
      */
     @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
     private String name;
     
@@ -38,14 +38,14 @@ public class Tool implements Identifiable {
      * The name of the organisation that manages or delivers the resource, or that coordinates the Resource delivery in a federated scenario.
      */
     @XmlElement()
-    @Schema
+    @Schema(description = "Public")
     private String resourceOrganisation;
     
     /**
      * The pid of the provider that manages the resource.
      */
     @XmlElement()
-    @Schema
+    @Schema(description = "Public")
     private String resourceProvider;
     
     /**
@@ -53,7 +53,7 @@ public class Tool implements Identifiable {
      */
     @XmlElementWrapper(name = "relatedResources")
     @XmlElement(name = "relatedResource")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, containsResourceId = true)
     private List<String> relatedResources;
 
@@ -62,7 +62,7 @@ public class Tool implements Identifiable {
      * A brief synopsis about or description of the tool.
      */
     @XmlElement
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private String description;
 
@@ -71,7 +71,7 @@ public class Tool implements Identifiable {
      */
     @XmlElementWrapper(name = "keywords", required = true)
     @XmlElement(name = "keyword")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation()
     private List<String> keywords;
 
@@ -79,7 +79,7 @@ public class Tool implements Identifiable {
      * A license document that applies to this content, typically indicated by URL.
      */
     @XmlElement(required = true)
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation(containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.TOOL_LICENSE)
     private String license;
@@ -88,7 +88,7 @@ public class Tool implements Identifiable {
      * The version date for the most recently published or broadcast resource.
      */
     @XmlElement(required = true)
-    @Schema(example = "2020-01-01", required = true)
+    @Schema(description = "Public", example = "2020-01-01", required = true)
     @FieldValidation
     private Date versionDate;
 
@@ -99,7 +99,7 @@ public class Tool implements Identifiable {
      */
     @XmlElementWrapper(name = "targetInfrastructure", required = true)
     @XmlElement(name = "targetInfrastructure")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation(containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.TOOL_TARGET_INFRASTRUCTURE)
     private List<String> targetInfrastructure;
@@ -111,7 +111,7 @@ public class Tool implements Identifiable {
      */
     @XmlElementWrapper(name = "targetGroups")
     @XmlElement(name = "targetGroup")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.TARGET_USER)
     private List<String> targetGroups;
@@ -120,11 +120,11 @@ public class Tool implements Identifiable {
      * The first and last name of the user that is uploading the TOSCA template.
      */
     @XmlElement(name = "author")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
     private String author;
     
     @XmlElement
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private Boolean deprecated;
 
@@ -134,7 +134,7 @@ public class Tool implements Identifiable {
      */
     @XmlElementWrapper(name = "scientificDomain", required = true)
     @XmlElement(name = "scientificDomain")
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation()
     private List<ServiceProviderDomain> scientificDomains;
 
@@ -143,7 +143,7 @@ public class Tool implements Identifiable {
      * The URL to a webpage to ask more information from the Provider about this Resource.
      */
     @XmlElement
-    @Schema(example = "https://example.com")
+    @Schema(description = "Public", example = "https://example.com")
     @FieldValidation(nullable = true)
     private URL helpdeskPage;
     
@@ -152,7 +152,7 @@ public class Tool implements Identifiable {
      * The minimum credits estimation required to deploy this tool on the EOSC EU Node
      */
     @XmlElement
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private String creditCost;
     
@@ -169,7 +169,7 @@ public class Tool implements Identifiable {
      * Email of the Resource's main contact person/manager.
      */
     @XmlElement()
-    @Schema()
+    @Schema(description = "Private")
     @EmailValidation(nullable = true)
     private String email;
 

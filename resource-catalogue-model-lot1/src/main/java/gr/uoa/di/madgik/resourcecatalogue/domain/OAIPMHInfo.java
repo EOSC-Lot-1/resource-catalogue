@@ -18,45 +18,45 @@ import java.util.Objects;
 public class OAIPMHInfo {
 
 	@XmlElement()
-	@Schema
+	@Schema(description = "Public")
 	@FieldValidation(nullable = true)
 	private String protocol;
 
 	@XmlElement()
-	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
 	@FieldValidation()
 	private URL baseUrl;
 
 	@XmlElement()
-	@Schema
+	@Schema(description = "Public")
 	@FieldValidation(nullable = true)
 	private List<String> sets;
 	
 	@XmlElement()
-	@Schema
+	@Schema(description = "Public")
 	@FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
 	@VocabularyValidation(type = Vocabulary.Type.DS_OAI_FORMATS)
 	private String format;
 	
 	@XmlElement()
-	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
 	@FieldValidation(containsId = true, idClass = Vocabulary.class)
 	@VocabularyValidation(type = Vocabulary.Type.DS_OAI_COMPATIBILITY)
 	private String compatibility;
 	
 	@XmlElement
-	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
 	@FieldValidation()
 	private Boolean openAIRECompliance;
 	
     @XmlElement()
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation()
     private AlternativeIdentifier repositoryIdentifier;
     
     @XmlElementWrapper(name = "alternativeIdentifiers")
     @XmlElement(name = "alternativeIdentifier")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private List<AlternativeIdentifier> alternativeIdentifiers;
 

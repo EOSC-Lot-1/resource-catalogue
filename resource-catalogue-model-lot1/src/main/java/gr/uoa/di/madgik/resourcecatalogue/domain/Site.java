@@ -17,7 +17,7 @@ public class Site {
 
 
     @XmlElement()
-    @Schema
+    @Schema(description = "Public")
     //@FieldValidation()
     private String name;
     
@@ -26,7 +26,7 @@ public class Site {
      */
     @XmlElementWrapper(name = "endpoints")
     @XmlElement(name = "endpoints")
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation()
     private List<Endpoint> endpoints;
 

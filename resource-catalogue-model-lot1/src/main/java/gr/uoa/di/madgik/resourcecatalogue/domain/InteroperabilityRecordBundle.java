@@ -5,6 +5,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
 
@@ -13,18 +14,22 @@ import java.util.Objects;
 public class InteroperabilityRecordBundle extends Bundle<InteroperabilityRecord> {
 
 	@XmlElement
+    @Schema(description = "Private")
     @VocabularyValidation(type = Vocabulary.Type.RESOURCE_STATUS)
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     private String status;
     
     @XmlElement()
+    @Schema(description = "Private")
     @FieldValidation(nullable = true)
     private Boolean resubmit;
     
     @XmlElement
+    @Schema(description = "Private")
     private String auditState;
 
     @XmlElement
+    @Schema(description = "Private")
     @FieldValidation(nullable = true)
 	private String resourceOrganisationGroupID;
 

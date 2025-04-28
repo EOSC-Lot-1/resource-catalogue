@@ -2,6 +2,7 @@ package gr.uoa.di.madgik.resourcecatalogue.domain;
 
 import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
@@ -13,16 +14,20 @@ import java.net.URL;
 public class EOSCIFGuidelines {
 
     @XmlElement()
+    @Schema(description = "Public")
     private String pid;
 
     @XmlElement()
+    @Schema(description = "Public")
     private String label;
 
     @XmlElement()
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private URL url;
 
     @XmlElement()
+    @Schema(description = "Public")
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.SEMANTIC_RELATIONSHIP)
     private String semanticRelationship;

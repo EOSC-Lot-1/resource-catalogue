@@ -7,6 +7,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 //@Document
 @XmlType
@@ -14,17 +15,21 @@ import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
 public class ToolBundle extends Bundle<Tool> {
 	
 	@XmlElement
+    @Schema(description = "Private")
     @VocabularyValidation(type = Vocabulary.Type.RESOURCE_STATUS)
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     private String status;
     
     @XmlElement
+    @Schema(description = "Private")
     private ToolSecurity security;
     
     @XmlElement
+    @Schema(description = "Private")
     private boolean contributorProvided;
 
     @XmlElement
+    @Schema(description = "Private")
     @FieldValidation(nullable = true)
 	private String resourceOrganisationGroupID;
     
