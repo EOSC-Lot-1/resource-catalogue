@@ -140,7 +140,8 @@ public class FieldValidator {
         } else if (o == null) {
             throw new ValidationException(String.format(MANDATORY_FIELD, getCurrentLocation()));
         }
-        Pattern phonePattern = Pattern.compile("^(((\\+)|(00))\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$");
+        //Pattern phonePattern = Pattern.compile("^(((\\+)|(00))\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$");
+        Pattern phonePattern = Pattern.compile("^(((\\+)|(00))\\d{1,3}( )?)?(?=(?:.*\\d){6,})[\\d\\s.\\-()]{6,20}$");
         if (!phonePattern.matcher(o.toString()).matches()) {
             throw new ValidationException(String.format("The phone you provided [%s] is not valid. Found in field [%s]", o, getCurrentLocation()));
         }
