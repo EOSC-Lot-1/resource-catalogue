@@ -14,6 +14,7 @@ import java.util.Objects;
 
 @XmlType
 @XmlRootElement(namespace = "http://einfracentral.eu")
+@Schema(description = "Public")
 public class Datasource implements Identifiable {
 
     // Basic Information

@@ -16,6 +16,7 @@ import java.util.Objects;
 
 @XmlType
 @XmlRootElement(namespace = "http://einfracentral.eu")
+@Schema(description = "Public")
 public class TrainingResource implements Identifiable {
 
     // Basic Information
@@ -205,7 +206,7 @@ public class TrainingResource implements Identifiable {
      * Approximate or typical time it takes to work with or through the learning resource for the typical intended target audience.
      */
     @XmlElement
-    @Schema
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private String duration;
 

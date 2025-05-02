@@ -16,6 +16,7 @@ import java.util.Objects;
 
 @XmlType
 @XmlRootElement(namespace = "http://einfracentral.eu")
+@Schema(description = "Public")
 public class Tool implements Identifiable {
 
     // Basic Information
