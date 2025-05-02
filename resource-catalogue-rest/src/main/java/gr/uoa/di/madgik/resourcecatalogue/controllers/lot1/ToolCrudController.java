@@ -61,9 +61,6 @@ public class ToolCrudController extends ResourceCrudController<ToolBundle> {
         Paging<ToolBundle> toolsPaging = toolService.getAll(ff);
         List<ToolBundle> tools = toolsPaging.getResults();
         List<ToolBundle> filteredTools = toolService.getToolsByDateStatus(date, status, tools); // Use the return value
-        if (filteredTools.isEmpty()) {
-        	throw new ResourceNotFoundException("No tools found");
-        }
         int fromInt = Integer.parseInt(from);
         int toInt = Integer.parseInt(quantity) + Integer.parseInt(from);
         int sublistIndex = (toInt <= filteredTools.size()) ? toInt: filteredTools.size();

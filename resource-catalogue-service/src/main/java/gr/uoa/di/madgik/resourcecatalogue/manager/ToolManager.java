@@ -843,26 +843,23 @@ public class ToolManager extends ResourceManager<ToolBundle> implements ToolServ
     public List<ToolBundle> getToolsByDateStatus(String date, String status, List<ToolBundle> tools) {
         List<ToolBundle> ret = new ArrayList<>();
         long timestamp = (date != null) ? generateTimestampFromDate(date) : System.currentTimeMillis();
-        if (status == null) {
-        	// get all pending and approved tools before timestamp
-            for (ToolBundle toolBundle : tools) {
-                if ("rejected".equals(toolBundle.getStatus())|| (toolBundle.getSecurity()!= null 
-                		&& toolBundle.getSecurity().getLastCheck()!= null
-                		&& Long.parseLong(toolBundle.getSecurity().getLastCheck()) > timestamp)) {
-                    continue;
-                }
-                ret.add(toolBundle);
+        
+        for (ToolBundle toolBundle : tools) {
+            String statusVal = toolBundle.getStatus();
+            var sec = toolBundle.getSecurity();
+            String lastCheckStr = (sec != null) ? sec.getLastCheck() : null;
+            boolean isAfterTimestamp = lastCheckStr != null && Long.parseLong(lastCheckStr) > timestamp;
+
+            if (status == null) {
+                // Get all pending and approved tools before timestamp
+                if (!"approved".equals(statusVal) && !"pending".equals(statusVal)) continue;
+                if (isAfterTimestamp) continue;
+            } else {
+                // Get tools with the specified status before timestamp
+                if (!status.equals(statusVal) || isAfterTimestamp) continue;
             }
-        } else {
-            // get status specified tools before timestamp
-            for (ToolBundle toolBundle : tools) {
-                if (!status.equals(toolBundle.getStatus()) || (toolBundle.getSecurity()!= null 
-                		&& toolBundle.getSecurity().getLastCheck()!= null 
-                		&& Long.parseLong(toolBundle.getSecurity().getLastCheck()) > timestamp)) {
-                    continue;
-                }
-                ret.add(toolBundle);
-            }
+
+            ret.add(toolBundle);
         }
         return ret;
     }
