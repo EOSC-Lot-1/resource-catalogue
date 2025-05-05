@@ -156,7 +156,7 @@ public class DatasourceBundle extends Bundle<Datasource> {
         return datasourceType;
     }
 
-    public void setResubmit(String datasourceType) {
+    public void setDatasourceType(String datasourceType) {
         this.datasourceType = datasourceType;
     }
 
