@@ -134,6 +134,13 @@ public class VocabularyManager extends ResourceManager<Vocabulary> implements Vo
     }
 
     @Override
+    public void deleteBulk(List<Vocabulary> vocabularies, Authentication auth) {
+        for (Vocabulary vocabulary : vocabularies) {
+            delete(vocabulary);
+        }
+    }
+
+    @Override
     public void deleteAll(Authentication auth) {
         FacetFilter ff = new FacetFilter();
         ff.setQuantity(maxQuantity);

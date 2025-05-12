@@ -119,8 +119,8 @@ public class VocabularyController extends ResourceController<Vocabulary> {
 
     @DeleteMapping(path = "/deleteBulk", produces = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void deleteBulk(@Parameter(hidden = true) Authentication auth) {
-        vocabularyService.deleteAll(auth);
+    public void deleteBulk(@RequestBody List<Vocabulary> vocabularies, @Parameter(hidden = true) Authentication auth) {
+        vocabularyService.deleteBulk(vocabularies,auth);
     }
 
     @DeleteMapping(path = "/deleteByType/{type}", produces = {MediaType.APPLICATION_JSON_VALUE})
