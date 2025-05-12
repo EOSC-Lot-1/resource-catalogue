@@ -39,6 +39,11 @@ public class ProviderBundle extends Bundle<Provider> {
     @Schema(description = "Private")
     @FieldValidation(nullable = true)
     private String resourceOrganisationGroupID;
+    
+    @XmlElement
+    @Schema(description = "Public")
+    @FieldValidation(nullable = true)
+    private NodeInfo nodeInfo;
 
     @XmlElementWrapper(name = "transferContactInformation")
     @XmlElement(name = "transferContactInformation")
@@ -117,6 +122,14 @@ public class ProviderBundle extends Bundle<Provider> {
     public void setResourceOrganisationGroupID(String resourceOrganisationGroupID) {
         this.resourceOrganisationGroupID = resourceOrganisationGroupID;
     }
+
+    public NodeInfo getNodeInfo() {
+		return nodeInfo;
+	}
+
+	public void setNodeInfo(NodeInfo nodeInfo) {
+		this.nodeInfo = nodeInfo;
+	}
     
     public List<ContactInfoTransfer> getTransferContactInformation() {
         return transferContactInformation;

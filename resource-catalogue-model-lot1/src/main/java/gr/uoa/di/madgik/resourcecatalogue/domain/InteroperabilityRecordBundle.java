@@ -32,7 +32,12 @@ public class InteroperabilityRecordBundle extends Bundle<InteroperabilityRecord>
     @Schema(description = "Private")
     @FieldValidation(nullable = true)
 	private String resourceOrganisationGroupID;
-
+    
+    @XmlElement
+    @Schema(description = "Public")
+    @FieldValidation(nullable = true)
+	private String nodeId;
+    
     public InteroperabilityRecordBundle() {
     }
 
@@ -96,7 +101,15 @@ public class InteroperabilityRecordBundle extends Bundle<InteroperabilityRecord>
     public void setResourceOrganisationGroupID(String resourceOrganisationGroupID) {
         this.resourceOrganisationGroupID = resourceOrganisationGroupID;
     }
-    
+
+    public String getNodeId() {
+		return nodeId;
+	}
+
+	public void setNodeId(String nodeId) {
+		this.nodeId = nodeId;
+	}
+	
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

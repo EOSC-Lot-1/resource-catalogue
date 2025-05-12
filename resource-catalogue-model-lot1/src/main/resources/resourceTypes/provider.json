@@ -333,7 +333,15 @@
       "name": "legacy",
       "path": "$.legacy",
       "type": "java.lang.Boolean"
-    }
+    },
+	{
+	   "defaultValue": "false",
+	   "label": null,
+	   "multivalued": false,
+	   "name": "isNode",
+	   "path": "$.nodeInfo.isNode",
+	   "type": "java.lang.Boolean"
+	}
   ],
   "indexMapperClass": "gr.uoa.di.madgik.registry.index.DefaultIndexMapper",
   "aliases": [

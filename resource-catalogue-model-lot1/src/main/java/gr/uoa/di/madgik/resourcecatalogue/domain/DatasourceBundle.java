@@ -50,6 +50,11 @@ public class DatasourceBundle extends Bundle<Datasource> {
     @FieldValidation(nullable = true)
 	private String resourceOrganisationGroupID;
     
+    @XmlElement
+    @Schema(description = "Public")
+    @FieldValidation(nullable = true)
+	private String nodeId;
+    
     public DatasourceBundle() {
         // No arg constructor
     }
@@ -167,4 +172,12 @@ public class DatasourceBundle extends Bundle<Datasource> {
     public void setResourceOrganisationGroupID(String resourceOrganisationGroupID) {
         this.resourceOrganisationGroupID = resourceOrganisationGroupID;
     }
+    
+    public String getNodeId() {
+		return nodeId;
+	}
+
+	public void setNodeId(String nodeId) {
+		this.nodeId = nodeId;
+	}
 }

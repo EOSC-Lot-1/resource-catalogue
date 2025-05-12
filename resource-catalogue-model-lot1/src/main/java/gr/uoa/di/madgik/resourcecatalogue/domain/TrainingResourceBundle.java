@@ -33,7 +33,12 @@ public class TrainingResourceBundle extends Bundle<TrainingResource> {
     @Schema(description = "Private")
     @FieldValidation(nullable = true)
 	private String resourceOrganisationGroupID;
-
+    
+    @XmlElement
+    @Schema(description = "Public")
+    @FieldValidation(nullable = true)
+	private String nodeId;
+    
     public TrainingResourceBundle() {
         // No arg constructor
     }
@@ -99,6 +104,14 @@ public class TrainingResourceBundle extends Bundle<TrainingResource> {
         this.resourceOrganisationGroupID = resourceOrganisationGroupID;
     }
 
+    public String getNodeId() {
+		return nodeId;
+	}
+
+	public void setNodeId(String nodeId) {
+		this.nodeId = nodeId;
+	}
+	
     @Override
     public String toString() {
         return "TrainingResourceBundle{" +

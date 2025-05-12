@@ -50,6 +50,11 @@ public class ServiceBundle extends Bundle<Service> {
     @Schema(description = "Private")
     @FieldValidation(nullable = true)
 	private String resourceOrganisationGroupID;
+    
+    @XmlElement
+    @Schema(description = "Public")
+    @FieldValidation(nullable = true)
+	private String nodeId;
 
     public ServiceBundle() {
         // No arg constructor
@@ -139,6 +144,14 @@ public class ServiceBundle extends Bundle<Service> {
     public void setResourceOrganisationGroupID(String resourceOrganisationGroupID) {
         this.resourceOrganisationGroupID = resourceOrganisationGroupID;
     }
+    
+    public String getNodeId() {
+		return nodeId;
+	}
+
+	public void setNodeId(String nodeId) {
+		this.nodeId = nodeId;
+	}
 
     @Override
     public String toString() {
