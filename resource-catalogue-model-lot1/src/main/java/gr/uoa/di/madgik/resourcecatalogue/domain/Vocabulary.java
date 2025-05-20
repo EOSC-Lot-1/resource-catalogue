@@ -81,6 +81,7 @@ public class Vocabulary implements Identifiable {
         MARKETPLACE_LOCATION("Marketplace location"),
         ENDPOINT_TYPE("Endpoint type"),
         INTEGRATION_STATUS("Integration status"),
+        ENROLLMENT_STATUS("Enrollment status"),
         MONITORING_SERVICE_TYPE("Monitoring service type"),
         // States
         CATALOGUE_STATE("Catalogue state"),
@@ -125,7 +126,8 @@ public class Vocabulary implements Identifiable {
         CT_PROTOCOL("Configuration Template protocol"),
         CT_COMPATIBILITY("Configuration Template compatibility"),
     	// Other
-    	RESOURCE_STATUS("Resource status");
+    	RESOURCE_STATUS("Resource status"),
+    	NODE_TYPE("Node type");
         private final String type;
 
         Type(final String type) {

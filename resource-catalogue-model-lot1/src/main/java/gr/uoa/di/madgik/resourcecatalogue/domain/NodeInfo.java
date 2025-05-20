@@ -1,6 +1,7 @@
 package gr.uoa.di.madgik.resourcecatalogue.domain;
 
 import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
+import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -17,22 +18,29 @@ public class NodeInfo {
 
 
 	@XmlElement()
-	@Schema(description = "Public")
+	@Schema(description = "Private")
 	@FieldValidation(nullable = true)
-	private String openAIRE_community_tag;
+	private String openAIRECommunityTag;
+	
+	@XmlElement()
+    @Schema(description = "Private")
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
+    @VocabularyValidation(type = Vocabulary.Type.NODE_TYPE)
+    private String nodeType;
 	
     @XmlElement
     @Schema(description = "Private")
     @FieldValidation(nullable = true)
-    private EnrollementSteps enrollementSteps;
+    private EnrollmentSteps enrollmentSteps;
     
 	public NodeInfo() {	
 	}
     
-	public NodeInfo(Boolean isNode, String openAIRE_community_tag, EnrollementSteps enrollementSteps) {
+	public NodeInfo(Boolean isNode, String openAIRECommunityTag, String nodeType, EnrollmentSteps enrollmentSteps) {
 		this.isNode = isNode;
-		this.openAIRE_community_tag = openAIRE_community_tag;
-		this.enrollementSteps = enrollementSteps;
+		this.openAIRECommunityTag = openAIRECommunityTag;
+		this.nodeType = nodeType;
+		this.enrollmentSteps = enrollmentSteps;
 	}
 
 	public Boolean getIsNode() {
@@ -43,19 +51,27 @@ public class NodeInfo {
 		this.isNode = isNode;
 	}
 
-	public String getOpenAIRE_community_tag() {
-		return openAIRE_community_tag;
+	public String getOpenAIRECommunityTag() {
+		return openAIRECommunityTag;
 	}
 
-	public void setOpenAIRE_community_tag(String openAIRE_community_tag) {
-		this.openAIRE_community_tag = openAIRE_community_tag;
+	public void setOpenAIRECommunityTag(String openAIRECommunityTag) {
+		this.openAIRECommunityTag = openAIRECommunityTag;
+	}
+	
+	public String getNodeType() {
+		return nodeType;
 	}
 
-	public EnrollementSteps getEnrollementSteps() {
-		return enrollementSteps;
+	public void setNodeType(String nodeType) {
+		this.nodeType = nodeType;
 	}
 
-	public void setEnrollementSteps(EnrollementSteps enrollementSteps) {
-		this.enrollementSteps = enrollementSteps;
+	public EnrollmentSteps getEnrollmentSteps() {
+		return enrollmentSteps;
+	}
+
+	public void setEnrollmentSteps(EnrollmentSteps enrollmentSteps) {
+		this.enrollmentSteps = enrollmentSteps;
 	}
 }

@@ -35,7 +35,7 @@ public class DatasourceBundle extends Bundle<Datasource> {
     private Boolean resubmit;
     
     @XmlElement
-    @Schema(description = "Private")
+    @Schema(description = "Public")
     @FieldValidation(nullable = true)
     private OAIPMHInfo oaiPmhInfo;
     
