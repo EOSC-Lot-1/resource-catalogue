@@ -27,7 +27,7 @@
         <profile>
             <id>beyond</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <dependencies>
                 <dependency>
@@ -81,7 +81,7 @@
         <profile>
             <id>lot1</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <dependencies>
                 <dependency>
@@ -371,6 +371,25 @@
                     </includes>
                 </configuration>
             </plugin>
+            <plugin>
+				  <groupId>org.springdoc</groupId>
+				  <artifactId>springdoc-openapi-maven-plugin</artifactId>
+				  <version>1.5</version>
+				  <executions>
+				    <execution>
+				      <id>integration-test</id>
+				      <goals>
+				        <goal>generate</goal>
+				      </goals>
+				    </execution>
+				  </executions>
+				  <configuration>
+					<apiDocsUrl>http://localhost:8080/resource-catalogue/api-docs/catalogue</apiDocsUrl>
+				    <outputFileName>openapi.json</outputFileName>
+				    <outputDir>${project.basedir}/../docs</outputDir>
+				    <failOnError>true</failOnError>
+				  </configuration>
+				</plugin>
         </plugins>
     </build>
 </project>
