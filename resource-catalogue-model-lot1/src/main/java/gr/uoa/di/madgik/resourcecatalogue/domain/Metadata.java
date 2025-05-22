@@ -9,26 +9,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 @XmlType
 @XmlRootElement(namespace = "http://einfracentral.eu")
 public class Metadata {
 
+	@Schema(description = "Private")
     @XmlElement(defaultValue = "null")
     private String registeredBy;
 
+	@Schema(description = "Public")
     @XmlElement(defaultValue = "null")
     private String registeredAt;
 
+    @Schema(description = "Private")
     @XmlElement(defaultValue = "null")
     private String modifiedBy;
 
+    @Schema(description = "Private")
     @XmlElement(defaultValue = "null")
     private String modifiedAt;
 
+    @Schema(description = "Private")
     @XmlElementWrapper(name = "terms")
     @XmlElement(name = "term")
     private List<String> terms;
 
+    @Schema(description = "Private")
     @XmlElement(defaultValue = "false")
     private boolean published = false;
 

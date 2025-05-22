@@ -20,7 +20,7 @@ public abstract class Bundle<T extends Identifiable> implements Identifiable {
     @FieldValidation
     private T payload;
 
-    @Schema(description = "Private")
+    @Schema(description = "Public")
     @XmlElement(name = "metadata")
     private Metadata metadata;
 

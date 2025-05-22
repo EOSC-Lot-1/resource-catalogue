@@ -4420,27 +4420,33 @@
         "properties": {
           "registeredBy": {
             "type": "string",
+            "description": "Private",
             "default": "null"
           },
           "registeredAt": {
             "type": "string",
+            "description": "Public",
             "default": "null"
           },
           "modifiedBy": {
             "type": "string",
+            "description": "Private",
             "default": "null"
           },
           "modifiedAt": {
             "type": "string",
+            "description": "Private",
             "default": "null"
           },
           "terms": {
             "type": "array",
+            "description": "Private",
             "xml": {
               "wrapped": true
             },
             "items": {
               "type": "string",
+              "description": "Private",
               "xml": {
                 "name": "term"
               }
@@ -4448,10 +4454,11 @@
           },
           "published": {
             "type": "boolean",
+            "description": "Private",
             "default": false
           }
         },
-        "description": "Private"
+        "description": "Public"
       },
       "MigrationStatus": {
         "type": "object",
