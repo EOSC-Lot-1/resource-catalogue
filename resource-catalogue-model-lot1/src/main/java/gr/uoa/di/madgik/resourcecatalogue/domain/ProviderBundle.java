@@ -152,4 +152,12 @@ public class ProviderBundle extends Bundle<Provider> {
     public int hashCode() {
         return Objects.hash(super.hashCode(), status, templateStatus, auditState, transferContactInformation);
     }
+    
+    @Override
+    public String toString() {
+        return "ProviderBundle{" +
+                "status='" + status + '\'' +
+                ", nodeInfo=" + nodeInfo + 
+                "} " + super.toString();
+    }
 }

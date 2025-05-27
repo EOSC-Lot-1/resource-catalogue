@@ -47,6 +47,7 @@ public class ResourceIdCreator implements IdCreator {
             case "training_resource", "draft_training_resource" ->
                     resourceProperties.get(ResourceTypes.TRAINING_RESOURCE).getIdPrefix();
             case "provider", "draft_provider" -> resourceProperties.get(ResourceTypes.PROVIDER).getIdPrefix();
+            case "node", "draft_node" -> resourceProperties.get(ResourceTypes.NODE).getIdPrefix();
             case "interoperability_record", "draft_interoperability_record" ->
                     resourceProperties.get(ResourceTypes.INTEROPERABILITY_RECORD).getIdPrefix();
             // non PID related
