@@ -30,6 +30,9 @@ public class PidManager implements PidService {
     public Bundle<?> get(String prefix, String suffix) {
         String pid = prefix + "/" + suffix;
         String resourceType = catalogueProperties.getResourceTypeFromPrefix(prefix);
+        if (resourceType.equals("node")) {
+            resourceType = "provider";
+        }
         if (resourceType != null) {
             FacetFilter ff = new FacetFilter();
             ff.setQuantity(10000);
