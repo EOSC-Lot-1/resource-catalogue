@@ -41,3 +41,12 @@ hs_err_pid*
 /data
 /.data
 
+# Visual Studio Code
+.vscode
+.factorypath
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
