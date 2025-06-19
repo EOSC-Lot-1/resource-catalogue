@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <!--
+        This is a CPE suppression file for the maven dependency check plugin.
+        Each CPE that is found by error (false positive) needs to be suppressed for a specific jar using its' GAV.
+        See https://jeremylong.github.io/DependencyCheck/general/suppression.html
+     -->
+     <!--
+     <suppress>
+        <notes><![CDATA[file name: guava-19.0.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.google\.guava/guava@.*$</packageUrl>
+        <cve>CVE-2023-2976</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: guava-19.0.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.google\.guava/guava@.*$</packageUrl>
+        <cve>CVE-2018-10237</cve>
+    </suppress>
+    -->
+
+    <!-- Elastic -->
+    <suppress>
+        <notes><![CDATA[file name: cql-elasticsearch-1.1.1.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.xbib/cql-elasticsearch@.*$</packageUrl>
+        <cve>CVE-2015-3337</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: cql-elasticsearch-1.1.1.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.xbib/cql-elasticsearch@.*$</packageUrl>
+        <cve>CVE-2014-3120</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: cql-elasticsearch-1.1.1.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.xbib/cql-elasticsearch@.*$</packageUrl>
+        <cve>CVE-2015-5531</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: cql-elasticsearch-1.1.1.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.xbib/cql-elasticsearch@.*$</packageUrl>
+        <cve>CVE-2014-6439</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: elasticsearch-7.17.28.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.elasticsearch/elasticsearch@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-23446</vulnerabilityName>
+    </suppress>
+</suppressions>

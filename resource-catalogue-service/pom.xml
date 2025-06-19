@@ -95,7 +95,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
-                        <version>3.5.0</version>
+                        <version>3.8.1</version>
                         <executions>
                             <execution>
                                 <id>copy-lot1-resources</id>
@@ -219,10 +219,12 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
         </dependency>
+        -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
@@ -260,18 +262,18 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
-            <version>0.11.2</version>
+            <version>0.12.6</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
-            <version>0.11.2</version>
+            <version>0.12.6</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
-            <version>0.11.2</version>
+            <version>0.12.6</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -288,7 +290,7 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk18on</artifactId>
-            <version>1.78</version>
+            <version>1.81</version>
         </dependency>
 
         <!-- Test Dependencies -->
@@ -390,6 +392,31 @@
 				    <failOnError>true</failOnError>
 				  </configuration>
 				</plugin>
+
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${owasp-dependency-check-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+					<failBuildOnCVSS>3.9</failBuildOnCVSS>
+					<suppressionFiles>
+						<suppressionFile>${project.parent.basedir}/dependency-cpe-suppression.xml</suppressionFile>
+					</suppressionFiles>
+                    <formats>
+                        <format>JSON</format>
+                        <format>HTML</format>
+                    </formats>
+                    <prettyPrint>true</prettyPrint>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 </project>

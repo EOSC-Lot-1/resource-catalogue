@@ -18,6 +18,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.elasticsearch.plugin</groupId>
+                <artifactId>lang-mustache-client</artifactId>
+                <version>7.17.28</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>7.17.28</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>gr.uoa.di.madgik</groupId>
@@ -32,4 +46,32 @@
             <artifactId>postgresql</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${owasp-dependency-check-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+					<failBuildOnCVSS>3.9</failBuildOnCVSS>
+					<suppressionFiles>
+						<suppressionFile>${project.parent.basedir}/dependency-cpe-suppression.xml</suppressionFile>
+					</suppressionFiles>
+                    <formats>
+                        <format>JSON</format>
+                        <format>HTML</format>
+                    </formats>
+                    <prettyPrint>true</prettyPrint>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
