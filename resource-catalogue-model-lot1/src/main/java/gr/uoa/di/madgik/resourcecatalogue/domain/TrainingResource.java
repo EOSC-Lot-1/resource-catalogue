@@ -248,8 +248,8 @@ public class TrainingResource implements Identifiable {
     /**
      * Training Resource's Main Contact Owner info.
      */
-    @XmlElement
-    @Schema(description = "Private")
+    @XmlElement(required = true)
+    @Schema(description = "Private", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
     private ServiceMainContact contact;
 

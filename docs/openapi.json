@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.1.0",
   "info": {
     "title": "resource-catalogue API",
     "description": "A single platform for providers to onboard their organization, register and manage their resources.",
@@ -7,7 +7,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0"
     },
-    "version": "@project.version@"
+    "version": "v5.0.0+u117"
   },
   "externalDocs": {
     "description": "resource-catalogue Documentation",
@@ -110,12 +110,12 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/xml": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PagingVocabulary"
                 }
               },
-              "application/json": {
+              "application/xml": {
                 "schema": {
                   "$ref": "#/components/schemas/PagingVocabulary"
                 }
@@ -1548,12 +1548,12 @@
         "operationId": "validate",
         "requestBody": {
           "content": {
-            "application/xml": {
+            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Vocabulary"
               }
             },
-            "application/json": {
+            "application/xml": {
               "schema": {
                 "$ref": "#/components/schemas/Vocabulary"
               }
@@ -1565,12 +1565,12 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/xml": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Vocabulary"
                 }
               },
-              "application/json": {
+              "application/xml": {
                 "schema": {
                   "$ref": "#/components/schemas/Vocabulary"
                 }
@@ -1953,7 +1953,7 @@
           "pids"
         ],
         "summary": "Returns the Resource with the given PID.",
-        "operationId": "get_6",
+        "operationId": "get",
         "parameters": [
           {
             "name": "prefix",
@@ -1978,12 +1978,12 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/xml": {
+              "application/json": {
                 "schema": {
                   "type": "object"
                 }
               },
-              "application/json": {
+              "application/xml": {
                 "schema": {
                   "type": "object"
                 }
@@ -2034,12 +2034,12 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/xml": {
+              "application/json": {
                 "schema": {
                   "type": "object"
                 }
               },
-              "application/json": {
+              "application/xml": {
                 "schema": {
                   "type": "object"
                 }
@@ -2310,7 +2310,7 @@
           "vocabulary"
         ],
         "summary": "Get by ID",
-        "operationId": "get",
+        "operationId": "get_1",
         "parameters": [
           {
             "name": "id",
@@ -2485,7 +2485,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/xml": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2493,7 +2493,7 @@
                   }
                 }
               },
-              "application/json": {
+              "application/xml": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2722,7 +2722,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/xml": {
+              "application/json": {
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
@@ -2733,7 +2733,7 @@
                   }
                 }
               },
-              "application/json": {
+              "application/xml": {
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
@@ -2754,7 +2754,7 @@
         "tags": [
           "training resources"
         ],
-        "operationId": "get_1",
+        "operationId": "get_2",
         "parameters": [
           {
             "name": "id",
@@ -2884,7 +2884,7 @@
         "tags": [
           "tools"
         ],
-        "operationId": "get_2",
+        "operationId": "get_3",
         "parameters": [
           {
             "name": "id",
@@ -3047,7 +3047,7 @@
         "tags": [
           "services"
         ],
-        "operationId": "get_3",
+        "operationId": "get_4",
         "parameters": [
           {
             "name": "id",
@@ -3177,7 +3177,7 @@
         "tags": [
           "resource interoperability records"
         ],
-        "operationId": "get_4",
+        "operationId": "get_5",
         "parameters": [
           {
             "name": "id",
@@ -3307,7 +3307,7 @@
         "tags": [
           "providers"
         ],
-        "operationId": "get_5",
+        "operationId": "get_6",
         "parameters": [
           {
             "name": "id",
@@ -4304,7 +4304,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/xml": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -4312,7 +4312,7 @@
                   }
                 }
               },
-              "application/json": {
+              "application/xml": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -4329,11 +4329,6 @@
   "components": {
     "schemas": {
       "Vocabulary": {
-        "required": [
-          "id",
-          "name",
-          "type"
-        ],
         "type": "object",
         "properties": {
           "id": {
@@ -4358,7 +4353,12 @@
               "type": "string"
             }
           }
-        }
+        },
+        "required": [
+          "id",
+          "name",
+          "type"
+        ]
       },
       "AlternativeIdentifier": {
         "type": "object",
@@ -4369,8 +4369,7 @@
           "value": {
             "type": "string"
           }
-        },
-        "description": "Public"
+        }
       },
       "Identifiers": {
         "type": "object",
@@ -4378,8 +4377,7 @@
           "originalId": {
             "type": "string"
           }
-        },
-        "description": "Private"
+        }
       },
       "LoggingInfo": {
         "type": "object",
@@ -4412,67 +4410,64 @@
             "type": "string",
             "default": "null"
           }
-        },
-        "description": "Private"
+        }
       },
       "Metadata": {
         "type": "object",
         "properties": {
           "registeredBy": {
             "type": "string",
-            "description": "Private",
-            "default": "null"
+            "default": "null",
+            "description": "Private"
           },
           "registeredAt": {
             "type": "string",
-            "description": "Public",
-            "default": "null"
+            "default": "null",
+            "description": "Public"
           },
           "modifiedBy": {
             "type": "string",
-            "description": "Private",
-            "default": "null"
+            "default": "null",
+            "description": "Private"
           },
           "modifiedAt": {
             "type": "string",
-            "description": "Private",
-            "default": "null"
+            "default": "null",
+            "description": "Private"
           },
           "terms": {
             "type": "array",
             "description": "Private",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Private",
               "xml": {
                 "name": "term"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "published": {
             "type": "boolean",
-            "description": "Private",
-            "default": false
+            "default": false,
+            "description": "Private"
           }
-        },
-        "description": "Public"
+        }
       },
       "MigrationStatus": {
         "type": "object",
         "properties": {
           "comments": {
             "type": "array",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
               "xml": {
                 "name": "comment"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "modified": {
@@ -4491,15 +4486,9 @@
             "type": "string",
             "default": "null"
           }
-        },
-        "description": "Private"
+        }
       },
       "ServiceMainContact": {
-        "required": [
-          "email",
-          "firstName",
-          "lastName"
-        ],
         "type": "object",
         "properties": {
           "firstName": {
@@ -4521,13 +4510,13 @@
             "type": "string"
           }
         },
-        "description": "Private"
+        "required": [
+          "email",
+          "firstName",
+          "lastName"
+        ]
       },
       "ServiceProviderDomain": {
-        "required": [
-          "scientificDomain",
-          "scientificSubdomain"
-        ],
         "type": "object",
         "properties": {
           "scientificDomain": {
@@ -4537,26 +4526,14 @@
             "type": "string"
           }
         },
-        "description": "Public"
+        "required": [
+          "scientificDomain",
+          "scientificSubdomain"
+        ]
       },
       "TrainingResource": {
-        "required": [
-          "accessRights",
-          "authors",
-          "description",
-          "expertiseLevel",
-          "geographicalAvailabilities",
-          "languages",
-          "learningOutcomes",
-          "license",
-          "resourceOrganisation",
-          "scientificDomains",
-          "targetGroups",
-          "title",
-          "url",
-          "versionDate"
-        ],
         "type": "object",
+        "description": "Public",
         "properties": {
           "id": {
             "type": "string",
@@ -4573,35 +4550,33 @@
           "resourceProviders": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "resourceProvider"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "authors": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "author"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "url": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "urlType": {
@@ -4611,25 +4586,24 @@
           "eoscRelatedServices": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "eoscRelatedService"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "alternativeIdentifiers": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/AlternativeIdentifier"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "description": {
@@ -4639,15 +4613,14 @@
           "keywords": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "keyword"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "license": {
@@ -4660,49 +4633,47 @@
           },
           "versionDate": {
             "type": "string",
+            "format": "date-time",
             "description": "Public",
-            "format": "date-time"
+            "example": "2020-01-01"
           },
           "targetGroups": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "targetGroup"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "learningResourceTypes": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "learningResourceType"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "learningOutcomes": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "learningOutcome"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "expertiseLevel": {
@@ -4712,29 +4683,27 @@
           "contentResourceTypes": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "contentResourceType"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "qualifications": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "qualification"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "duration": {
@@ -4744,56 +4713,72 @@
           "languages": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "language"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "geographicalAvailabilities": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "geographicalAvailability"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "scientificDomains": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/ServiceProviderDomain"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "contact": {
-            "$ref": "#/components/schemas/ServiceMainContact"
+            "$ref": "#/components/schemas/ServiceMainContact",
+            "description": "Private"
           },
           "catalogueId": {
             "type": "string",
             "description": "Public"
           }
         },
-        "description": "Public"
+        "required": [
+          "accessRights",
+          "authors",
+          "contact",
+          "description",
+          "expertiseLevel",
+          "geographicalAvailabilities",
+          "languages",
+          "learningOutcomes",
+          "license",
+          "resourceOrganisation",
+          "scientificDomains",
+          "targetGroups",
+          "title",
+          "url",
+          "versionDate"
+        ]
       },
       "TrainingResourceBundle": {
         "type": "object",
         "properties": {
           "metadata": {
-            "$ref": "#/components/schemas/Metadata"
+            "$ref": "#/components/schemas/Metadata",
+            "description": "Public"
           },
           "active": {
             "type": "boolean",
@@ -4812,10 +4797,12 @@
             "description": "Private"
           },
           "identifiers": {
-            "$ref": "#/components/schemas/Identifiers"
+            "$ref": "#/components/schemas/Identifiers",
+            "description": "Private"
           },
           "migrationStatus": {
-            "$ref": "#/components/schemas/MigrationStatus"
+            "$ref": "#/components/schemas/MigrationStatus",
+            "description": "Private"
           },
           "loggingInfo": {
             "type": "array",
@@ -4825,13 +4812,16 @@
             }
           },
           "latestAuditInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestOnboardingInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestUpdateInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "internalComments": {
             "type": "string",
@@ -4867,16 +4857,8 @@
         }
       },
       "Tool": {
-        "required": [
-          "author",
-          "keywords",
-          "license",
-          "name",
-          "scientificDomains",
-          "targetInfrastructure",
-          "versionDate"
-        ],
         "type": "object",
+        "description": "Public",
         "properties": {
           "id": {
             "type": "string",
@@ -4897,15 +4879,14 @@
           "relatedResources": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "relatedResource"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "description": {
@@ -4915,15 +4896,14 @@
           "keywords": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "keyword"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "license": {
@@ -4932,35 +4912,34 @@
           },
           "versionDate": {
             "type": "string",
+            "format": "date-time",
             "description": "Public",
-            "format": "date-time"
+            "example": "2020-01-01"
           },
           "targetInfrastructure": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "targetInfrastructure"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "targetGroups": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "targetGroup"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "author": {
@@ -4974,18 +4953,18 @@
           "scientificDomains": {
             "type": "array",
             "description": "Public",
+            "items": {
+              "$ref": "#/components/schemas/ServiceProviderDomain"
+            },
             "xml": {
               "name": "scientificDomain",
               "wrapped": true
-            },
-            "items": {
-              "$ref": "#/components/schemas/ServiceProviderDomain"
             }
           },
           "helpdeskPage": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "creditCost": {
@@ -4997,13 +4976,22 @@
             "description": "Private"
           }
         },
-        "description": "Public"
+        "required": [
+          "author",
+          "keywords",
+          "license",
+          "name",
+          "scientificDomains",
+          "targetInfrastructure",
+          "versionDate"
+        ]
       },
       "ToolBundle": {
         "type": "object",
         "properties": {
           "metadata": {
-            "$ref": "#/components/schemas/Metadata"
+            "$ref": "#/components/schemas/Metadata",
+            "description": "Public"
           },
           "active": {
             "type": "boolean",
@@ -5022,10 +5010,12 @@
             "description": "Private"
           },
           "identifiers": {
-            "$ref": "#/components/schemas/Identifiers"
+            "$ref": "#/components/schemas/Identifiers",
+            "description": "Private"
           },
           "migrationStatus": {
-            "$ref": "#/components/schemas/MigrationStatus"
+            "$ref": "#/components/schemas/MigrationStatus",
+            "description": "Private"
           },
           "loggingInfo": {
             "type": "array",
@@ -5035,13 +5025,16 @@
             }
           },
           "latestAuditInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestOnboardingInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestUpdateInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "internalComments": {
             "type": "string",
@@ -5052,7 +5045,8 @@
             "description": "Private"
           },
           "security": {
-            "$ref": "#/components/schemas/ToolSecurity"
+            "$ref": "#/components/schemas/ToolSecurity",
+            "description": "Private"
           },
           "contributorProvided": {
             "type": "boolean",
@@ -5094,8 +5088,7 @@
           "reviewed": {
             "type": "boolean"
           }
-        },
-        "description": "Private"
+        }
       },
       "EOSCIFGuidelines": {
         "type": "object",
@@ -5110,15 +5103,14 @@
           },
           "url": {
             "type": "string",
-            "description": "Public",
-            "format": "url"
+            "format": "url",
+            "description": "Public"
           },
           "semanticRelationship": {
             "type": "string",
             "description": "Public"
           }
-        },
-        "description": "Public"
+        }
       },
       "Endpoint": {
         "type": "object",
@@ -5134,29 +5126,24 @@
           "monitoringServiceTypes": {
             "type": "array",
             "description": "Private",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Private",
               "xml": {
                 "name": "monitoringServiceType"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "url": {
             "type": "string",
-            "description": "Public",
-            "format": "url"
+            "format": "url",
+            "description": "Public"
           }
-        },
-        "description": "Public"
+        }
       },
       "MultimediaPair": {
-        "required": [
-          "multimediaURL"
-        ],
         "type": "object",
         "properties": {
           "multimediaURL": {
@@ -5167,7 +5154,9 @@
             "type": "string"
           }
         },
-        "description": "Public"
+        "required": [
+          "multimediaURL"
+        ]
       },
       "OnboardingIntegration": {
         "type": "object",
@@ -5184,8 +5173,7 @@
           "omsIntegration": {
             "type": "string"
           }
-        },
-        "description": "Private"
+        }
       },
       "ResourceExtras": {
         "type": "object",
@@ -5193,29 +5181,18 @@
           "eoscIFGuidelines": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/EOSCIFGuidelines"
+            },
+            "xml": {
+              "wrapped": true
             }
           }
-        },
-        "description": "Public"
+        }
       },
       "Service": {
-        "required": [
-          "categories",
-          "description",
-          "languageAvailabilities",
-          "name",
-          "orderType",
-          "scientificDomains",
-          "targetUsers",
-          "trl",
-          "webpage"
-        ],
         "type": "object",
+        "description": "Public",
         "properties": {
           "id": {
             "type": "string",
@@ -5236,31 +5213,30 @@
           "resourceProviders": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "resourceProvider"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "webpage": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "alternativeIdentifiers": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/AlternativeIdentifier"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "description": {
@@ -5273,103 +5249,99 @@
           },
           "logo": {
             "type": "string",
-            "description": "Public",
-            "format": "url"
+            "format": "url",
+            "description": "Public"
           },
           "multimedia": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/MultimediaPair"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "useCases": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/UseCasesPair"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "scientificDomains": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/ServiceProviderDomain"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "categories": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/ServiceCategory"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "targetUsers": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "targetUser"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "accessTypes": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "accessType"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "accessModes": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "accessMode"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "tags": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "tag"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "horizontalService": {
@@ -5379,87 +5351,84 @@
           "serviceCategories": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "serviceCategory"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "marketplaceLocations": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "marketplaceLocation"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "classTier": {
-            "$ref": "#/components/schemas/ServiceClassTier"
+            "$ref": "#/components/schemas/ServiceClassTier",
+            "description": "Public"
           },
           "geographicalAvailabilities": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "geographicalAvailability"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "languageAvailabilities": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "languageAvailability"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "resourceGeographicLocations": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "resourceGeographicLocation"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "mainContact": {
-            "$ref": "#/components/schemas/ServiceMainContact"
+            "$ref": "#/components/schemas/ServiceMainContact",
+            "description": "Private"
           },
           "publicContacts": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/ServicePublicContact"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "helpdeskEmail": {
@@ -5481,43 +5450,40 @@
           "certifications": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "certification"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "standards": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "standard"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "openSourceTechnologies": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "openSourceTechnology"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "version": {
@@ -5526,60 +5492,57 @@
           },
           "lastUpdate": {
             "type": "string",
+            "format": "date-time",
             "description": "Private",
-            "format": "date-time"
+            "example": "2020-01-01"
           },
           "changeLog": {
             "type": "array",
             "description": "Private",
+            "items": {
+              "type": "string"
+            },
             "xml": {
               "wrapped": true
-            },
-            "items": {
-              "type": "string",
-              "description": "Private"
             }
           },
           "requiredResources": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "requiredResource"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "relatedResources": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "relatedResource"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "relatedPlatforms": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "relatedPlatform"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "catalogueId": {
@@ -5589,94 +5552,91 @@
           "fundingBody": {
             "type": "array",
             "description": "Public",
+            "items": {
+              "type": "string"
+            },
             "xml": {
               "wrapped": true
-            },
-            "items": {
-              "type": "string",
-              "description": "Public"
             }
           },
           "fundingPrograms": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "fundingProgram"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "grantProjectNames": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "grantProjectName"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "helpdeskPage": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "userManual": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "termsOfUse": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "privacyPolicy": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "accessPolicy": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "resourceLevel": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "trainingInformation": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "statusMonitoring": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "maintenance": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "orderType": {
@@ -5685,30 +5645,42 @@
           },
           "order": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "paymentModel": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "pricing": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           }
         },
-        "description": "Public"
+        "required": [
+          "categories",
+          "description",
+          "languageAvailabilities",
+          "mainContact",
+          "name",
+          "orderType",
+          "scientificDomains",
+          "targetUsers",
+          "trl",
+          "webpage"
+        ]
       },
       "ServiceBundle": {
         "type": "object",
         "properties": {
           "metadata": {
-            "$ref": "#/components/schemas/Metadata"
+            "$ref": "#/components/schemas/Metadata",
+            "description": "Public"
           },
           "active": {
             "type": "boolean",
@@ -5727,10 +5699,12 @@
             "description": "Private"
           },
           "identifiers": {
-            "$ref": "#/components/schemas/Identifiers"
+            "$ref": "#/components/schemas/Identifiers",
+            "description": "Private"
           },
           "migrationStatus": {
-            "$ref": "#/components/schemas/MigrationStatus"
+            "$ref": "#/components/schemas/MigrationStatus",
+            "description": "Private"
           },
           "loggingInfo": {
             "type": "array",
@@ -5740,13 +5714,16 @@
             }
           },
           "latestAuditInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestOnboardingInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestUpdateInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "internalComments": {
             "type": "string",
@@ -5757,16 +5734,17 @@
             "description": "Private"
           },
           "resourceExtras": {
-            "$ref": "#/components/schemas/ResourceExtras"
+            "$ref": "#/components/schemas/ResourceExtras",
+            "description": "Public"
           },
           "sites": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/Site"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "resubmit": {
@@ -5778,7 +5756,8 @@
             "description": "Private"
           },
           "onboardingIntegration": {
-            "$ref": "#/components/schemas/OnboardingIntegration"
+            "$ref": "#/components/schemas/OnboardingIntegration",
+            "description": "Private"
           },
           "resourceOrganisationGroupID": {
             "type": "string",
@@ -5798,10 +5777,6 @@
         }
       },
       "ServiceCategory": {
-        "required": [
-          "category",
-          "subcategory"
-        ],
         "type": "object",
         "properties": {
           "category": {
@@ -5813,19 +5788,19 @@
             "description": "Public"
           }
         },
-        "description": "Public"
+        "required": [
+          "category",
+          "subcategory"
+        ]
       },
       "ServiceClassTier": {
-        "required": [
-          "level"
-        ],
         "type": "object",
         "properties": {
           "level": {
             "type": "integer",
-            "description": "Public",
             "format": "int32",
-            "default": 3
+            "default": 3,
+            "description": "Public"
           },
           "accessPolicy": {
             "type": "string",
@@ -5839,17 +5814,15 @@
             "type": "array",
             "description": "Public",
             "items": {
-              "type": "string",
-              "description": "Public"
+              "type": "string"
             }
           }
         },
-        "description": "Public"
+        "required": [
+          "level"
+        ]
       },
       "ServicePublicContact": {
-        "required": [
-          "email"
-        ],
         "type": "object",
         "properties": {
           "firstName": {
@@ -5877,7 +5850,9 @@
             "description": "Public"
           }
         },
-        "description": "Public"
+        "required": [
+          "email"
+        ]
       },
       "Site": {
         "type": "object",
@@ -5889,40 +5864,33 @@
           "endpoints": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/Endpoint"
+            },
+            "xml": {
+              "wrapped": true
             }
           }
-        },
-        "description": "Public"
+        }
       },
       "UseCasesPair": {
-        "required": [
-          "useCaseURL"
-        ],
         "type": "object",
         "properties": {
           "useCaseURL": {
             "type": "string",
-            "description": "Public",
-            "format": "url"
+            "format": "url",
+            "description": "Public"
           },
           "useCaseName": {
             "type": "string",
             "description": "Public"
           }
         },
-        "description": "Public"
+        "required": [
+          "useCaseURL"
+        ]
       },
       "ResourceInteroperabilityRecord": {
-        "required": [
-          "catalogueId",
-          "interoperabilityRecordIds",
-          "resourceId"
-        ],
         "type": "object",
         "properties": {
           "id": {
@@ -5940,24 +5908,29 @@
           "interoperabilityRecordIds": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "interoperabilityRecordId"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           }
-        }
+        },
+        "required": [
+          "catalogueId",
+          "interoperabilityRecordIds",
+          "resourceId"
+        ]
       },
       "ResourceInteroperabilityRecordBundle": {
         "type": "object",
         "properties": {
           "metadata": {
-            "$ref": "#/components/schemas/Metadata"
+            "$ref": "#/components/schemas/Metadata",
+            "description": "Public"
           },
           "active": {
             "type": "boolean",
@@ -5976,10 +5949,12 @@
             "description": "Private"
           },
           "identifiers": {
-            "$ref": "#/components/schemas/Identifiers"
+            "$ref": "#/components/schemas/Identifiers",
+            "description": "Private"
           },
           "migrationStatus": {
-            "$ref": "#/components/schemas/MigrationStatus"
+            "$ref": "#/components/schemas/MigrationStatus",
+            "description": "Private"
           },
           "loggingInfo": {
             "type": "array",
@@ -5989,13 +5964,16 @@
             }
           },
           "latestAuditInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestOnboardingInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestUpdateInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "internalComments": {
             "type": "string",
@@ -6011,10 +5989,6 @@
         }
       },
       "ContactInfoTransfer": {
-        "required": [
-          "acceptedTransfer",
-          "email"
-        ],
         "type": "object",
         "properties": {
           "email": {
@@ -6025,7 +5999,10 @@
             "default": false
           }
         },
-        "description": "Private"
+        "required": [
+          "acceptedTransfer",
+          "email"
+        ]
       },
       "EnrollmentSteps": {
         "type": "object",
@@ -6042,8 +6019,7 @@
           "monitoringEnrollment": {
             "type": "string"
           }
-        },
-        "description": "Private"
+        }
       },
       "NodeInfo": {
         "type": "object",
@@ -6061,23 +6037,14 @@
             "description": "Private"
           },
           "enrollmentSteps": {
-            "$ref": "#/components/schemas/EnrollmentSteps"
+            "$ref": "#/components/schemas/EnrollmentSteps",
+            "description": "Private"
           }
-        },
-        "description": "Public"
+        }
       },
       "Provider": {
-        "required": [
-          "abbreviation",
-          "description",
-          "id",
-          "legalEntity",
-          "location",
-          "mainContact",
-          "name",
-          "users"
-        ],
         "type": "object",
+        "description": "Public",
         "properties": {
           "id": {
             "type": "string",
@@ -6093,8 +6060,8 @@
           },
           "website": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "legalEntity": {
@@ -6112,11 +6079,11 @@
           "alternativeIdentifiers": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/AlternativeIdentifier"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "description": {
@@ -6125,72 +6092,72 @@
           },
           "logo": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "multimedia": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/MultimediaPair"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "scientificDomains": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/ServiceProviderDomain"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "tags": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "tag"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "structureTypes": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "structureType"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "location": {
-            "$ref": "#/components/schemas/ProviderLocation"
+            "$ref": "#/components/schemas/ProviderLocation",
+            "description": "Public"
           },
           "mainContact": {
-            "$ref": "#/components/schemas/ProviderMainContact"
+            "$ref": "#/components/schemas/ProviderMainContact",
+            "description": "Private"
           },
           "publicContacts": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/ProviderPublicContact"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "lifeCycleStatus": {
@@ -6200,55 +6167,52 @@
           "certifications": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "certification"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "participatingCountries": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "participatingCountry"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "affiliations": {
             "type": "array",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
               "xml": {
                 "name": "affiliation"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "networks": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "network"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "catalogueId": {
@@ -6258,15 +6222,14 @@
           "esfriDomains": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "esfriDomain"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "esfriType": {
@@ -6276,73 +6239,80 @@
           "merilScientificDomains": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/ProviderMerilDomain"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "areasOfActivity": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "areaOfActivity"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "societalGrandChallenges": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "societalGrandChallenge"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "nationalRoadmaps": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "nationalRoadmap"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "users": {
             "type": "array",
             "description": "Private",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/User"
+            },
+            "xml": {
+              "wrapped": true
             }
           }
         },
-        "description": "Public"
+        "required": [
+          "abbreviation",
+          "description",
+          "id",
+          "legalEntity",
+          "location",
+          "mainContact",
+          "name",
+          "users"
+        ]
       },
       "ProviderBundle": {
         "type": "object",
         "properties": {
           "metadata": {
-            "$ref": "#/components/schemas/Metadata"
+            "$ref": "#/components/schemas/Metadata",
+            "description": "Public"
           },
           "active": {
             "type": "boolean",
@@ -6361,10 +6331,12 @@
             "description": "Private"
           },
           "identifiers": {
-            "$ref": "#/components/schemas/Identifiers"
+            "$ref": "#/components/schemas/Identifiers",
+            "description": "Private"
           },
           "migrationStatus": {
-            "$ref": "#/components/schemas/MigrationStatus"
+            "$ref": "#/components/schemas/MigrationStatus",
+            "description": "Private"
           },
           "loggingInfo": {
             "type": "array",
@@ -6374,13 +6346,16 @@
             }
           },
           "latestAuditInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestOnboardingInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestUpdateInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "internalComments": {
             "type": "string",
@@ -6407,16 +6382,17 @@
             "description": "Private"
           },
           "nodeInfo": {
-            "$ref": "#/components/schemas/NodeInfo"
+            "$ref": "#/components/schemas/NodeInfo",
+            "description": "Public"
           },
           "transferContactInformation": {
             "type": "array",
             "description": "Private",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/ContactInfoTransfer"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "id": {
@@ -6429,12 +6405,6 @@
         }
       },
       "ProviderLocation": {
-        "required": [
-          "city",
-          "country",
-          "postalCode",
-          "streetNameAndNumber"
-        ],
         "type": "object",
         "properties": {
           "streetNameAndNumber": {
@@ -6453,13 +6423,14 @@
             "type": "string"
           }
         },
-        "description": "Public"
+        "required": [
+          "city",
+          "country",
+          "postalCode",
+          "streetNameAndNumber"
+        ]
       },
       "ProviderMainContact": {
-        "required": [
-          "email",
-          "firstName"
-        ],
         "type": "object",
         "properties": {
           "firstName": {
@@ -6478,13 +6449,12 @@
             "type": "string"
           }
         },
-        "description": "Private"
+        "required": [
+          "email",
+          "firstName"
+        ]
       },
       "ProviderMerilDomain": {
-        "required": [
-          "merilScientificDomain",
-          "merilScientificSubdomain"
-        ],
         "type": "object",
         "properties": {
           "merilScientificDomain": {
@@ -6494,12 +6464,12 @@
             "type": "string"
           }
         },
-        "description": "Public"
+        "required": [
+          "merilScientificDomain",
+          "merilScientificSubdomain"
+        ]
       },
       "ProviderPublicContact": {
-        "required": [
-          "email"
-        ],
         "type": "object",
         "properties": {
           "firstName": {
@@ -6518,7 +6488,9 @@
             "type": "string"
           }
         },
-        "description": "Public"
+        "required": [
+          "email"
+        ]
       },
       "User": {
         "type": "object",
@@ -6536,8 +6508,7 @@
           "surname": {
             "type": "string"
           }
-        },
-        "description": "Private"
+        }
       },
       "Metric": {
         "type": "object",
@@ -6553,10 +6524,6 @@
         }
       },
       "Monitoring": {
-        "required": [
-          "monitoringGroups",
-          "serviceId"
-        ],
         "type": "object",
         "properties": {
           "id": {
@@ -6571,20 +6538,25 @@
           },
           "monitoringGroups": {
             "type": "array",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/MonitoringGroup"
+            },
+            "xml": {
+              "wrapped": true
             }
           }
-        }
+        },
+        "required": [
+          "monitoringGroups",
+          "serviceId"
+        ]
       },
       "MonitoringBundle": {
         "type": "object",
         "properties": {
           "metadata": {
-            "$ref": "#/components/schemas/Metadata"
+            "$ref": "#/components/schemas/Metadata",
+            "description": "Public"
           },
           "active": {
             "type": "boolean",
@@ -6603,10 +6575,12 @@
             "description": "Private"
           },
           "identifiers": {
-            "$ref": "#/components/schemas/Identifiers"
+            "$ref": "#/components/schemas/Identifiers",
+            "description": "Private"
           },
           "migrationStatus": {
-            "$ref": "#/components/schemas/MigrationStatus"
+            "$ref": "#/components/schemas/MigrationStatus",
+            "description": "Private"
           },
           "loggingInfo": {
             "type": "array",
@@ -6616,13 +6590,16 @@
             }
           },
           "latestAuditInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestOnboardingInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestUpdateInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "internalComments": {
             "type": "string",
@@ -6641,10 +6618,6 @@
         }
       },
       "MonitoringGroup": {
-        "required": [
-          "endpoint",
-          "serviceType"
-        ],
         "type": "object",
         "properties": {
           "serviceType": {
@@ -6655,19 +6628,20 @@
           },
           "metrics": {
             "type": "array",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/Metric"
+            },
+            "xml": {
+              "wrapped": true
             }
           }
-        }
+        },
+        "required": [
+          "endpoint",
+          "serviceType"
+        ]
       },
       "Creator": {
-        "required": [
-          "creatorNameTypeInfo"
-        ],
         "type": "object",
         "properties": {
           "creatorNameTypeInfo": {
@@ -6686,7 +6660,9 @@
             "$ref": "#/components/schemas/CreatorAffiliationInfo"
           }
         },
-        "description": "Public"
+        "required": [
+          "creatorNameTypeInfo"
+        ]
       },
       "CreatorAffiliationInfo": {
         "type": "object",
@@ -6700,10 +6676,6 @@
         }
       },
       "CreatorNameTypeInfo": {
-        "required": [
-          "creatorName",
-          "nameType"
-        ],
         "type": "object",
         "properties": {
           "creatorName": {
@@ -6712,13 +6684,13 @@
           "nameType": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "creatorName",
+          "nameType"
+        ]
       },
       "IdentifierInfo": {
-        "required": [
-          "identifier",
-          "identifierType"
-        ],
         "type": "object",
         "properties": {
           "identifier": {
@@ -6728,19 +6700,12 @@
             "type": "string"
           }
         },
-        "description": "Public"
+        "required": [
+          "identifier",
+          "identifierType"
+        ]
       },
       "InteroperabilityRecord": {
-        "required": [
-          "creators",
-          "description",
-          "eoscGuidelineType",
-          "identifierInfo",
-          "providerId",
-          "publicationYear",
-          "rights",
-          "title"
-        ],
         "type": "object",
         "properties": {
           "id": {
@@ -6756,16 +6721,17 @@
             "description": "Public"
           },
           "identifierInfo": {
-            "$ref": "#/components/schemas/IdentifierInfo"
+            "$ref": "#/components/schemas/IdentifierInfo",
+            "description": "Public"
           },
           "creators": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/Creator"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "title": {
@@ -6774,17 +6740,17 @@
           },
           "publicationYear": {
             "type": "integer",
-            "description": "Public",
-            "format": "int32"
+            "format": "int32",
+            "description": "Public"
           },
           "resourceTypesInfo": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/ResourceTypeInfo"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "created": {
@@ -6798,21 +6764,21 @@
           "relatedStandards": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/RelatedStandard"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "rights": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/Right"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "description": {
@@ -6834,34 +6800,44 @@
           "eoscIntegrationOptions": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "eoscIntegrationOption"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "alternativeIdentifiers": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/AlternativeIdentifier"
+            },
+            "xml": {
+              "wrapped": true
             }
           }
-        }
+        },
+        "required": [
+          "creators",
+          "description",
+          "eoscGuidelineType",
+          "identifierInfo",
+          "providerId",
+          "publicationYear",
+          "rights",
+          "title"
+        ]
       },
       "InteroperabilityRecordBundle": {
         "type": "object",
         "properties": {
           "metadata": {
-            "$ref": "#/components/schemas/Metadata"
+            "$ref": "#/components/schemas/Metadata",
+            "description": "Public"
           },
           "active": {
             "type": "boolean",
@@ -6880,10 +6856,12 @@
             "description": "Private"
           },
           "identifiers": {
-            "$ref": "#/components/schemas/Identifiers"
+            "$ref": "#/components/schemas/Identifiers",
+            "description": "Private"
           },
           "migrationStatus": {
-            "$ref": "#/components/schemas/MigrationStatus"
+            "$ref": "#/components/schemas/MigrationStatus",
+            "description": "Private"
           },
           "loggingInfo": {
             "type": "array",
@@ -6893,13 +6871,16 @@
             }
           },
           "latestAuditInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestOnboardingInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestUpdateInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "internalComments": {
             "type": "string",
@@ -6944,14 +6925,9 @@
             "type": "string",
             "format": "url"
           }
-        },
-        "description": "Public"
+        }
       },
       "ResourceTypeInfo": {
-        "required": [
-          "resourceType",
-          "resourceTypeGeneral"
-        ],
         "type": "object",
         "properties": {
           "resourceType": {
@@ -6961,14 +6937,12 @@
             "type": "string"
           }
         },
-        "description": "Public"
+        "required": [
+          "resourceType",
+          "resourceTypeGeneral"
+        ]
       },
       "Right": {
-        "required": [
-          "rightIdentifier",
-          "rightTitle",
-          "rightURI"
-        ],
         "type": "object",
         "properties": {
           "rightTitle": {
@@ -6982,15 +6956,15 @@
             "type": "string"
           }
         },
-        "description": "Public"
+        "required": [
+          "rightIdentifier",
+          "rightTitle",
+          "rightURI"
+        ]
       },
       "Datasource": {
-        "required": [
-          "datasourceClassification",
-          "jurisdiction",
-          "thematic"
-        ],
         "type": "object",
+        "description": "Public",
         "properties": {
           "id": {
             "type": "string",
@@ -7006,14 +6980,14 @@
           },
           "submissionPolicyURL": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "preservationPolicyURL": {
             "type": "string",
-            "description": "Public",
             "format": "url",
+            "description": "Public",
             "example": "https://example.com"
           },
           "versionControl": {
@@ -7023,11 +6997,11 @@
           "persistentIdentitySystems": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/PersistentIdentitySystem"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "jurisdiction": {
@@ -7041,15 +7015,14 @@
           "researchEntityTypes": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "researchEntityType"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "thematic": {
@@ -7059,42 +7032,41 @@
           "researchProductLicensings": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/ResearchProductLicensing"
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "researchProductAccessPolicies": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "researchProductAccessPolicy"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "researchProductMetadataLicensing": {
-            "$ref": "#/components/schemas/ResearchProductMetadataLicensing"
+            "$ref": "#/components/schemas/ResearchProductMetadataLicensing",
+            "description": "Public"
           },
           "researchProductMetadataAccessPolicies": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
-              "description": "Public",
               "xml": {
                 "name": "researchProductMetadataAccessPolicy"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           },
           "harvestable": {
@@ -7102,13 +7074,18 @@
             "description": "Public"
           }
         },
-        "description": "Public"
+        "required": [
+          "datasourceClassification",
+          "jurisdiction",
+          "thematic"
+        ]
       },
       "DatasourceBundle": {
         "type": "object",
         "properties": {
           "metadata": {
-            "$ref": "#/components/schemas/Metadata"
+            "$ref": "#/components/schemas/Metadata",
+            "description": "Public"
           },
           "active": {
             "type": "boolean",
@@ -7127,10 +7104,12 @@
             "description": "Private"
           },
           "identifiers": {
-            "$ref": "#/components/schemas/Identifiers"
+            "$ref": "#/components/schemas/Identifiers",
+            "description": "Private"
           },
           "migrationStatus": {
-            "$ref": "#/components/schemas/MigrationStatus"
+            "$ref": "#/components/schemas/MigrationStatus",
+            "description": "Private"
           },
           "loggingInfo": {
             "type": "array",
@@ -7140,13 +7119,16 @@
             }
           },
           "latestAuditInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestOnboardingInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestUpdateInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "internalComments": {
             "type": "string",
@@ -7169,7 +7151,8 @@
             "description": "Private"
           },
           "oaiPmhInfo": {
-            "$ref": "#/components/schemas/OAIPMHInfo"
+            "$ref": "#/components/schemas/OAIPMHInfo",
+            "description": "Public"
           },
           "datasourceType": {
             "type": "string",
@@ -7193,12 +7176,6 @@
         }
       },
       "OAIPMHInfo": {
-        "required": [
-          "baseUrl",
-          "compatibility",
-          "openAIRECompliance",
-          "repositoryIdentifier"
-        ],
         "type": "object",
         "properties": {
           "protocol": {
@@ -7207,15 +7184,14 @@
           },
           "baseUrl": {
             "type": "string",
-            "description": "Public",
-            "format": "url"
+            "format": "url",
+            "description": "Public"
           },
           "sets": {
             "type": "array",
             "description": "Public",
             "items": {
-              "type": "string",
-              "description": "Public"
+              "type": "string"
             }
           },
           "format": {
@@ -7231,25 +7207,28 @@
             "description": "Public"
           },
           "repositoryIdentifier": {
-            "$ref": "#/components/schemas/AlternativeIdentifier"
+            "$ref": "#/components/schemas/AlternativeIdentifier",
+            "description": "Public"
           },
           "alternativeIdentifiers": {
             "type": "array",
             "description": "Public",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "$ref": "#/components/schemas/AlternativeIdentifier"
+            },
+            "xml": {
+              "wrapped": true
             }
           }
         },
-        "description": "Public"
+        "required": [
+          "baseUrl",
+          "compatibility",
+          "openAIRECompliance",
+          "repositoryIdentifier"
+        ]
       },
       "PersistentIdentitySystem": {
-        "required": [
-          "persistentIdentityEntityType"
-        ],
         "type": "object",
         "properties": {
           "persistentIdentityEntityType": {
@@ -7257,24 +7236,22 @@
           },
           "persistentIdentityEntityTypeSchemes": {
             "type": "array",
-            "xml": {
-              "wrapped": true
-            },
             "items": {
               "type": "string",
               "xml": {
                 "name": "persistentIdentityEntityType"
               }
+            },
+            "xml": {
+              "wrapped": true
             }
           }
         },
-        "description": "Public"
+        "required": [
+          "persistentIdentityEntityType"
+        ]
       },
       "ResearchProductLicensing": {
-        "required": [
-          "researchProductLicenseName",
-          "researchProductLicenseURL"
-        ],
         "type": "object",
         "properties": {
           "researchProductLicenseName": {
@@ -7285,13 +7262,12 @@
             "format": "url"
           }
         },
-        "description": "Public"
+        "required": [
+          "researchProductLicenseName",
+          "researchProductLicenseURL"
+        ]
       },
       "ResearchProductMetadataLicensing": {
-        "required": [
-          "researchProductMetadataLicenseName",
-          "researchProductMetadataLicenseURL"
-        ],
         "type": "object",
         "properties": {
           "researchProductMetadataLicenseName": {
@@ -7302,14 +7278,12 @@
             "format": "url"
           }
         },
-        "description": "Public"
+        "required": [
+          "researchProductMetadataLicenseName",
+          "researchProductMetadataLicenseURL"
+        ]
       },
       "ConfigurationTemplateInstance": {
-        "required": [
-          "configurationTemplateId",
-          "payload",
-          "resourceId"
-        ],
         "type": "object",
         "properties": {
           "id": {
@@ -7325,13 +7299,19 @@
           "payload": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "configurationTemplateId",
+          "payload",
+          "resourceId"
+        ]
       },
       "ConfigurationTemplateInstanceBundle": {
         "type": "object",
         "properties": {
           "metadata": {
-            "$ref": "#/components/schemas/Metadata"
+            "$ref": "#/components/schemas/Metadata",
+            "description": "Public"
           },
           "active": {
             "type": "boolean",
@@ -7350,10 +7330,12 @@
             "description": "Private"
           },
           "identifiers": {
-            "$ref": "#/components/schemas/Identifiers"
+            "$ref": "#/components/schemas/Identifiers",
+            "description": "Private"
           },
           "migrationStatus": {
-            "$ref": "#/components/schemas/MigrationStatus"
+            "$ref": "#/components/schemas/MigrationStatus",
+            "description": "Private"
           },
           "loggingInfo": {
             "type": "array",
@@ -7363,13 +7345,16 @@
             }
           },
           "latestAuditInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestOnboardingInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "latestUpdateInfo": {
-            "$ref": "#/components/schemas/LoggingInfo"
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
           },
           "internalComments": {
             "type": "string",
@@ -7453,9 +7438,7 @@
           },
           "children": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/VocabularyTree"
-            }
+            "items": {}
           }
         }
       },

@@ -262,8 +262,8 @@ public class Service implements Identifiable {
     /**
      * Service's Main Contact/Resource Owner info.
      */
-    @XmlElement
-    @Schema(description = "Private")
+    @XmlElement(required = true)
+    @Schema(description = "Private", requiredMode = Schema.RequiredMode.REQUIRED)
     @FieldValidation
     private ServiceMainContact mainContact;
 
