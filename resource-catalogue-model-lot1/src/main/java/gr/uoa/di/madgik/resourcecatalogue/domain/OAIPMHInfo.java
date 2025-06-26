@@ -19,7 +19,8 @@ public class OAIPMHInfo {
 
 	@XmlElement()
 	@Schema(description = "Public")
-	@FieldValidation(nullable = true)
+	@FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
+	@VocabularyValidation(type = Vocabulary.Type.DS_PROTOCOL)
 	private String protocol;
 
 	@XmlElement()

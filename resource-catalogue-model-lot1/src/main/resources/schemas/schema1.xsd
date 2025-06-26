@@ -3082,6 +3082,8 @@ that is the used scheme (e.g., Web Address URL, DOI, ARK, etc.).]]></xs:document
             
       <xs:enumeration value="DS_COAR_ACCESS_RIGHTS_1_0"/>
             
+      <xs:enumeration value="DS_PROTOCOL"/>
+            
       <xs:enumeration value="DS_OAI_FORMATS"/>
             
       <xs:enumeration value="DS_OAI_COMPATIBILITY"/>

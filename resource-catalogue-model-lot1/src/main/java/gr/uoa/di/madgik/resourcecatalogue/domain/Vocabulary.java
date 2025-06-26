@@ -97,6 +97,7 @@ public class Vocabulary implements Identifiable {
         DS_JURISDICTION("Jurisdiction"),
         DS_CLASSIFICATION("Classification"),
         DS_COAR_ACCESS_RIGHTS_1_0("COAR access rights 1.0"),
+    	DS_PROTOCOL("Datasource Protocol"),
     	DS_OAI_FORMATS("OAI-PMH formats"),
     	DS_OAI_COMPATIBILITY("OAI-PMH compatibility"),
         // Tool
