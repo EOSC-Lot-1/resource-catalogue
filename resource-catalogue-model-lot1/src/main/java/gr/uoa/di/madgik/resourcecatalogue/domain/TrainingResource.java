@@ -227,8 +227,8 @@ public class TrainingResource implements Identifiable {
      */
     @XmlElementWrapper(name = "geographicalAvailabilities", required = true)
     @XmlElement(name = "geographicalAvailability")
-    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation(containsId = true, idClass = Vocabulary.class)
+    @Schema(description = "Public")
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @GeoLocationVocValidation(region = Vocabulary.Type.REGION, country = Vocabulary.Type.COUNTRY)
     private List<String> geographicalAvailabilities;
 
