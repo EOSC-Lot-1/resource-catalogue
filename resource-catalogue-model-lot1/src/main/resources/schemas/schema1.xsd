@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0">
     
+  <xs:complexType name="acknowledgement">
+        
+    <xs:sequence>
+            
+      <xs:element minOccurs="0" name="catalogueStoreAck" type="xs:boolean"/>
+            
+      <xs:element minOccurs="0" name="monitoringServiceAck" type="xs:boolean"/>
+            
+      <xs:element minOccurs="0" name="resourceHubAck" type="xs:boolean"/>
+            
+      <xs:element minOccurs="0" name="securityContactAck" type="xs:boolean"/>
+          
+    </xs:sequence>
+      
+  </xs:complexType>
+    
   <xs:complexType name="adminAuthentication">
         
     <xs:sequence>
@@ -26,6 +42,8 @@
   <xs:complexType abstract="true" name="bundle">
         
     <xs:sequence>
+            
+      <xs:element minOccurs="0" name="acknowledgement" type="acknowledgement"/>
             
       <xs:element name="active" type="xs:boolean"/>
             
@@ -1279,7 +1297,11 @@ versions. The record's primary key for locating it in the EOSC-IF database.]]></
             
       <xs:element minOccurs="0" name="omsIntegration" type="xs:string"/>
             
+      <xs:element minOccurs="0" name="securityCompliance" type="xs:string"/>
+            
       <xs:element minOccurs="0" name="serviceOfferFinalization" type="xs:string"/>
+            
+      <xs:element minOccurs="0" name="wpfoIntegration" type="xs:string"/>
           
     </xs:sequence>
       

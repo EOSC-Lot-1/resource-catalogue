@@ -67,7 +67,11 @@ public abstract class Bundle<T extends Identifiable> implements Identifiable {
     @Schema(description = "Private")
     @XmlElement
     private String internalComments;
-
+    
+    @Schema(description = "Private")
+    @XmlElement
+    private Acknowledgement acknowledgement;
+    
     public Bundle() {
     }
 
@@ -189,7 +193,15 @@ public abstract class Bundle<T extends Identifiable> implements Identifiable {
         this.internalComments = internalComments;
     }
 
-    @Override
+    public Acknowledgement getAcknowledgement() {
+		return acknowledgement;
+	}
+
+	public void setAcknowledgement(Acknowledgement acknowledgement) {
+		this.acknowledgement = acknowledgement;
+	}
+
+	@Override
     public String toString() {
         return "Bundle{" +
                 "payload=" + payload +

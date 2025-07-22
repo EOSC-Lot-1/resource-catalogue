@@ -37,15 +37,31 @@ public class OnboardingIntegration {
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.INTEGRATION_STATUS)
     private String omsIntegration;
+    
+
+    @XmlElement()
+    @Schema
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
+    @VocabularyValidation(type = Vocabulary.Type.INTEGRATION_STATUS)
+    private String securityCompliance;  
+
+	@XmlElement()
+    @Schema
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
+    @VocabularyValidation(type = Vocabulary.Type.INTEGRATION_STATUS)
+    private String wpfoIntegration;
 
     public OnboardingIntegration() {
     }
 
-    public OnboardingIntegration(String serviceOfferFinalization, String accountIntegration, String aaiIntegration, String omsIntegration ) {
+    public OnboardingIntegration(String serviceOfferFinalization, String accountIntegration, String aaiIntegration,
+    		String omsIntegration,  String securityCompliance,  String wpfoIntegration ) {
     	this.serviceOfferFinalization = serviceOfferFinalization;
         this.accountIntegration = accountIntegration;
         this.aaiIntegration = aaiIntegration;
         this.omsIntegration = omsIntegration;
+        this.securityCompliance = securityCompliance;
+        this.wpfoIntegration = wpfoIntegration;
     }
 
     @Override
@@ -89,9 +105,25 @@ public class OnboardingIntegration {
 
     public void setOmsIntegration(String omsIntegration) {
         this.omsIntegration = omsIntegration;
-    }
+    } 
 
-    @Override
+    public String getSecurityCompliance() {
+		return securityCompliance;
+	}
+
+	public void setSecurityCompliance(String securityCompliance) {
+		this.securityCompliance = securityCompliance;
+	}
+
+	public String getWpfoIntegration() {
+		return wpfoIntegration;
+	}
+
+	public void setWpfoIntegration(String wpfoIntegration) {
+		this.wpfoIntegration = wpfoIntegration;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -99,11 +131,13 @@ public class OnboardingIntegration {
         return Objects.equals(serviceOfferFinalization, that.serviceOfferFinalization) 
         		&& Objects.equals(accountIntegration, that.accountIntegration)
         		&& Objects.equals(aaiIntegration, that.aaiIntegration)
-        		&& Objects.equals(omsIntegration, that.omsIntegration);
+        		&& Objects.equals(omsIntegration, that.omsIntegration)
+        		&& Objects.equals(securityCompliance, that.securityCompliance)
+        		&& Objects.equals(wpfoIntegration, that.wpfoIntegration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(serviceOfferFinalization, accountIntegration, aaiIntegration, omsIntegration);
+        return Objects.hash(serviceOfferFinalization, accountIntegration, aaiIntegration, omsIntegration, securityCompliance, wpfoIntegration);
     }
 }

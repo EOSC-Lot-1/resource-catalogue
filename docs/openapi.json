@@ -7,7 +7,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0"
     },
-    "version": "v5.0.0+u117"
+    "version": "v5.0.0+u118"
   },
   "externalDocs": {
     "description": "resource-catalogue Documentation",
@@ -4363,6 +4363,23 @@
           "type"
         ]
       },
+      "Acknowledgement": {
+        "type": "object",
+        "properties": {
+          "catalogueStoreAck": {
+            "type": "boolean"
+          },
+          "resourceHubAck": {
+            "type": "boolean"
+          },
+          "monitoringServiceAck": {
+            "type": "boolean"
+          },
+          "securityContactAck": {
+            "type": "boolean"
+          }
+        }
+      },
       "AlternativeIdentifier": {
         "type": "object",
         "properties": {
@@ -4764,7 +4781,6 @@
           "contact",
           "description",
           "expertiseLevel",
-          "geographicalAvailabilities",
           "languages",
           "learningOutcomes",
           "license",
@@ -4828,6 +4844,10 @@
           },
           "internalComments": {
             "type": "string",
+            "description": "Private"
+          },
+          "acknowledgement": {
+            "$ref": "#/components/schemas/Acknowledgement",
             "description": "Private"
           },
           "status": {
@@ -5043,6 +5063,10 @@
             "type": "string",
             "description": "Private"
           },
+          "acknowledgement": {
+            "$ref": "#/components/schemas/Acknowledgement",
+            "description": "Private"
+          },
           "status": {
             "type": "string",
             "description": "Private"
@@ -5174,6 +5198,12 @@
             "type": "string"
           },
           "omsIntegration": {
+            "type": "string"
+          },
+          "securityCompliance": {
+            "type": "string"
+          },
+          "wpfoIntegration": {
             "type": "string"
           }
         }
@@ -5732,6 +5762,10 @@
             "type": "string",
             "description": "Private"
           },
+          "acknowledgement": {
+            "$ref": "#/components/schemas/Acknowledgement",
+            "description": "Private"
+          },
           "status": {
             "type": "string",
             "description": "Private"
@@ -5980,6 +6014,10 @@
           },
           "internalComments": {
             "type": "string",
+            "description": "Private"
+          },
+          "acknowledgement": {
+            "$ref": "#/components/schemas/Acknowledgement",
             "description": "Private"
           },
           "resourceInteroperabilityRecord": {
@@ -6364,6 +6402,10 @@
             "type": "string",
             "description": "Private"
           },
+          "acknowledgement": {
+            "$ref": "#/components/schemas/Acknowledgement",
+            "description": "Private"
+          },
           "status": {
             "type": "string",
             "description": "Private"
@@ -6606,6 +6648,10 @@
           },
           "internalComments": {
             "type": "string",
+            "description": "Private"
+          },
+          "acknowledgement": {
+            "$ref": "#/components/schemas/Acknowledgement",
             "description": "Private"
           },
           "catalogueId": {
@@ -6889,6 +6935,10 @@
             "type": "string",
             "description": "Private"
           },
+          "acknowledgement": {
+            "$ref": "#/components/schemas/Acknowledgement",
+            "description": "Private"
+          },
           "status": {
             "type": "string",
             "description": "Private"
@@ -7137,6 +7187,10 @@
             "type": "string",
             "description": "Private"
           },
+          "acknowledgement": {
+            "$ref": "#/components/schemas/Acknowledgement",
+            "description": "Private"
+          },
           "status": {
             "type": "string",
             "description": "Private"
@@ -7361,6 +7415,10 @@
           },
           "internalComments": {
             "type": "string",
+            "description": "Private"
+          },
+          "acknowledgement": {
+            "$ref": "#/components/schemas/Acknowledgement",
             "description": "Private"
           },
           "id": {
