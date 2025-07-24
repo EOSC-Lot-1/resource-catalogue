@@ -40,19 +40,19 @@ public class OAIPMHInfo {
 	private String format;
 	
 	@XmlElement()
-	@Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
-	@FieldValidation(containsId = true, idClass = Vocabulary.class)
+	@Schema(description = "Public")
+	@FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
 	@VocabularyValidation(type = Vocabulary.Type.DS_OAI_COMPATIBILITY)
 	private String compatibility;
 	
 	@XmlElement
-	@Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
-	@FieldValidation()
+	@Schema(description = "Public")
+	@FieldValidation(nullable = true)
 	private Boolean openAIRECompliance;
 	
     @XmlElement()
-    @Schema(description = "Public", requiredMode = Schema.RequiredMode.REQUIRED)
-    @FieldValidation()
+    @Schema(description = "Public")
+    @FieldValidation(nullable = true)
     private AlternativeIdentifier repositoryIdentifier;
     
     @XmlElementWrapper(name = "alternativeIdentifiers")

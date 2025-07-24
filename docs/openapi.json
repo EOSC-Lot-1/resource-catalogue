@@ -7,7 +7,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0"
     },
-    "version": "v5.0.0+u118"
+    "version": "v5.0.0+u119"
   },
   "externalDocs": {
     "description": "resource-catalogue Documentation",
@@ -7279,10 +7279,7 @@
           }
         },
         "required": [
-          "baseUrl",
-          "compatibility",
-          "openAIRECompliance",
-          "repositoryIdentifier"
+          "baseUrl"
         ]
       },
       "PersistentIdentitySystem": {
