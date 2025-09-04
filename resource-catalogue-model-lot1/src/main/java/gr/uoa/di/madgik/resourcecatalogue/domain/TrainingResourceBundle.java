@@ -38,7 +38,12 @@ public class TrainingResourceBundle extends Bundle<TrainingResource> {
     @Schema(description = "Public")
     @FieldValidation(nullable = true)
 	private String nodeId;
-    
+
+    @XmlElement()
+    @Schema(description = "Private")
+    @FieldValidation(nullable = true)
+    private Boolean offboardRequestPending;
+
     public TrainingResourceBundle() {
         // No arg constructor
     }
@@ -112,7 +117,15 @@ public class TrainingResourceBundle extends Bundle<TrainingResource> {
 		this.nodeId = nodeId;
 	}
 	
-    @Override
+    public Boolean getOffboardRequestPending() {
+		return offboardRequestPending;
+	}
+
+	public void setOffboardRequestPending(Boolean offboardRequestPending) {
+		this.offboardRequestPending = offboardRequestPending;
+	}
+
+	@Override
     public String toString() {
         return "TrainingResourceBundle{" +
                 "status='" + status + '\'' +

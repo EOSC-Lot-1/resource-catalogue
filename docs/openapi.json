@@ -7,7 +7,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0"
     },
-    "version": "v5.0.0+u119"
+    "version": "v5.0.0+u120"
   },
   "externalDocs": {
     "description": "resource-catalogue Documentation",
@@ -4870,6 +4870,10 @@
             "type": "string",
             "description": "Public"
           },
+          "offboardRequestPending": {
+            "type": "boolean",
+            "description": "Private"
+          },
           "id": {
             "type": "string",
             "description": "Public"
@@ -5086,6 +5090,10 @@
           "nodeId": {
             "type": "string",
             "description": "Public"
+          },
+          "offboardRequestPending": {
+            "type": "boolean",
+            "description": "Private"
           },
           "id": {
             "type": "string",
@@ -5804,6 +5812,10 @@
             "type": "string",
             "description": "Public"
           },
+          "offboardRequestPending": {
+            "type": "boolean",
+            "description": "Private"
+          },
           "id": {
             "type": "string",
             "description": "Public"
@@ -6058,6 +6070,12 @@
             "type": "string"
           },
           "monitoringEnrollment": {
+            "type": "string"
+          },
+          "enrollmentGreenLight": {
+            "type": "string"
+          },
+          "legalFramework": {
             "type": "string"
           }
         }
@@ -6959,6 +6977,10 @@
             "type": "string",
             "description": "Public"
           },
+          "offboardRequestPending": {
+            "type": "boolean",
+            "description": "Private"
+          },
           "id": {
             "type": "string",
             "description": "Public"
@@ -7222,6 +7244,10 @@
           "nodeId": {
             "type": "string",
             "description": "Public"
+          },
+          "offboardRequestPending": {
+            "type": "boolean",
+            "description": "Private"
           },
           "id": {
             "type": "string",

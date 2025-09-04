@@ -37,15 +37,31 @@ public class EnrollmentSteps {
     @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     @VocabularyValidation(type = Vocabulary.Type.ENROLLMENT_STATUS)
     private String monitoringEnrollment;
+    
+    @XmlElement()
+    @Schema
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
+    @VocabularyValidation(type = Vocabulary.Type.ENROLLMENT_STATUS)
+    private String enrollmentGreenLight;
+    
+    @XmlElement()
+    @Schema
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
+    @VocabularyValidation(type = Vocabulary.Type.ENROLLMENT_STATUS)
+    private String legalFramework;
 
-    public EnrollmentSteps() {
+
+	public EnrollmentSteps() {
     }
 
-    public EnrollmentSteps(String aaiEnrollment, String cataloguesEnrollment, String helpdeskEnrollment, String monitoringEnrollment ) {
+    public EnrollmentSteps(String aaiEnrollment, String cataloguesEnrollment, String helpdeskEnrollment, String monitoringEnrollment,
+    		String enrollmentGreenLight, String legalFramework) {
     	this.aaiEnrollment = aaiEnrollment;
         this.cataloguesEnrollment = cataloguesEnrollment;
         this.helpdeskEnrollment = helpdeskEnrollment;
         this.monitoringEnrollment = monitoringEnrollment;
+        this.enrollmentGreenLight = enrollmentGreenLight;
+        this.legalFramework = legalFramework;
     }
 
     @Override
@@ -55,6 +71,8 @@ public class EnrollmentSteps {
                 ", cataloguesEnrollment='" + cataloguesEnrollment + '\'' +
                 ", helpdeskEnrollment='" + helpdeskEnrollment + '\'' +
                 ", monitoringEnrollment='" + monitoringEnrollment + '\'' +
+                ", enrollmentGreenLight='" + enrollmentGreenLight + '\'' +
+                ", legalFramework='" + legalFramework + '\'' +
                 '}';
     }
     
@@ -90,6 +108,22 @@ public class EnrollmentSteps {
     public void setMonitoringEnrollment(String monitoringEnrollment) {
         this.monitoringEnrollment = monitoringEnrollment;
     }
+
+    public String getEnrollmentGreenLight() {
+		return enrollmentGreenLight;
+	}
+
+	public void setEnrollmentGreenLight(String enrollmentGreenLight) {
+		this.enrollmentGreenLight = enrollmentGreenLight;
+	}
+
+	public String getLegalFramework() {
+		return legalFramework;
+	}
+
+	public void setLegalFramework(String legalFramework) {
+		this.legalFramework = legalFramework;
+	}
 
     @Override
     public boolean equals(Object o) {

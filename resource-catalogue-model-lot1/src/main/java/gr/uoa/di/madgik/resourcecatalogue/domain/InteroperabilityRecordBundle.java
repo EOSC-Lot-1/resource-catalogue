@@ -37,7 +37,12 @@ public class InteroperabilityRecordBundle extends Bundle<InteroperabilityRecord>
     @Schema(description = "Public")
     @FieldValidation(nullable = true)
 	private String nodeId;
-    
+
+    @XmlElement()
+    @Schema(description = "Private")
+    @FieldValidation(nullable = true)
+    private Boolean offboardRequestPending;
+
     public InteroperabilityRecordBundle() {
     }
 
@@ -110,7 +115,15 @@ public class InteroperabilityRecordBundle extends Bundle<InteroperabilityRecord>
 		this.nodeId = nodeId;
 	}
 	
-    @Override
+    public Boolean getOffboardRequestPending() {
+		return offboardRequestPending;
+	}
+
+	public void setOffboardRequestPending(Boolean offboardRequestPending) {
+		this.offboardRequestPending = offboardRequestPending;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

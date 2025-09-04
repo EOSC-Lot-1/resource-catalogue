@@ -54,7 +54,12 @@ public class DatasourceBundle extends Bundle<Datasource> {
     @Schema(description = "Public")
     @FieldValidation(nullable = true)
 	private String nodeId;
-    
+
+    @XmlElement()
+    @Schema(description = "Private")
+    @FieldValidation(nullable = true)
+    private Boolean offboardRequestPending;
+
     public DatasourceBundle() {
         // No arg constructor
     }
@@ -180,4 +185,13 @@ public class DatasourceBundle extends Bundle<Datasource> {
 	public void setNodeId(String nodeId) {
 		this.nodeId = nodeId;
 	}
+
+	public Boolean getOffboardRequestPending() {
+		return offboardRequestPending;
+	}
+
+	public void setOffboardRequestPending(Boolean offboardRequestPending) {
+		this.offboardRequestPending = offboardRequestPending;
+	}
+	
 }

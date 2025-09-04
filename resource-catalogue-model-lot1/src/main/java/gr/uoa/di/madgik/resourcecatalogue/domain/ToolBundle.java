@@ -37,7 +37,12 @@ public class ToolBundle extends Bundle<Tool> {
     @Schema(description = "Public")
     @FieldValidation(nullable = true)
 	private String nodeId;
-    
+
+    @XmlElement()
+    @Schema(description = "Private")
+    @FieldValidation(nullable = true)
+    private Boolean offboardRequestPending;
+
     public ToolBundle() {
         // No arg constructor
     }
@@ -110,8 +115,16 @@ public class ToolBundle extends Bundle<Tool> {
 	public void setNodeId(String nodeId) {
 		this.nodeId = nodeId;
 	}
-    
-    @Override
+	
+    public Boolean getOffboardRequestPending() {
+		return offboardRequestPending;
+	}
+
+	public void setOffboardRequestPending(Boolean offboardRequestPending) {
+		this.offboardRequestPending = offboardRequestPending;
+	}
+
+	@Override
     public String toString() {
         return "ToolBundle{" +
                 "status='" + status + '\'' +

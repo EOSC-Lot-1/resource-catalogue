@@ -36,8 +36,8 @@ public class ServiceBundle extends Bundle<Service> {
     @Schema(description = "Private")
     @FieldValidation(nullable = true)
     private Boolean resubmit;
-
-    @XmlElement
+    
+	@XmlElement
     @Schema(description = "Private")
     private String auditState;
     
@@ -55,6 +55,11 @@ public class ServiceBundle extends Bundle<Service> {
     @Schema(description = "Public")
     @FieldValidation(nullable = true)
 	private String nodeId;
+
+    @XmlElement()
+    @Schema(description = "Private")
+    @FieldValidation(nullable = true)
+    private Boolean offboardRequestPending;
 
     public ServiceBundle() {
         // No arg constructor
@@ -112,8 +117,16 @@ public class ServiceBundle extends Bundle<Service> {
     public void setResubmit(Boolean resubmit) {
         this.resubmit = resubmit;
     }
+	
+    public Boolean getOffboardRequestPending() {
+		return offboardRequestPending;
+	}
 
-    public String getAuditState() {
+	public void setOffboardRequestPending(Boolean offboardRequestPending) {
+		this.offboardRequestPending = offboardRequestPending;
+	}
+
+	public String getAuditState() {
         return auditState;
     }
 

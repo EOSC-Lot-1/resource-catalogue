@@ -672,6 +672,8 @@ Criteria for submitting content to the repository as well as product preparation
                     
           <xs:element minOccurs="0" name="oaiPmhInfo" type="oaipmhInfo"/>
                     
+          <xs:element minOccurs="0" name="offboardRequestPending" type="xs:boolean"/>
+                    
           <xs:element minOccurs="0" name="originalOpenAIREId" type="xs:string">
             <xs:annotation>
               <xs:documentation><![CDATA[Original OpenAIRE ID, if Datasource already exists in the OpenAIRE Catalogue]]></xs:documentation>
@@ -772,7 +774,11 @@ Criteria for submitting content to the repository as well as product preparation
             
       <xs:element minOccurs="0" name="cataloguesEnrollment" type="xs:string"/>
             
+      <xs:element minOccurs="0" name="enrollmentGreenLight" type="xs:string"/>
+            
       <xs:element minOccurs="0" name="helpdeskEnrollment" type="xs:string"/>
+            
+      <xs:element minOccurs="0" name="legalFramework" type="xs:string"/>
             
       <xs:element minOccurs="0" name="monitoringEnrollment" type="xs:string"/>
           
@@ -1194,6 +1200,8 @@ versions. The record's primary key for locating it in the EOSC-IF database.]]></
           <xs:element minOccurs="0" name="interoperabilityRecord" type="interoperabilityRecord"/>
                     
           <xs:element minOccurs="0" name="nodeId" type="xs:string"/>
+                    
+          <xs:element minOccurs="0" name="offboardRequestPending" type="xs:boolean"/>
                     
           <xs:element minOccurs="0" name="resourceOrganisationGroupID" type="xs:string"/>
                     
@@ -2142,6 +2150,8 @@ infrastructures.]]></xs:documentation>
                     
           <xs:element minOccurs="0" name="nodeId" type="xs:string"/>
                     
+          <xs:element minOccurs="0" name="offboardRequestPending" type="xs:boolean"/>
+                    
           <xs:element minOccurs="0" name="onboardingIntegration" type="onboardingIntegration"/>
                     
           <xs:element minOccurs="0" name="resourceExtras" type="resourceExtras"/>
@@ -2297,6 +2307,8 @@ infrastructures.]]></xs:documentation>
           <xs:element minOccurs="0" name="contributorProvided" type="xs:boolean"/>
                     
           <xs:element minOccurs="0" name="nodeId" type="xs:string"/>
+                    
+          <xs:element minOccurs="0" name="offboardRequestPending" type="xs:boolean"/>
                     
           <xs:element minOccurs="0" name="resourceOrganisationGroupID" type="xs:string"/>
                     
@@ -2553,6 +2565,8 @@ that is the used scheme (e.g., Web Address URL, DOI, ARK, etc.).]]></xs:document
           <xs:element minOccurs="0" name="auditState" type="xs:string"/>
                     
           <xs:element minOccurs="0" name="nodeId" type="xs:string"/>
+                    
+          <xs:element minOccurs="0" name="offboardRequestPending" type="xs:boolean"/>
                     
           <xs:element minOccurs="0" name="resourceOrganisationGroupID" type="xs:string"/>
                     
