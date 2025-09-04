@@ -8,6 +8,9 @@ import jakarta.xml.bind.annotation.XmlType;
 import java.util.List;
 import java.util.Objects;
 
+import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
+import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
+
 @XmlType
 @XmlRootElement(namespace = "http://einfracentral.eu")
 public class ServiceClassTier {
@@ -20,8 +23,11 @@ public class ServiceClassTier {
     @Schema(description = "Public")
     private String accessPolicy;
 
+
     @XmlElement
     @Schema(description = "Public")
+    @VocabularyValidation(type = Vocabulary.Type.COST_MODEL)
+    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     private String costModel;
 
     @XmlElement

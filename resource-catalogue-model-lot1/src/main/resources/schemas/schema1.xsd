@@ -3094,6 +3094,8 @@ that is the used scheme (e.g., Web Address URL, DOI, ARK, etc.).]]></xs:document
             
       <xs:enumeration value="MONITORING_SERVICE_TYPE"/>
             
+      <xs:enumeration value="COST_MODEL"/>
+            
       <xs:enumeration value="CATALOGUE_STATE"/>
             
       <xs:enumeration value="PROVIDER_STATE"/>
