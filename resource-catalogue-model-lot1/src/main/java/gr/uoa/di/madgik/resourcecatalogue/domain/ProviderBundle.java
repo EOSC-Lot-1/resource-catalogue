@@ -140,18 +140,28 @@ public class ProviderBundle extends Bundle<Provider> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        ProviderBundle that = (ProviderBundle) o;
-        return Objects.equals(status, that.status) && Objects.equals(templateStatus, that.templateStatus) && Objects.equals(auditState, that.auditState) && Objects.equals(transferContactInformation, that.transferContactInformation);
-    }
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ProviderBundle other = (ProviderBundle) obj;
+		return Objects.equals(auditState, other.auditState) && Objects.equals(nodeInfo, other.nodeInfo)
+				&& Objects.equals(resourceOrganisationGroupID, other.resourceOrganisationGroupID)
+				&& Objects.equals(resubmit, other.resubmit) && Objects.equals(templateStatus, other.templateStatus)
+				&& Objects.equals(transferContactInformation, other.transferContactInformation);
+	}
 
     @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), status, templateStatus, auditState, transferContactInformation);
-    }
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(auditState, nodeInfo, resourceOrganisationGroupID, resubmit,
+				templateStatus, transferContactInformation);
+		return result;
+	}
     
     @Override
     public String toString() {

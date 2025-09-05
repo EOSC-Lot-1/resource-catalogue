@@ -186,17 +186,21 @@ public class Metadata {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Metadata metadata = (Metadata) o;
-        return Objects.equals(registeredBy, metadata.registeredBy) && Objects.equals(registeredAt, metadata.registeredAt)
-                && Objects.equals(modifiedBy, metadata.modifiedBy) && Objects.equals(modifiedAt, metadata.modifiedAt)
-                && Objects.equals(terms, metadata.terms) && Objects.equals(published, metadata.published);
-    }
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Metadata other = (Metadata) obj;
+		return Objects.equals(modifiedAt, other.modifiedAt) && Objects.equals(modifiedBy, other.modifiedBy)
+				&& published == other.published && Objects.equals(registeredAt, other.registeredAt)
+				&& Objects.equals(registeredBy, other.registeredBy) && Objects.equals(terms, other.terms);
+	}
 
     @Override
-    public int hashCode() {
-        return Objects.hash(registeredBy, registeredAt, modifiedBy, modifiedAt, terms, published);
-    }
+	public int hashCode() {
+		return Objects.hash(modifiedAt, modifiedBy, published, registeredAt, registeredBy, terms);
+	}
 }

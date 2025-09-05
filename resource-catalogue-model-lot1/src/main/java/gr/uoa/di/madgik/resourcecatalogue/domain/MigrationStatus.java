@@ -6,6 +6,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
 import java.util.List;
+import java.util.Objects;
 
 @XmlType
 @XmlRootElement(namespace = "http://einfracentral.eu")
@@ -88,4 +89,24 @@ public class MigrationStatus {
     public void setModelVersion(String modelVersion) {
         this.modelVersion = modelVersion;
     }
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(comments, migrationDate, modelVersion, modified, resolutionDate);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MigrationStatus other = (MigrationStatus) obj;
+		return Objects.equals(comments, other.comments) && Objects.equals(migrationDate, other.migrationDate)
+				&& Objects.equals(modelVersion, other.modelVersion) && Objects.equals(modified, other.modified)
+				&& Objects.equals(resolutionDate, other.resolutionDate);
+	}
+    
 }

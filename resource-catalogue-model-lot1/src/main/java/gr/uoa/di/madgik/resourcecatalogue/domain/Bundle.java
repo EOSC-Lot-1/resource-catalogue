@@ -220,15 +220,27 @@ public abstract class Bundle<T extends Identifiable> implements Identifiable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Bundle)) return false;
-        Bundle<?> bundle = (Bundle<?>) o;
-        return active == bundle.active && suspended == bundle.suspended && draft == bundle.draft && legacy == bundle.legacy && Objects.equals(payload, bundle.payload) && Objects.equals(metadata, bundle.metadata) && Objects.equals(identifiers, bundle.identifiers) && Objects.equals(migrationStatus, bundle.migrationStatus) && Objects.equals(loggingInfo, bundle.loggingInfo) && Objects.equals(latestAuditInfo, bundle.latestAuditInfo) && Objects.equals(latestOnboardingInfo, bundle.latestOnboardingInfo) && Objects.equals(latestUpdateInfo, bundle.latestUpdateInfo);
-    }
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Bundle other = (Bundle) obj;
+		return Objects.equals(acknowledgement, other.acknowledgement) && active == other.active && draft == other.draft
+				&& Objects.equals(identifiers, other.identifiers)
+				&& Objects.equals(internalComments, other.internalComments)
+				&& Objects.equals(latestAuditInfo, other.latestAuditInfo)
+				&& Objects.equals(latestOnboardingInfo, other.latestOnboardingInfo)
+				&& Objects.equals(latestUpdateInfo, other.latestUpdateInfo) && legacy == other.legacy
+				&& Objects.equals(loggingInfo, other.loggingInfo) && Objects.equals(metadata, other.metadata)
+				&& Objects.equals(migrationStatus, other.migrationStatus) && suspended == other.suspended;
+	}
 
     @Override
-    public int hashCode() {
-        return Objects.hash(payload, metadata, active, suspended, draft, legacy, identifiers, migrationStatus, loggingInfo, latestAuditInfo, latestOnboardingInfo, latestUpdateInfo);
-    }
+	public int hashCode() {
+		return Objects.hash(acknowledgement, active, draft, identifiers, internalComments, latestAuditInfo,
+				latestOnboardingInfo, latestUpdateInfo, legacy, loggingInfo, metadata, migrationStatus, suspended);
+	}
 }

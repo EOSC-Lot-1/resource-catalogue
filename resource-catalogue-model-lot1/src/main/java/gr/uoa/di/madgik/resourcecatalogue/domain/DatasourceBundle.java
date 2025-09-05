@@ -4,6 +4,8 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
+import java.util.Objects;
+
 import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -192,6 +194,32 @@ public class DatasourceBundle extends Bundle<Datasource> {
 
 	public void setOffboardRequestPending(Boolean offboardRequestPending) {
 		this.offboardRequestPending = offboardRequestPending;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(datasourceType, nodeId, oaiPmhInfo, offboardRequestPending,
+				originalOpenAIREId, resourceOrganisationGroupID, resubmit, softwareRepository);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DatasourceBundle other = (DatasourceBundle) obj;
+		return Objects.equals(datasourceType, other.datasourceType) && Objects.equals(nodeId, other.nodeId)
+				&& Objects.equals(oaiPmhInfo, other.oaiPmhInfo)
+				&& Objects.equals(offboardRequestPending, other.offboardRequestPending)
+				&& Objects.equals(originalOpenAIREId, other.originalOpenAIREId)
+				&& Objects.equals(resourceOrganisationGroupID, other.resourceOrganisationGroupID)
+				&& Objects.equals(resubmit, other.resubmit) && softwareRepository == other.softwareRepository;
 	}
 	
 }

@@ -83,7 +83,6 @@ public class Vocabulary implements Identifiable {
         INTEGRATION_STATUS("Integration status"),
         ENROLLMENT_STATUS("Enrollment status"),
         MONITORING_SERVICE_TYPE("Monitoring service type"),
-    	COST_MODEL("Cost model"),
         // States
         CATALOGUE_STATE("Catalogue state"),
         PROVIDER_STATE("Provider state"),

@@ -133,18 +133,28 @@ public class ToolBundle extends Bundle<Tool> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        ToolBundle that = (ToolBundle) o;
-        return Objects.equals(status, that.status) ;
-    }
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ToolBundle other = (ToolBundle) obj;
+		return contributorProvided == other.contributorProvided && Objects.equals(nodeId, other.nodeId)
+				&& Objects.equals(offboardRequestPending, other.offboardRequestPending)
+				&& Objects.equals(resourceOrganisationGroupID, other.resourceOrganisationGroupID)
+				&& Objects.equals(security, other.security);
+	}
 
     @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), status, security);
-    }
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(contributorProvided, nodeId, offboardRequestPending,
+				resourceOrganisationGroupID, security);
+		return result;
+	}
 }
 
 

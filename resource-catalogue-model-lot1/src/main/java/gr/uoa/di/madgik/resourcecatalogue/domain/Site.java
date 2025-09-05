@@ -63,15 +63,19 @@ public class Site {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Site that = (Site) o;
-        return Objects.equals(name, that.name);
-    }
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Site other = (Site) obj;
+		return Objects.equals(endpoints, other.endpoints) && Objects.equals(name, other.name);
+	}
 
     @Override
-    public int hashCode() {
-        return Objects.hash(name, endpoints);
-    }
+	public int hashCode() {
+		return Objects.hash(endpoints, name);
+	}
 }

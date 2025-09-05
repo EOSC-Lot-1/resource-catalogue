@@ -1,5 +1,7 @@
 package gr.uoa.di.madgik.resourcecatalogue.domain;
 
+import java.util.Objects;
+
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
@@ -42,4 +44,22 @@ public class Identifiers {
     public void setOriginalId(String originalId) {
         this.originalId = originalId;
     }
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(originalId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Identifiers other = (Identifiers) obj;
+		return Objects.equals(originalId, other.originalId);
+	}
+    
 }

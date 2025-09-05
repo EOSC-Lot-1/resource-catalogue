@@ -143,19 +143,24 @@ public class OAIPMHInfo {
 		this.alternativeIdentifiers = alternativeIdentifiers;
 	}
 	@Override
-	public boolean equals(Object o) {
-		if (this == o)
+	public boolean equals(Object obj) {
+		if (this == obj)
 			return true;
-		if (o == null || getClass() != o.getClass())
+		if (obj == null)
 			return false;
-		OAIPMHInfo that = (OAIPMHInfo) o;
-		return Objects.equals(protocol, that.protocol) && Objects.equals(sets, that.sets)
-				&& Objects.equals(baseUrl, that.baseUrl) && Objects.equals(format, that.format)
-				&& Objects.equals(openAIRECompliance, that.openAIRECompliance);
+		if (getClass() != obj.getClass())
+			return false;
+		OAIPMHInfo other = (OAIPMHInfo) obj;
+		return Objects.equals(alternativeIdentifiers, other.alternativeIdentifiers)
+				&& Objects.equals(baseUrl, other.baseUrl) && Objects.equals(compatibility, other.compatibility)
+				&& Objects.equals(format, other.format) && Objects.equals(openAIRECompliance, other.openAIRECompliance)
+				&& Objects.equals(protocol, other.protocol)
+				&& Objects.equals(repositoryIdentifier, other.repositoryIdentifier) && Objects.equals(sets, other.sets);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(protocol, sets, baseUrl, format, openAIRECompliance);
+		return Objects.hash(alternativeIdentifiers, baseUrl, compatibility, format, openAIRECompliance, protocol,
+				repositoryIdentifier, sets);
 	}
 }

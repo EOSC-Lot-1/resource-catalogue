@@ -23,11 +23,8 @@ public class ServiceClassTier {
     @Schema(description = "Public")
     private String accessPolicy;
 
-
     @XmlElement
     @Schema(description = "Public")
-    @VocabularyValidation(type = Vocabulary.Type.COST_MODEL)
-    @FieldValidation(nullable = true, containsId = true, idClass = Vocabulary.class)
     private String costModel;
 
     @XmlElement

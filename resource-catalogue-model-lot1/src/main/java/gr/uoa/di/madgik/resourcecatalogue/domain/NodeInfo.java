@@ -1,5 +1,7 @@
 package gr.uoa.di.madgik.resourcecatalogue.domain;
 
+import java.util.Objects;
+
 import gr.uoa.di.madgik.resourcecatalogue.annotation.FieldValidation;
 import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -74,4 +76,24 @@ public class NodeInfo {
 	public void setEnrollmentSteps(EnrollmentSteps enrollmentSteps) {
 		this.enrollmentSteps = enrollmentSteps;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(enrollmentSteps, isNode, nodeType, openAIRECommunityTag);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NodeInfo other = (NodeInfo) obj;
+		return Objects.equals(enrollmentSteps, other.enrollmentSteps) && Objects.equals(isNode, other.isNode)
+				&& Objects.equals(nodeType, other.nodeType)
+				&& Objects.equals(openAIRECommunityTag, other.openAIRECommunityTag);
+	}
+	
 }

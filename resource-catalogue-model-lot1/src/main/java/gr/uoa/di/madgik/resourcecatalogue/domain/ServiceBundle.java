@@ -5,6 +5,7 @@ import gr.uoa.di.madgik.resourcecatalogue.annotation.VocabularyValidation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
@@ -167,6 +168,32 @@ public class ServiceBundle extends Bundle<Service> {
 	}
 
     @Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(auditState, nodeId, offboardRequestPending, onboardingIntegration,
+				resourceExtras, resourceOrganisationGroupID, resubmit, sites);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ServiceBundle other = (ServiceBundle) obj;
+		return Objects.equals(auditState, other.auditState) && Objects.equals(nodeId, other.nodeId)
+				&& Objects.equals(offboardRequestPending, other.offboardRequestPending)
+				&& Objects.equals(onboardingIntegration, other.onboardingIntegration)
+				&& Objects.equals(resourceExtras, other.resourceExtras)
+				&& Objects.equals(resourceOrganisationGroupID, other.resourceOrganisationGroupID)
+				&& Objects.equals(resubmit, other.resubmit) && Objects.equals(sites, other.sites);
+	}
+
+	@Override
     public String toString() {
         return "ServiceBundle{" +
                 "status='" + status + '\'' +

@@ -124,16 +124,26 @@ public class InteroperabilityRecordBundle extends Bundle<InteroperabilityRecord>
 	}
 
 	@Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        InteroperabilityRecordBundle that = (InteroperabilityRecordBundle) o;
-        return Objects.equals(status, that.status) && Objects.equals(auditState, that.auditState);
-    }
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		InteroperabilityRecordBundle other = (InteroperabilityRecordBundle) obj;
+		return Objects.equals(auditState, other.auditState) && Objects.equals(nodeId, other.nodeId)
+				&& Objects.equals(offboardRequestPending, other.offboardRequestPending)
+				&& Objects.equals(resourceOrganisationGroupID, other.resourceOrganisationGroupID)
+				&& Objects.equals(resubmit, other.resubmit);
+	}
 
     @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), status, auditState);
-    }
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ Objects.hash(auditState, nodeId, offboardRequestPending, resourceOrganisationGroupID, resubmit);
+		return result;
+	}
 }
