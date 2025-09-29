@@ -128,6 +128,7 @@ public class Vocabulary implements Identifiable {
         CT_COMPATIBILITY("Configuration Template compatibility"),
     	// Other
     	RESOURCE_STATUS("Resource status"),
+    	RESOURCE_TYPE("Resource type"),
     	NODE_TYPE("Node type");
         private final String type;
 

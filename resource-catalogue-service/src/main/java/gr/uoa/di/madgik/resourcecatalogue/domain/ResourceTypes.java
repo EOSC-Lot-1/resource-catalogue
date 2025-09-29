@@ -13,6 +13,7 @@ public enum ResourceTypes {
     SERVICE,
     TOOL,
     TRAINING_RESOURCE,
+    RESOURCE_REVISION,
     VOCABULARY_CURATION;
 
     @Override

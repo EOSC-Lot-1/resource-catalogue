@@ -1,0 +1,65 @@
+{
+    "indexFields": [
+        {
+            "label": null,
+            "multivalued": false,
+            "name": "resource_internal_id",
+            "path": "$.resourceRevision.id",
+            "primaryKey": true,
+            "type": "java.lang.String"
+        },{
+            "label": "Original Id",
+            "multivalued": false,
+            "name": "originalId",
+            "path": "$.originalId",
+            "primaryKey": true,
+            "type": "java.lang.String"
+        },
+	    {
+	      	"label": null,
+	      	"multivalued": false,
+	      	"name": "revisionStatus",
+	      	"path": "$.revisionStatus",
+	      	"type": "java.lang.String"
+	    },
+	    {
+	      	"label": null,
+	      	"multivalued": false,
+	      	"name": "resourceType",
+	      	"path": "$.resourceType",
+	      	"type": "java.lang.String"
+	    },
+	    {
+	      	"label": null,
+	      	"multivalued": false,
+	      	"name": "registeredBy",
+	      	"path": "$.metadata.registeredBy",
+	      	"type": "java.lang.String"
+	    },
+	    {
+	      	"label": null,
+	      	"multivalued": false,
+	      	"name": "modifiedBy",
+	      	"path": "$.metadata.modifiedBy",
+	      	"type": "java.lang.String"
+	    },
+	    {
+	      	"label": null,
+	      	"multivalued": false,
+	      	"name": "registeredAt",
+	      	"path": "$.metadata.registeredAt",
+	      	"type": "java.util.Date"
+	    }
+    ],
+    "indexMapperClass": "gr.uoa.di.madgik.registry.index.DefaultIndexMapper",
+    "aliases": [
+		"resourceTypes",
+    	"resourceRevisions"
+    ],
+    "name": "resource_revision",
+    "payloadType": "json",
+    "properties": {
+        "class": "gr.uoa.di.madgik.resourcecatalogue.domain.ResourceRevisionBundle"
+    },
+    "schema": "{\n\t\"$schema\": \"https://json-schema.org/draft/2019-09/schema\"\n}"
+}

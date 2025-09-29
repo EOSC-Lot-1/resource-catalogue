@@ -7,7 +7,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0"
     },
-    "version": "v5.0.0+u120"
+    "version": "@project.version@"
   },
   "externalDocs": {
     "description": "resource-catalogue Documentation",
@@ -670,12 +670,157 @@
         }
       }
     },
+    "/resource-revisions": {
+      "get": {
+        "tags": [
+          "resource-revisions"
+        ],
+        "operationId": "getAll_4",
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "description": "Keyword to refine the search",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Starting index in the result set",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "default": "0"
+                }
+              }
+            }
+          },
+          {
+            "name": "quantity",
+            "in": "query",
+            "description": "Quantity to be fetched",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "default": "10"
+                }
+              }
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Field to use for sorting",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Order of results",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "default": "asc",
+                  "enum": [
+                    "asc",
+                    "desc"
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagingResourceRevisionBundle"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "resource-revisions"
+        ],
+        "operationId": "update_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceRevisionBundle"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceRevisionBundle"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "resource-revisions"
+        ],
+        "operationId": "add_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceRevisionBundle"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceRevisionBundle"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/resource-interoperability-records": {
       "get": {
         "tags": [
           "resource interoperability records"
         ],
-        "operationId": "getAll_4",
+        "operationId": "getAll_5",
         "parameters": [
           {
             "name": "keyword",
@@ -762,7 +907,7 @@
         "tags": [
           "resource interoperability records"
         ],
-        "operationId": "update_4",
+        "operationId": "update_5",
         "requestBody": {
           "content": {
             "application/json": {
@@ -790,7 +935,7 @@
         "tags": [
           "resource interoperability records"
         ],
-        "operationId": "add_4",
+        "operationId": "add_5",
         "requestBody": {
           "content": {
             "application/json": {
@@ -820,7 +965,7 @@
         "tags": [
           "providers"
         ],
-        "operationId": "getAll_5",
+        "operationId": "getAll_6",
         "parameters": [
           {
             "name": "keyword",
@@ -907,7 +1052,7 @@
         "tags": [
           "providers"
         ],
-        "operationId": "update_5",
+        "operationId": "update_6",
         "requestBody": {
           "content": {
             "application/json": {
@@ -935,7 +1080,7 @@
         "tags": [
           "providers"
         ],
-        "operationId": "add_5",
+        "operationId": "add_6",
         "requestBody": {
           "content": {
             "application/json": {
@@ -965,7 +1110,7 @@
         "tags": [
           "monitorings"
         ],
-        "operationId": "getAll_6",
+        "operationId": "getAll_7",
         "parameters": [
           {
             "name": "keyword",
@@ -1052,7 +1197,7 @@
         "tags": [
           "monitorings"
         ],
-        "operationId": "update_6",
+        "operationId": "update_7",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1080,7 +1225,7 @@
         "tags": [
           "monitorings"
         ],
-        "operationId": "add_6",
+        "operationId": "add_7",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1110,7 +1255,7 @@
         "tags": [
           "interoperability records"
         ],
-        "operationId": "getAll_7",
+        "operationId": "getAll_8",
         "parameters": [
           {
             "name": "keyword",
@@ -1197,7 +1342,7 @@
         "tags": [
           "interoperability records"
         ],
-        "operationId": "update_7",
+        "operationId": "update_8",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1225,7 +1370,7 @@
         "tags": [
           "interoperability records"
         ],
-        "operationId": "add_7",
+        "operationId": "add_8",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1255,7 +1400,7 @@
         "tags": [
           "datasources"
         ],
-        "operationId": "getAll_8",
+        "operationId": "getAll_9",
         "parameters": [
           {
             "name": "keyword",
@@ -1342,7 +1487,7 @@
         "tags": [
           "datasources"
         ],
-        "operationId": "update_8",
+        "operationId": "update_9",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1370,7 +1515,7 @@
         "tags": [
           "datasources"
         ],
-        "operationId": "add_8",
+        "operationId": "add_9",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1400,7 +1545,7 @@
         "tags": [
           "configuration template instances"
         ],
-        "operationId": "getAll_9",
+        "operationId": "getAll_10",
         "parameters": [
           {
             "name": "keyword",
@@ -1487,7 +1632,7 @@
         "tags": [
           "configuration template instances"
         ],
-        "operationId": "update_9",
+        "operationId": "update_10",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1515,7 +1660,7 @@
         "tags": [
           "configuration template instances"
         ],
-        "operationId": "add_9",
+        "operationId": "add_10",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1801,12 +1946,35 @@
         }
       }
     },
+    "/resource-revisions/validate": {
+      "post": {
+        "tags": [
+          "resource-revisions"
+        ],
+        "operationId": "validate_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceRevisionBundle"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/resource-interoperability-records/validate": {
       "post": {
         "tags": [
           "resource interoperability records"
         ],
-        "operationId": "validate_4",
+        "operationId": "validate_5",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1879,7 +2047,7 @@
         "tags": [
           "providers"
         ],
-        "operationId": "validate_5",
+        "operationId": "validate_6",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2054,7 +2222,7 @@
         "tags": [
           "monitorings"
         ],
-        "operationId": "validate_6",
+        "operationId": "validate_7",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2103,7 +2271,7 @@
         "tags": [
           "interoperability records"
         ],
-        "operationId": "validate_7",
+        "operationId": "validate_8",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2176,7 +2344,7 @@
         "tags": [
           "datasources"
         ],
-        "operationId": "validate_8",
+        "operationId": "validate_9",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2249,7 +2417,7 @@
         "tags": [
           "configuration template instances"
         ],
-        "operationId": "validate_9",
+        "operationId": "validate_10",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2421,6 +2589,7 @@
                 "CT_PROTOCOL",
                 "CT_COMPATIBILITY",
                 "RESOURCE_STATUS",
+                "RESOURCE_TYPE",
                 "NODE_TYPE"
               ]
             }
@@ -2682,6 +2851,7 @@
                 "CT_PROTOCOL",
                 "CT_COMPATIBILITY",
                 "RESOURCE_STATUS",
+                "RESOURCE_TYPE",
                 "NODE_TYPE"
               ]
             }
@@ -3174,12 +3344,142 @@
         }
       }
     },
+    "/resource-revisions/{id}": {
+      "get": {
+        "tags": [
+          "resource-revisions"
+        ],
+        "operationId": "get_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceRevisionBundle"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "resource-revisions"
+        ],
+        "operationId": "delete_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceRevisionBundle"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resource-revisions/ids": {
+      "get": {
+        "tags": [
+          "resource-revisions"
+        ],
+        "operationId": "getSome_4",
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResourceRevisionBundle"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resource-revisions/by/{field}": {
+      "get": {
+        "tags": [
+          "resource-revisions"
+        ],
+        "operationId": "getBy_4",
+        "parameters": [
+          {
+            "name": "field",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ResourceRevisionBundle"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/resource-interoperability-records/{id}": {
       "get": {
         "tags": [
           "resource interoperability records"
         ],
-        "operationId": "get_5",
+        "operationId": "get_6",
         "parameters": [
           {
             "name": "id",
@@ -3207,7 +3507,7 @@
         "tags": [
           "resource interoperability records"
         ],
-        "operationId": "delete_4",
+        "operationId": "delete_5",
         "parameters": [
           {
             "name": "id",
@@ -3237,7 +3537,7 @@
         "tags": [
           "resource interoperability records"
         ],
-        "operationId": "getSome_4",
+        "operationId": "getSome_5",
         "parameters": [
           {
             "name": "ids",
@@ -3273,7 +3573,7 @@
         "tags": [
           "resource interoperability records"
         ],
-        "operationId": "getBy_4",
+        "operationId": "getBy_5",
         "parameters": [
           {
             "name": "field",
@@ -3309,7 +3609,7 @@
         "tags": [
           "providers"
         ],
-        "operationId": "get_6",
+        "operationId": "get_7",
         "parameters": [
           {
             "name": "id",
@@ -3337,7 +3637,7 @@
         "tags": [
           "providers"
         ],
-        "operationId": "delete_5",
+        "operationId": "delete_6",
         "parameters": [
           {
             "name": "id",
@@ -3367,7 +3667,7 @@
         "tags": [
           "providers"
         ],
-        "operationId": "getSome_5",
+        "operationId": "getSome_6",
         "parameters": [
           {
             "name": "ids",
@@ -3403,7 +3703,7 @@
         "tags": [
           "providers"
         ],
-        "operationId": "getBy_5",
+        "operationId": "getBy_6",
         "parameters": [
           {
             "name": "field",
@@ -3439,7 +3739,7 @@
         "tags": [
           "monitorings"
         ],
-        "operationId": "get_7",
+        "operationId": "get_8",
         "parameters": [
           {
             "name": "id",
@@ -3467,7 +3767,7 @@
         "tags": [
           "monitorings"
         ],
-        "operationId": "delete_6",
+        "operationId": "delete_7",
         "parameters": [
           {
             "name": "id",
@@ -3497,7 +3797,7 @@
         "tags": [
           "monitorings"
         ],
-        "operationId": "getSome_6",
+        "operationId": "getSome_7",
         "parameters": [
           {
             "name": "ids",
@@ -3533,7 +3833,7 @@
         "tags": [
           "monitorings"
         ],
-        "operationId": "getBy_6",
+        "operationId": "getBy_7",
         "parameters": [
           {
             "name": "field",
@@ -3569,7 +3869,7 @@
         "tags": [
           "interoperability records"
         ],
-        "operationId": "get_8",
+        "operationId": "get_9",
         "parameters": [
           {
             "name": "id",
@@ -3597,7 +3897,7 @@
         "tags": [
           "interoperability records"
         ],
-        "operationId": "delete_7",
+        "operationId": "delete_8",
         "parameters": [
           {
             "name": "id",
@@ -3627,7 +3927,7 @@
         "tags": [
           "interoperability records"
         ],
-        "operationId": "getSome_7",
+        "operationId": "getSome_8",
         "parameters": [
           {
             "name": "ids",
@@ -3663,7 +3963,7 @@
         "tags": [
           "interoperability records"
         ],
-        "operationId": "getBy_7",
+        "operationId": "getBy_8",
         "parameters": [
           {
             "name": "field",
@@ -3699,7 +3999,7 @@
         "tags": [
           "datasources"
         ],
-        "operationId": "get_9",
+        "operationId": "get_10",
         "parameters": [
           {
             "name": "id",
@@ -3727,7 +4027,7 @@
         "tags": [
           "datasources"
         ],
-        "operationId": "delete_8",
+        "operationId": "delete_9",
         "parameters": [
           {
             "name": "id",
@@ -3817,7 +4117,7 @@
         "tags": [
           "datasources"
         ],
-        "operationId": "getSome_8",
+        "operationId": "getSome_9",
         "parameters": [
           {
             "name": "ids",
@@ -4012,7 +4312,7 @@
         "tags": [
           "datasources"
         ],
-        "operationId": "getBy_8",
+        "operationId": "getBy_9",
         "parameters": [
           {
             "name": "field",
@@ -4048,7 +4348,7 @@
         "tags": [
           "configuration template instances"
         ],
-        "operationId": "get_10",
+        "operationId": "get_11",
         "parameters": [
           {
             "name": "id",
@@ -4076,7 +4376,7 @@
         "tags": [
           "configuration template instances"
         ],
-        "operationId": "delete_9",
+        "operationId": "delete_10",
         "parameters": [
           {
             "name": "id",
@@ -4106,7 +4406,7 @@
         "tags": [
           "configuration template instances"
         ],
-        "operationId": "getSome_9",
+        "operationId": "getSome_10",
         "parameters": [
           {
             "name": "ids",
@@ -4142,7 +4442,7 @@
         "tags": [
           "configuration template instances"
         ],
-        "operationId": "getBy_9",
+        "operationId": "getBy_10",
         "parameters": [
           {
             "name": "field",
@@ -4259,6 +4559,7 @@
                 "CT_PROTOCOL",
                 "CT_COMPATIBILITY",
                 "RESOURCE_STATUS",
+                "RESOURCE_TYPE",
                 "NODE_TYPE"
               ]
             }
@@ -4850,6 +5151,10 @@
             "$ref": "#/components/schemas/Acknowledgement",
             "description": "Private"
           },
+          "pendingRevisionId": {
+            "type": "string",
+            "description": "Private"
+          },
           "status": {
             "type": "string",
             "description": "Private"
@@ -5069,6 +5374,10 @@
           },
           "acknowledgement": {
             "$ref": "#/components/schemas/Acknowledgement",
+            "description": "Private"
+          },
+          "pendingRevisionId": {
+            "type": "string",
             "description": "Private"
           },
           "status": {
@@ -5774,6 +6083,10 @@
             "$ref": "#/components/schemas/Acknowledgement",
             "description": "Private"
           },
+          "pendingRevisionId": {
+            "type": "string",
+            "description": "Private"
+          },
           "status": {
             "type": "string",
             "description": "Private"
@@ -5939,6 +6252,105 @@
           "useCaseURL"
         ]
       },
+      "ResourceRevision": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Public"
+          },
+          "resourceData": {
+            "type": "string",
+            "description": "Private"
+          }
+        }
+      },
+      "ResourceRevisionBundle": {
+        "type": "object",
+        "properties": {
+          "metadata": {
+            "$ref": "#/components/schemas/Metadata",
+            "description": "Public"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Private"
+          },
+          "suspended": {
+            "type": "boolean",
+            "description": "Private"
+          },
+          "draft": {
+            "type": "boolean",
+            "description": "Private"
+          },
+          "legacy": {
+            "type": "boolean",
+            "description": "Private"
+          },
+          "identifiers": {
+            "$ref": "#/components/schemas/Identifiers",
+            "description": "Private"
+          },
+          "migrationStatus": {
+            "$ref": "#/components/schemas/MigrationStatus",
+            "description": "Private"
+          },
+          "loggingInfo": {
+            "type": "array",
+            "description": "Private",
+            "items": {
+              "$ref": "#/components/schemas/LoggingInfo"
+            }
+          },
+          "latestAuditInfo": {
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
+          },
+          "latestOnboardingInfo": {
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
+          },
+          "latestUpdateInfo": {
+            "$ref": "#/components/schemas/LoggingInfo",
+            "description": "Private"
+          },
+          "internalComments": {
+            "type": "string",
+            "description": "Private"
+          },
+          "acknowledgement": {
+            "$ref": "#/components/schemas/Acknowledgement",
+            "description": "Private"
+          },
+          "pendingRevisionId": {
+            "type": "string",
+            "description": "Private"
+          },
+          "status": {
+            "type": "string",
+            "description": "Private"
+          },
+          "originalId": {
+            "type": "string",
+            "description": "Private"
+          },
+          "resourceType": {
+            "type": "string",
+            "description": "Private"
+          },
+          "id": {
+            "type": "string",
+            "description": "Public"
+          },
+          "resourceRevision": {
+            "$ref": "#/components/schemas/ResourceRevision",
+            "xml": {
+              "name": "resource"
+            }
+          }
+        }
+      },
       "ResourceInteroperabilityRecord": {
         "type": "object",
         "properties": {
@@ -6030,6 +6442,10 @@
           },
           "acknowledgement": {
             "$ref": "#/components/schemas/Acknowledgement",
+            "description": "Private"
+          },
+          "pendingRevisionId": {
+            "type": "string",
             "description": "Private"
           },
           "resourceInteroperabilityRecord": {
@@ -6424,6 +6840,10 @@
             "$ref": "#/components/schemas/Acknowledgement",
             "description": "Private"
           },
+          "pendingRevisionId": {
+            "type": "string",
+            "description": "Private"
+          },
           "status": {
             "type": "string",
             "description": "Private"
@@ -6670,6 +7090,10 @@
           },
           "acknowledgement": {
             "$ref": "#/components/schemas/Acknowledgement",
+            "description": "Private"
+          },
+          "pendingRevisionId": {
+            "type": "string",
             "description": "Private"
           },
           "catalogueId": {
@@ -6957,6 +7381,10 @@
             "$ref": "#/components/schemas/Acknowledgement",
             "description": "Private"
           },
+          "pendingRevisionId": {
+            "type": "string",
+            "description": "Private"
+          },
           "status": {
             "type": "string",
             "description": "Private"
@@ -7213,6 +7641,10 @@
             "$ref": "#/components/schemas/Acknowledgement",
             "description": "Private"
           },
+          "pendingRevisionId": {
+            "type": "string",
+            "description": "Private"
+          },
           "status": {
             "type": "string",
             "description": "Private"
@@ -7444,6 +7876,10 @@
             "$ref": "#/components/schemas/Acknowledgement",
             "description": "Private"
           },
+          "pendingRevisionId": {
+            "type": "string",
+            "description": "Private"
+          },
           "id": {
             "type": "string",
             "description": "Public"
@@ -7603,6 +8039,35 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ServiceBundle"
+            }
+          },
+          "facets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Facet"
+            }
+          }
+        }
+      },
+      "PagingResourceRevisionBundle": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "from": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "to": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceRevisionBundle"
             }
           },
           "facets": {

@@ -69,6 +69,8 @@
             
       <xs:element minOccurs="0" name="migrationStatus" type="migrationStatus"/>
             
+      <xs:element minOccurs="0" name="pendingRevisionId" type="xs:string"/>
+            
       <xs:element name="suspended" type="xs:boolean"/>
           
     </xs:sequence>
@@ -1640,6 +1642,42 @@ For embedded providers (2) - legal status of the hosting legal entity. It is als
       
   </xs:complexType>
     
+  <xs:complexType name="resourceRevision">
+        
+    <xs:sequence>
+            
+      <xs:element minOccurs="0" name="id" type="xs:string"/>
+            
+      <xs:element minOccurs="0" name="resourceData" type="xs:string"/>
+          
+    </xs:sequence>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="resourceRevisionBundle">
+        
+    <xs:complexContent>
+            
+      <xs:extension base="bundle">
+                
+        <xs:sequence>
+                    
+          <xs:element minOccurs="0" name="originalId" type="xs:string"/>
+                    
+          <xs:element minOccurs="0" name="resourceRevision" type="resourceRevision"/>
+                    
+          <xs:element minOccurs="0" name="resourceType" type="xs:string"/>
+                    
+          <xs:element minOccurs="0" name="status" type="xs:string"/>
+                  
+        </xs:sequence>
+              
+      </xs:extension>
+          
+    </xs:complexContent>
+      
+  </xs:complexType>
+    
   <xs:complexType name="service">
         
     <xs:sequence>
@@ -3165,6 +3203,8 @@ that is the used scheme (e.g., Web Address URL, DOI, ARK, etc.).]]></xs:document
       <xs:enumeration value="CT_COMPATIBILITY"/>
             
       <xs:enumeration value="RESOURCE_STATUS"/>
+            
+      <xs:enumeration value="RESOURCE_TYPE"/>
             
       <xs:enumeration value="NODE_TYPE"/>
           

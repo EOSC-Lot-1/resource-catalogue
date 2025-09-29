@@ -72,6 +72,10 @@ public abstract class Bundle<T extends Identifiable> implements Identifiable {
     @XmlElement
     private Acknowledgement acknowledgement;
     
+    @Schema(description = "Private")
+    @XmlElement
+    private String pendingRevisionId;
+    
     public Bundle() {
     }
 
@@ -199,6 +203,14 @@ public abstract class Bundle<T extends Identifiable> implements Identifiable {
 
 	public void setAcknowledgement(Acknowledgement acknowledgement) {
 		this.acknowledgement = acknowledgement;
+	}
+
+	public String getPendingRevisionId() {
+		return pendingRevisionId;
+	}
+
+	public void setPendingRevisionId(String pendingRevisionId) {
+		this.pendingRevisionId = pendingRevisionId;
 	}
 
 	@Override

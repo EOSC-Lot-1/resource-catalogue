@@ -59,6 +59,7 @@ public class ResourceIdCreator implements IdCreator {
             case "monitoring" -> resourceProperties.get(ResourceTypes.MONITORING).getIdPrefix();
             case "resource_interoperability_record" ->
                     resourceProperties.get(ResourceTypes.RESOURCE_INTEROPERABILITY_RECORD).getIdPrefix();
+            case "resource_revision" -> resourceProperties.get(ResourceTypes.RESOURCE_REVISION).getIdPrefix();
             case "vocabulary_curation" -> resourceProperties.get(ResourceTypes.VOCABULARY_CURATION).getIdPrefix();
             default -> "non";
         };
