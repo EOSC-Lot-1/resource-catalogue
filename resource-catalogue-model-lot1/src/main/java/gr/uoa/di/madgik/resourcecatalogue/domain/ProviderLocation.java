@@ -46,6 +46,14 @@ public class ProviderLocation {
     @Schema
     @FieldValidation(nullable = true)
     private String region;
+    
+    /**
+     * Name of the organization
+     */
+    @XmlElement
+    @Schema
+    @FieldValidation(nullable = true)
+    private String organizationName;
 
     /**
      * Country of incorporation or Physical location of the Provider or its coordinating centre in the case of distributed, virtual, and mobile providers.
@@ -123,7 +131,15 @@ public class ProviderLocation {
         this.region = region;
     }
 
-    public String getCountry() {
+    public String getOrganizationName() {
+		return organizationName;
+	}
+
+	public void setOrganizationName(String organizationName) {
+		this.organizationName = organizationName;
+	}
+
+	public String getCountry() {
         return country;
     }
 

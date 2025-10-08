@@ -7,7 +7,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0"
     },
-    "version": "v5.0.0+u121"
+    "version": "v5.0.0+u122"
   },
   "externalDocs": {
     "description": "resource-catalogue Documentation",
@@ -6900,6 +6900,9 @@
             "type": "string"
           },
           "region": {
+            "type": "string"
+          },
+          "organizationName": {
             "type": "string"
           },
           "country": {

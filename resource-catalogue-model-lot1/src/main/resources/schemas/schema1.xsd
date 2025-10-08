@@ -307,6 +307,12 @@ It is also possible to select Not a legal entity.]]></xs:documentation>
         </xs:annotation>
       </xs:element>
             
+      <xs:element minOccurs="0" name="organizationName" type="xs:string">
+        <xs:annotation>
+          <xs:documentation><![CDATA[Name of the organization]]></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+            
       <xs:element minOccurs="0" name="postalCode" type="xs:string">
         <xs:annotation>
           <xs:documentation><![CDATA[Postal code of incorporation or Physical location of the Provider or its coordinating centre in the case of distributed, virtual, and mobile providers.]]></xs:documentation>
