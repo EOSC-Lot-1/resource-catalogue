@@ -1668,6 +1668,8 @@ For embedded providers (2) - legal status of the hosting legal entity. It is als
                 
         <xs:sequence>
                     
+          <xs:element minOccurs="0" name="linkedServiceRevisionId" type="xs:string"/>
+                    
           <xs:element minOccurs="0" name="originalId" type="xs:string"/>
                     
           <xs:element minOccurs="0" name="resourceRevision" type="resourceRevision"/>

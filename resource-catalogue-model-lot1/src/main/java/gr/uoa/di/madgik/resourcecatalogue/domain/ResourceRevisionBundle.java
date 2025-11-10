@@ -26,6 +26,12 @@ public class ResourceRevisionBundle extends Bundle<ResourceRevision> {
     @Schema(description = "Private")
     @FieldValidation(nullable = true)
 	private String originalId;
+    
+    // Only used for datasources
+    @XmlElement
+    @Schema(description = "Private")
+    @FieldValidation(nullable = true)
+	private String linkedServiceRevisionId;
 
 	@XmlElement
     @Schema(description = "Private")
@@ -80,6 +86,14 @@ public class ResourceRevisionBundle extends Bundle<ResourceRevision> {
 
 	public void setOriginalId(String originalId) {
 		this.originalId = originalId;
+	}
+
+	public String getLinkedServiceRevisionId() {
+		return linkedServiceRevisionId;
+	}
+
+	public void setLinkedServiceRevisionId(String linkedServiceRevisionId) {
+		this.linkedServiceRevisionId = linkedServiceRevisionId;
 	}
 
 	public String getResourceType() {
