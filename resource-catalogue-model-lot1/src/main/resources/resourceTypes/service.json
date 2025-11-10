@@ -362,6 +362,15 @@
       "type": "java.lang.Boolean"
     },
     {
+      "defaultValue": null,
+      "label": null,
+      "multivalued": false,
+      "name": "offboardRequestPending",
+      "path": "$.offboardRequestPending",
+      "type": "java.lang.Boolean",
+      "primaryKey": false
+    },
+    {
       "label": null,
       "multivalued": false,
       "name": "status",
