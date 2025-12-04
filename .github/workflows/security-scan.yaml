@@ -29,7 +29,8 @@ jobs:
     - name: >-
         Build with Maven (and generate dependency tree for Trivy SCA)
       run: >-
-        mvn -P${MAVEN_PROFILE} dependency:tree dependency:copy-dependencies -DoutputFile=maven_dep_tree.txt
+        mvn -B -P ${MAVEN_PROFILE} dependency:tree -DoutputFile=maven_dep_tree.txt &&
+        mvn -B -P ${MAVEN_PROFILE} package
       env:
         MAVEN_PROFILE: lot1
         GITHUB_TOKEN: '${{ secrets.PACKAGE_READER_ACCESS_TOKEN }}'
