@@ -2358,6 +2358,8 @@ infrastructures.]]></xs:documentation>
                     
           <xs:element minOccurs="0" name="resourceOrganisationGroupID" type="xs:string"/>
                     
+          <xs:element minOccurs="0" name="resubmit" type="xs:boolean"/>
+                    
           <xs:element minOccurs="0" name="security" type="toolSecurity"/>
                     
           <xs:element minOccurs="0" name="status" type="xs:string"/>

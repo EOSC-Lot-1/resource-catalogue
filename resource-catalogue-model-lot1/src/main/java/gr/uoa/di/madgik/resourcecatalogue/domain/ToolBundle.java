@@ -37,7 +37,12 @@ public class ToolBundle extends Bundle<Tool> {
     @Schema(description = "Public")
     @FieldValidation(nullable = true)
 	private String nodeId;
-
+    
+    @XmlElement()
+    @Schema(description = "Private")
+    @FieldValidation(nullable = true)
+    private Boolean resubmit;
+    
     @XmlElement()
     @Schema(description = "Private")
     @FieldValidation(nullable = true)
@@ -116,7 +121,15 @@ public class ToolBundle extends Bundle<Tool> {
 		this.nodeId = nodeId;
 	}
 	
-    public Boolean getOffboardRequestPending() {
+    public Boolean getResubmit() {
+		return resubmit;
+	}
+
+	public void setResubmit(Boolean resubmit) {
+		this.resubmit = resubmit;
+	}
+
+	public Boolean getOffboardRequestPending() {
 		return offboardRequestPending;
 	}
 

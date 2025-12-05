@@ -7,7 +7,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0"
     },
-    "version": "v5.0.0+u123"
+    "version": "@project.version@"
   },
   "externalDocs": {
     "description": "resource-catalogue Documentation",
@@ -5399,6 +5399,10 @@
           "nodeId": {
             "type": "string",
             "description": "Public"
+          },
+          "resubmit": {
+            "type": "boolean",
+            "description": "Private"
           },
           "offboardRequestPending": {
             "type": "boolean",
