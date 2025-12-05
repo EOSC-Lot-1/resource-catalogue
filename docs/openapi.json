@@ -7,7 +7,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0"
     },
-    "version": "@project.version@"
+    "version": "v5.0.0+u124"
   },
   "externalDocs": {
     "description": "resource-catalogue Documentation",
