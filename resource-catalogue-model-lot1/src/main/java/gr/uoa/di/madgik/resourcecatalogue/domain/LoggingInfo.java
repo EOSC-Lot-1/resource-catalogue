@@ -51,6 +51,7 @@ public class LoggingInfo {
 
     public enum Types {
         ONBOARD("onboard"),
+        OFFBOARD("offboard"),
         UPDATE("update"),
         AUDIT("audit"),
         DRAFT("draft"),
@@ -83,6 +84,8 @@ public class LoggingInfo {
         REGISTERED("registered"),
         APPROVED("approved"),
         REJECTED("rejected"),
+    	// Offboard
+        OFFBOARDED("offboarded"),
         // Update
         UPDATED("updated"),
         UPDATED_VERSION("updated version"),

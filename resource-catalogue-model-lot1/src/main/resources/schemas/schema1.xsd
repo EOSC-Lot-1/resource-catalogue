@@ -2898,6 +2898,8 @@ that is the used scheme (e.g., Web Address URL, DOI, ARK, etc.).]]></xs:document
             
       <xs:enumeration value="ONBOARD"/>
             
+      <xs:enumeration value="OFFBOARD"/>
+            
       <xs:enumeration value="UPDATE"/>
             
       <xs:enumeration value="AUDIT"/>
@@ -2919,6 +2921,8 @@ that is the used scheme (e.g., Web Address URL, DOI, ARK, etc.).]]></xs:document
       <xs:enumeration value="APPROVED"/>
             
       <xs:enumeration value="REJECTED"/>
+            
+      <xs:enumeration value="OFFBOARDED"/>
             
       <xs:enumeration value="UPDATED"/>
             
