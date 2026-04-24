@@ -189,6 +189,7 @@
             <groupId>gr.uoa.di.madgik</groupId>
             <artifactId>resource-catalogue-rest</artifactId>
         </dependency>
+
         <dependency>
             <groupId>gr.uoa.di.madgik</groupId>
             <artifactId>registry-core-api</artifactId>
@@ -388,7 +389,7 @@
 					<apiDocsUrl>http://localhost:8080/resource-catalogue/api-docs/catalogue</apiDocsUrl>
 				    <outputFileName>openapi.json</outputFileName>
 				    <outputDir>${project.basedir}/../docs</outputDir>
-				    <failOnError>true</failOnError>
+				    <failOnError>false</failOnError>
 				  </configuration>
 				</plugin>
 

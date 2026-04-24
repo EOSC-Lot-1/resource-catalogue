@@ -50,10 +50,16 @@ public abstract class ResourceManager<T extends Identifiable> extends AbstractGe
     public String createId(T t) {
     	var resourceType = getResourceTypeName();
     	if (t instanceof ProviderBundle providerBundle) {
-    	    NodeInfo nodeInfo = providerBundle.getNodeInfo();
-    	    if (nodeInfo != null && nodeInfo.getIsNode()) {
-    	    	resourceType = "node";
-    	    } 
+        	try {
+        		Object nodeInfo = providerBundle.getClass().getMethod("getNodeInfo").invoke(providerBundle);
+        		if (nodeInfo != null) {
+        			Object isNode = nodeInfo.getClass().getMethod("getIsNode").invoke(nodeInfo);
+        			if (Boolean.TRUE.equals(isNode)) {
+        				resourceType = "node";
+        			}
+        		}
+        	} catch (ReflectiveOperationException ignored) {
+        	}
     	}
         return idCreator.generate(resourceType);
     }

@@ -60,7 +60,10 @@ public class DatasourceManager extends ResourceManager<DatasourceBundle> impleme
 
     public DatasourceBundle get(String datasourceId) {
         Resource res = where(false, new SearchService.KeyValue("resource_internal_id", datasourceId));
-        return res != null ? deserialize(res) : null;
+        if (res == null) {
+            throw new ResourceNotFoundException();
+        }
+        return deserialize(res);
     }
 
     public DatasourceBundle get(String serviceId, String catalogueId) {

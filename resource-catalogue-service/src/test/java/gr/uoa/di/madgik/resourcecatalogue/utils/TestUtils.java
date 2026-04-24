@@ -1,6 +1,7 @@
 package gr.uoa.di.madgik.resourcecatalogue.utils;
 
 import gr.uoa.di.madgik.resourcecatalogue.domain.*;
+import gr.uoa.di.madgik.resourcecatalogue.domain.interoperabilityRecord.internalFields.*;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -13,31 +14,79 @@ public class TestUtils {
     public static CatalogueBundle createCatalogueBundle() {
         CatalogueBundle bundle = new CatalogueBundle();
         bundle.setCatalogue(createCatalogue());
+        bundle.setMetadata(new Metadata());
         return bundle;
     }
 
     public static ProviderBundle createProviderBundle() {
         ProviderBundle bundle = new ProviderBundle();
         bundle.setProvider(createProvider());
+        bundle.setMetadata(new Metadata());
         return bundle;
     }
 
     public static ServiceBundle createServiceBundle() {
         ServiceBundle bundle = new ServiceBundle();
         bundle.setService(createService());
+        bundle.setMetadata(new Metadata());
         return bundle;
     }
 
     public static DatasourceBundle createDatasourceBundle() {
         DatasourceBundle bundle = new DatasourceBundle();
         bundle.setDatasource(createDatasource());
+        bundle.setMetadata(new Metadata());
         return bundle;
     }
 
     public static TrainingResourceBundle createTrainingResourceBundle() {
         TrainingResourceBundle bundle = new TrainingResourceBundle();
         bundle.setTrainingResource(createTrainingResource());
+        bundle.setMetadata(new Metadata());
         return bundle;
+    }
+
+    public static ToolBundle createToolBundle() {
+        ToolBundle bundle = new ToolBundle();
+        bundle.setTool(createTool());
+        bundle.setMetadata(new Metadata());
+        return bundle;
+    }
+
+    public static InteroperabilityRecordBundle createInteroperabilityRecordBundle() {
+        InteroperabilityRecordBundle bundle = new InteroperabilityRecordBundle();
+        bundle.setInteroperabilityRecord(createInteroperabilityRecord());
+        bundle.setMetadata(new Metadata());
+        return bundle;
+    }
+
+    public static InteroperabilityRecord createInteroperabilityRecord() {
+        InteroperabilityRecord ir = new InteroperabilityRecord();
+        ir.setProviderId("11.1111/abc123");
+
+        IdentifierInfo identifierInfo = new IdentifierInfo();
+        identifierInfo.setIdentifier("test-identifier-001");
+        identifierInfo.setIdentifierType("ir_identifier_type-doi");
+        ir.setIdentifierInfo(identifierInfo);
+
+        CreatorNameTypeInfo nameTypeInfo = new CreatorNameTypeInfo();
+        nameTypeInfo.setCreatorName("Doe, John");
+        nameTypeInfo.setNameType("ir_name_type-personal");
+        Creator creator = new Creator();
+        creator.setCreatorNameTypeInfo(nameTypeInfo);
+        ir.setCreators(List.of(creator));
+
+        ir.setTitle("Test Interoperability Record");
+        ir.setPublicationYear(2023);
+
+        Right right = new Right();
+        right.setRightTitle("Creative Commons CC0 1.0 Universal");
+        ir.setRights(List.of(right));
+
+        ir.setDescription("Test Description");
+        ir.setEoscGuidelineType("ir_eosc_guideline_type-eosc_interoperability_framework");
+
+        return ir;
     }
 
     public static Catalogue createCatalogue() {
@@ -109,6 +158,19 @@ public class TestUtils {
                 "ds_research_entity_type-research_software"));
         datasource.setThematic(false);
         return datasource;
+    }
+
+    public static Tool createTool() {
+        Tool tool = new Tool();
+        tool.setName("Test Tool");
+        tool.setResourceOrganisation("11.1111/abc123");
+        tool.setKeywords(List.of("keyword1", "keyword2"));
+        tool.setLicense("tool_license-apache_2_0");
+        tool.setVersionDate(new Date(1674858000000L));
+        tool.setTargetInfrastructure(List.of("tool_target_infra-openstack"));
+        tool.setAuthor("Joe Doe");
+        tool.setScientificDomains(createScientificDomains());
+        return tool;
     }
 
     public static TrainingResource createTrainingResource() {
