@@ -43,7 +43,7 @@ public class ResourceIdCreator implements IdCreator {
         return switch (resourceType) {
             // PID related
             case "service", "draft_service" -> resourceProperties.get(ResourceTypes.SERVICE).getIdPrefix();
-            case "tool" -> resourceProperties.get(ResourceTypes.TOOL).getIdPrefix();
+            case "tool", "draft_tool" -> resourceProperties.get(ResourceTypes.TOOL).getIdPrefix();
             case "training_resource", "draft_training_resource" ->
                     resourceProperties.get(ResourceTypes.TRAINING_RESOURCE).getIdPrefix();
             case "provider", "draft_provider" -> resourceProperties.get(ResourceTypes.PROVIDER).getIdPrefix();

@@ -253,7 +253,7 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
             }
         }
         // else return the Provider ONLY if he is active
-        if (providerBundle.getStatus().equals(vocabularyService.get("approved provider").getId())) {
+        if (providerBundle.getStatus().equals(vocabularyService.get("approved resource").getId())) {
             return providerBundle;
         }
         throw new ValidationException("You cannot view the specific Provider");
@@ -271,7 +271,7 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
             }
         }
         // else return the Provider ONLY if he is active
-        if (providerBundle.getStatus().equals(vocabularyService.get("approved provider").getId())) {
+        if (providerBundle.getStatus().equals(vocabularyService.get("approved resource").getId())) {
             return providerBundle;
         }
         throw new ValidationException("You cannot view the specific Provider");
@@ -337,7 +337,7 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
             User user = User.of(auth);
             Browsing<ProviderBundle> providers = super.getAll(ff, auth);
             for (ProviderBundle providerBundle : providers.getResults()) {
-                if (providerBundle.getStatus().equals(vocabularyService.get("approved provider").getId()) ||
+                if (providerBundle.getStatus().equals(vocabularyService.get("approved resource").getId()) ||
                         securityService.userIsProviderAdmin(user, providerBundle.getId())) {
                     retList.add(providerBundle);
                 }
@@ -349,7 +349,7 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
         }
 
         // else return ONLY approved Providers
-        ff.addFilter("status", "approved provider");
+        ff.addFilter("status", "approved resource");
         Browsing<ProviderBundle> providers = super.getAll(ff, auth);
         retList.addAll(providers.getResults());
         providers.setResults(retList);
@@ -433,21 +433,30 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
 
     @Override
     public ProviderBundle verify(String id, String status, Boolean active, Authentication auth) {
-        Vocabulary statusVocabulary = vocabularyService.getOrElseThrow(status);
-        if (!statusVocabulary.getType().equals("Provider state")) {
-            throw new ValidationException(String.format("Vocabulary %s does not consist a Provider State!", status));
+        String normalizedStatus = status;
+        if ("approved provider".equals(status)) {
+            normalizedStatus = "approved resource";
+        } else if ("pending provider".equals(status)) {
+            normalizedStatus = "pending resource";
+        } else if ("rejected provider".equals(status)) {
+            normalizedStatus = "rejected resource";
         }
-        logger.trace("verifyProvider with id: '{}' | status -> '{}' | active -> '{}'", id, status, active);
+
+        Vocabulary statusVocabulary = vocabularyService.getOrElseThrow(normalizedStatus);
+        if (!statusVocabulary.getType().equals("Resource state")) {
+            throw new ValidationException(String.format("Vocabulary %s does not consist a Resource State!", normalizedStatus));
+        }
+        logger.trace("verifyProvider with id: '{}' | status -> '{}' | active -> '{}'", id, normalizedStatus, active);
         ProviderBundle provider = get(id, auth);
         Resource existingResource = getResource(provider.getId(), provider.getProvider().getCatalogueId());
         ProviderBundle existingProvider = deserialize(existingResource);
 
-        existingProvider.setStatus(vocabularyService.get(status).getId());
+        existingProvider.setStatus(statusVocabulary.getId());
         List<LoggingInfo> loggingInfoList = commonMethods.returnLoggingInfoListAndCreateRegistrationInfoIfEmpty(existingProvider, auth);
         LoggingInfo loggingInfo = null;
 
-        switch (status) {
-            case "approved provider":
+        switch (normalizedStatus) {
+            case "approved resource":
                 if (active == null) {
                     active = true;
                 }
@@ -458,7 +467,7 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
                 // add Provider's Name as a HLE Vocabulary
                 checkAndAddProviderToHLEVocabulary(existingProvider);
                 break;
-            case "rejected provider":
+            case "rejected resource":
                 existingProvider.setActive(false);
                 loggingInfo = commonMethods.createLoggingInfo(auth, LoggingInfo.Types.ONBOARD.getKey(),
                         LoggingInfo.ActionType.REJECTED.getKey());
@@ -486,8 +495,8 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
         Resource existingResource = getResource(provider.getId(), provider.getProvider().getCatalogueId());
         ProviderBundle existingProvider = deserialize(existingResource);
 
-        if ((existingProvider.getStatus().equals(vocabularyService.get("pending provider").getId()) ||
-                existingProvider.getStatus().equals(vocabularyService.get("rejected provider").getId())) && !existingProvider.isActive()) {
+        if ((existingProvider.getStatus().equals(vocabularyService.get("pending resource").getId()) ||
+            existingProvider.getStatus().equals(vocabularyService.get("rejected resource").getId())) && !existingProvider.isActive()) {
             throw new ValidationException(String.format("You cannot activate this Provider, because it's Inactive with status = [%s]", existingProvider.getStatus()));
         }
         List<LoggingInfo> loggingInfoList = commonMethods.returnLoggingInfoListAndCreateRegistrationInfoIfEmpty(existingProvider, auth);
@@ -840,7 +849,7 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
     public Paging<ProviderBundle> getRandomProviders(FacetFilter ff, String auditingInterval, Authentication auth) {
         FacetFilter facetFilter = new FacetFilter();
         facetFilter.setQuantity(maxQuantity);
-        facetFilter.addFilter("status", "approved provider");
+        facetFilter.addFilter("status", "approved resource");
         facetFilter.addFilter("published", false);
         Browsing<ProviderBundle> providerBrowsing = getAll(facetFilter, auth);
         List<ProviderBundle> providersToBeAudited = new ArrayList<>();
@@ -879,12 +888,12 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
             // set catalogueId = eosc
             provider.getProvider().setCatalogueId(this.catalogueId);
             provider.setActive(false);
-            provider.setStatus(vocabularyService.get("pending provider").getId());
+            provider.setStatus(vocabularyService.get("pending resource").getId());
             provider.setTemplateStatus(vocabularyService.get("no template status").getId());
         } else {
             commonMethods.checkCatalogueIdConsistency(provider, catalogueId);
             provider.setActive(true);
-            provider.setStatus(vocabularyService.get("approved provider").getId());
+            provider.setStatus(vocabularyService.get("approved resource").getId());
             provider.setTemplateStatus(vocabularyService.get("approved template").getId());
             loggingInfoList.add(commonMethods.createLoggingInfo(auth, LoggingInfo.Types.ONBOARD.getKey(),
                     LoggingInfo.ActionType.APPROVED.getKey()));
@@ -897,7 +906,7 @@ public class ProviderManager extends ResourceManager<ProviderBundle> implements 
     }
 
     private void checkAndAddProviderToHLEVocabulary(ProviderBundle providerBundle) {
-        if (providerBundle.getStatus().equals("approved provider") && providerBundle.getProvider().isLegalEntity()) {
+        if (providerBundle.getStatus().equals(vocabularyService.get("approved resource").getId()) && providerBundle.getProvider().isLegalEntity()) {
             List<String> allHLENames = vocabularyService.getByType(Vocabulary.Type.PROVIDER_HOSTING_LEGAL_ENTITY)
                     .stream().map(Vocabulary::getName).toList();
             for (String hle : allHLENames) {

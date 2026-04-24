@@ -12,6 +12,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.context.ImportTestcontainers;
+import org.springframework.context.annotation.Import;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ImportTestcontainers(IntegrationTestConfig.class)
+@Import(TestSecurityConfig.class)
 public abstract class BaseIntegrationTest {
 
     @Autowired

@@ -290,7 +290,11 @@ public class FieldValidator {
                         VocabularyValidation vocabularyValidation = field.getAnnotation(VocabularyValidation.class);
                         GeoLocationVocValidation geoLocationVocValidation = field.getAnnotation(GeoLocationVocValidation.class);
                         if (vocabularyValidation != null) {
-                            if (voc == null || Vocabulary.Type.fromString(voc.getType()) != vocabularyValidation.type()) {
+                            boolean resourceStateCompatibility = voc != null
+                                && vocabularyValidation.type() == Vocabulary.Type.RESOURCE_STATUS
+                                && Vocabulary.Type.fromString(voc.getType()) == Vocabulary.Type.RESOURCE_STATE;
+                            if (voc == null || (Vocabulary.Type.fromString(voc.getType()) != vocabularyValidation.type()
+                                && !resourceStateCompatibility)) {
                                 throw new ValidationException(
                                         String.format("Field '%s' should contain the ID of a type '%s' Vocabulary",
                                                 field.getName(), vocabularyValidation.type()));
