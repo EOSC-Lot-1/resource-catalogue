@@ -65,7 +65,14 @@ Follow these steps to set up a development environment for Resource Catalogue:
 
 ## Test execution:
 ```bash
-  mvn clean verify -Dspring.config.additional-location=file:/path/to/secret.properties
+# Unit tests only 
+mvn -P lot1 -DskipITs verify
+
+# Integration tests only 
+mvn -P lot1,it-tests -Dspringdoc.skip=true verify
+
+# Full service-module run (unit + integration)
+mvn -P lot1 verify
 ```
 Test results will be displayed in the terminal.
 
