@@ -1,0 +1,74 @@
+name: run-tests
+
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+    - eosc-run-tests
+    tags:
+    - '*'
+
+permissions:
+  actions: read
+  checks: write
+  contents: read
+  packages: read
+  repository-projects: read
+  statuses: read
+
+
+jobs:
+  
+  run_unit_tests:
+    runs-on:
+    - self-hosted
+    - x64
+    - debian-12
+    env:
+      #GITHUB_TOKEN: '${{ secrets.PACKAGE_READER_ACCESS_TOKEN }}'
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        architecture: x64
+    
+    - run: >-
+        ./mvnw -B -DskipITs verify surefire-report:report
+    
+    - uses: actions/upload-artifact@v4
+      with:
+        name: surefire-reports
+        path: target/surefire-reports
+    
+    #- uses: actions/upload-artifact@v4
+    #  with:
+    #    name: jacoco-reports
+    #    path: target/jacoco-report
+    
+    - uses: actions/upload-artifact@v4
+      with:
+        name: reports
+        path: target/reports
+       
+    - name: >-
+        Generate summary (Markdown) from Surefire reports
+      uses: dorny/test-reporter@v2
+      if: >-
+        always()
+      with:
+        name: surefire_report_markdown
+        report-title: Surefire report
+        path: target/surefire-reports/*.xml
+        reporter: java-junit    
+        fail-on-error: true
+    
+    #- name: >-
+    #    Generate summary (Markdown) from JaCoCo reports
+    #  if: >-
+    #    always()
+    #  run: >-
+    #    ./.bin/generate-summary-from-jacoco-report.sh >> ${GITHUB_STEP_SUMMARY}
+        
