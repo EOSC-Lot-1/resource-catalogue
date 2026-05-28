@@ -58,8 +58,8 @@ jobs:
         always()
       with:
         name: surefire_report_markdown
-        report-title: Surefire report
-        path: target/surefire-reports/*.xml
+        report-title: resource-catalogue-service - Surefire report
+        path: resource-catalogue-service/target/surefire-reports/*.xml
         reporter: java-junit    
         fail-on-error: true
     
