@@ -34,7 +34,7 @@ jobs:
         architecture: x64
     
     - run: >-
-        mvn -B -DskipITs verify surefire-report:report
+        mvn -B -P lot1 -DskipITs verify surefire-report:report
     
     - uses: actions/upload-artifact@v4
       with:
