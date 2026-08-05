@@ -9,7 +9,11 @@
             
       <xs:element minOccurs="0" name="monitoringServiceAck" type="xs:boolean"/>
             
+      <xs:element minOccurs="0" name="nodeRegistrationPolicyAck" type="xs:boolean"/>
+            
       <xs:element minOccurs="0" name="resourceHubAck" type="xs:boolean"/>
+            
+      <xs:element minOccurs="0" name="rsopAck" type="xs:boolean"/>
             
       <xs:element minOccurs="0" name="securityContactAck" type="xs:boolean"/>
           
