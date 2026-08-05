@@ -67,7 +67,7 @@ jobs:
         Upload SBOM to Dependency Tracker
       env:
         DEPENDENCY_TRACK_API_URL: >-
-          https://sms.eoscnode.org/api
+          https://deptrack-api.eoscnode.org/api
         DEPENDENCY_TRACK_API_KEY: '${{ secrets.DEPENDENCY_TRACK_API_KEY }}'
         DEPENDENCY_TRACK_PROJECT_ID: '${{ vars.DEPENDENCY_TRACK_PROJECT_ID }}'
       run: >-
