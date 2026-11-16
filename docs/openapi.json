@@ -7,7 +7,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0"
     },
-    "version": "v5.0.0+u126"
+    "version": "@project.version@"
   },
   "externalDocs": {
     "description": "resource-catalogue Documentation",
@@ -3655,6 +3655,50 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProviderBundle"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/providers/resources": {
+      "get": {
+        "tags": [
+          "providers"
+        ],
+        "summary": "Returns the resources owned by the given Provider, grouped by resource type. Services that have a Datasource are returned only as Datasources.",
+        "operationId": "getProviderResources",
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceType",
+            "in": "query",
+            "description": "service, datasource, training-resource, interoperability-record or tool",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {}
+                  }
                 }
               }
             }

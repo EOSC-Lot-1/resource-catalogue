@@ -3,6 +3,7 @@ package gr.uoa.di.madgik.resourcecatalogue.controllers.lot1;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +15,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +31,9 @@ import gr.uoa.di.madgik.resourcecatalogue.domain.ProviderBundle;
 import gr.uoa.di.madgik.resourcecatalogue.dto.EnumVariableType;
 import gr.uoa.di.madgik.resourcecatalogue.dto.ProcessInstanceRequestDto;
 import gr.uoa.di.madgik.resourcecatalogue.dto.ProcessInstanceRequestVariableDto;
+import gr.uoa.di.madgik.resourcecatalogue.service.ProviderResourcesService;
 import gr.uoa.di.madgik.resourcecatalogue.service.ProviderService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -40,12 +45,13 @@ public class ProviderCrudController extends ResourceCrudController<ProviderBundl
 
     private static final Logger logger = LogManager.getLogger(ProviderCrudController.class);
     private final ProviderService providerService;
+    private final ProviderResourcesService providerResourcesService;
     private final RabbitTemplate      rabbitTemplate;
     private final ObjectMapper        objectMapper;
     private final String              transactionExchange;
     private final String              transactionRoutingKey;
 
-    ProviderCrudController(ProviderService providerService, RabbitTemplate rabbitTemplate,
+    ProviderCrudController(ProviderService providerService, ProviderResourcesService providerResourcesService, RabbitTemplate rabbitTemplate,
     		ObjectMapper objectMapper, 
     		@Value("${eosc.amqp.exchange.transactions.name:workflows}")
     		String              transactionExchange,
@@ -53,10 +59,20 @@ public class ProviderCrudController extends ResourceCrudController<ProviderBundl
     		String              transactionRoutingKey) {
         super(providerService);
         this.providerService = providerService;
+        this.providerResourcesService = providerResourcesService;
 		this.rabbitTemplate = rabbitTemplate;
 	    this.objectMapper = objectMapper;
 	    this.transactionExchange = transactionExchange;
 	    this.transactionRoutingKey = transactionRoutingKey;
+    }
+
+    @Operation(summary = "Returns the resources owned by the given Provider, grouped by resource type. " +
+            "Services that have a Datasource are returned only as Datasources.")
+    @GetMapping(path = "/resources", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, List<?>>> getProviderResources(@RequestParam("providerId") String providerId,
+                                                                    @RequestParam(value = "resourceType", required = false)
+                                                                    @Parameter(description = "service, datasource, training-resource, interoperability-record or tool") String resourceType) {
+        return ResponseEntity.ok(providerResourcesService.getProviderResources(providerId, resourceType));
     }
 
     @PostMapping(path = "/bulk")
