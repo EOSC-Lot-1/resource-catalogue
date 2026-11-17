@@ -4,13 +4,12 @@ import gr.uoa.di.madgik.catalogue.exception.ValidationException;
 import gr.uoa.di.madgik.registry.domain.FacetFilter;
 import gr.uoa.di.madgik.resourcecatalogue.domain.DatasourceBundle;
 import gr.uoa.di.madgik.resourcecatalogue.domain.ServiceBundle;
+import gr.uoa.di.madgik.resourcecatalogue.dto.ProviderResources;
 import gr.uoa.di.madgik.resourcecatalogue.service.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -49,13 +48,13 @@ public class ProviderResourcesManager implements ProviderResourcesService {
     }
 
     @Override
-    public Map<String, List<?>> getProviderResources(String providerId, String resourceType) {
+    public ProviderResources getProviderResources(String providerId, String resourceType) {
         if (resourceType != null && !TYPES.contains(resourceType)) {
             throw new ValidationException(String.format("Unsupported resourceType '%s'. Supported: %s", resourceType, TYPES));
         }
         providerService.get(providerId); // throws if the Provider does not exist
 
-        Map<String, List<?>> result = new LinkedHashMap<>();
+        ProviderResources result = new ProviderResources();
         boolean needsServices = resourceType == null || SERVICE.equals(resourceType) || DATASOURCE.equals(resourceType);
         List<ServiceBundle> services = needsServices ? providerServices(providerId) : List.of();
         List<DatasourceBundle> datasources = List.of();
@@ -69,24 +68,24 @@ public class ProviderResourcesManager implements ProviderResourcesService {
         if (resourceType == null || SERVICE.equals(resourceType)) {
             // Services that have a Datasource are represented by that Datasource
             Set<String> withDatasource = datasources.stream().map(d -> d.getDatasource().getServiceId()).collect(Collectors.toSet());
-            result.put(SERVICE, services.stream().filter(s -> !withDatasource.contains(s.getId())).collect(Collectors.toList()));
+            result.setServices(services.stream().filter(s -> !withDatasource.contains(s.getId())).collect(Collectors.toList()));
         }
         if (resourceType == null || DATASOURCE.equals(resourceType)) {
-            result.put(DATASOURCE, datasources);
+            result.setDatasources(datasources);
         }
         if (resourceType == null || TRAINING_RESOURCE.equals(resourceType)) {
             FacetFilter ff = filter();
             ff.addFilter("resource_organisation", providerId);
-            result.put(TRAINING_RESOURCE, trainingResourceService.getAll(ff).getResults());
+            result.setTrainingResources(trainingResourceService.getAll(ff).getResults());
         }
         if (resourceType == null || INTEROPERABILITY_RECORD.equals(resourceType)) {
             FacetFilter ff = filter();
             ff.addFilter("provider_id", providerId);
-            result.put(INTEROPERABILITY_RECORD, interoperabilityRecordService.getAll(ff).getResults());
+            result.setInteroperabilityRecords(interoperabilityRecordService.getAll(ff).getResults());
         }
         if (resourceType == null || TOOL.equals(resourceType)) {
             // the tool index has no provider field, so the resourceProvider of the payload is checked here
-            result.put(TOOL, toolService.getAll(filter()).getResults().stream()
+            result.setTools(toolService.getAll(filter()).getResults().stream()
                     .filter(t -> providerId.equals(t.getTool().getResourceProvider()))
                     .collect(Collectors.toList()));
         }

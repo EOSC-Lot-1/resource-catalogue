@@ -3,7 +3,6 @@ package gr.uoa.di.madgik.resourcecatalogue.controllers.lot1;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.logging.log4j.LogManager;
@@ -31,6 +30,7 @@ import gr.uoa.di.madgik.resourcecatalogue.domain.ProviderBundle;
 import gr.uoa.di.madgik.resourcecatalogue.dto.EnumVariableType;
 import gr.uoa.di.madgik.resourcecatalogue.dto.ProcessInstanceRequestDto;
 import gr.uoa.di.madgik.resourcecatalogue.dto.ProcessInstanceRequestVariableDto;
+import gr.uoa.di.madgik.resourcecatalogue.dto.ProviderResources;
 import gr.uoa.di.madgik.resourcecatalogue.service.ProviderResourcesService;
 import gr.uoa.di.madgik.resourcecatalogue.service.ProviderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -69,7 +69,7 @@ public class ProviderCrudController extends ResourceCrudController<ProviderBundl
     @Operation(summary = "Returns the resources owned by the given Provider, grouped by resource type. " +
             "Services that have a Datasource are returned only as Datasources.")
     @GetMapping(path = "/resources", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, List<?>>> getProviderResources(@RequestParam("providerId") String providerId,
+    public ResponseEntity<ProviderResources> getProviderResources(@RequestParam("providerId") String providerId,
                                                                     @RequestParam(value = "resourceType", required = false)
                                                                     @Parameter(description = "service, datasource, training-resource, interoperability-record or tool") String resourceType) {
         return ResponseEntity.ok(providerResourcesService.getProviderResources(providerId, resourceType));

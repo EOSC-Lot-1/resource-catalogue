@@ -7,7 +7,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0"
     },
-    "version": "@project.version@"
+    "version": "v5.0.0+u127"
   },
   "externalDocs": {
     "description": "resource-catalogue Documentation",
@@ -3694,11 +3694,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "array",
-                    "items": {}
-                  }
+                  "$ref": "#/components/schemas/ProviderResources"
                 }
               }
             }
@@ -8193,6 +8189,46 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Facet"
+            }
+          }
+        }
+      },
+      "ProviderResources": {
+        "type": "object",
+        "properties": {
+          "services": {
+            "type": "array",
+            "description": "Services of the Provider that have no Datasource",
+            "items": {
+              "$ref": "#/components/schemas/ServiceBundle"
+            }
+          },
+          "datasources": {
+            "type": "array",
+            "description": "Datasources of the Provider's Services",
+            "items": {
+              "$ref": "#/components/schemas/DatasourceBundle"
+            }
+          },
+          "tools": {
+            "type": "array",
+            "description": "Tools of the Provider",
+            "items": {
+              "$ref": "#/components/schemas/ToolBundle"
+            }
+          },
+          "training-resources": {
+            "type": "array",
+            "description": "Training Resources of the Provider",
+            "items": {
+              "$ref": "#/components/schemas/TrainingResourceBundle"
+            }
+          },
+          "interoperability-records": {
+            "type": "array",
+            "description": "Interoperability Records of the Provider",
+            "items": {
+              "$ref": "#/components/schemas/InteroperabilityRecordBundle"
             }
           }
         }

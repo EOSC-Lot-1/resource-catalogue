@@ -1,7 +1,6 @@
 package gr.uoa.di.madgik.resourcecatalogue.service;
 
-import java.util.List;
-import java.util.Map;
+import gr.uoa.di.madgik.resourcecatalogue.dto.ProviderResources;
 
 public interface ProviderResourcesService {
 
@@ -12,7 +11,7 @@ public interface ProviderResourcesService {
      *
      * @param providerId   Provider ID
      * @param resourceType Optional resource type, if null all types are returned
-     * @return resource type -&gt; list of the Bundles of that type
+     * @return {@link ProviderResources}, the types that were not requested are null
      */
-    Map<String, List<?>> getProviderResources(String providerId, String resourceType);
+    ProviderResources getProviderResources(String providerId, String resourceType);
 }
